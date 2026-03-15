@@ -10,4 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookOrbit.Application\BookOrbit.Application.csproj" />
+    <ProjectReference Include="..\BookOrbit.Contracts\BookOrbit.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

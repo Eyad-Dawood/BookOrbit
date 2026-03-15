@@ -1,0 +1,13 @@
+﻿global using BookOrbit.Domain.Common;
+global using BookOrbit.Domain.Common.Constants;
+global using BookOrbit.Domain.Common.Entities;
+global using BookOrbit.Domain.Common.Results;
+global using BookOrbit.Domain.Common.Results.Abstractions;
+global using BookOrbit.Domain.Students.Enums;
+global using MediatR;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Text.Json.Serialization;
+global using System.Text.RegularExpressions;
+global using BookOrbit.Domain.Common.ValueObjects;
+global using BookOrbit.Domain.Students.ValueObjects;

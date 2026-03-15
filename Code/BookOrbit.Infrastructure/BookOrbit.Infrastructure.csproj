@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookOrbit.Application\BookOrbit.Application.csproj" />
+    <ProjectReference Include="..\BookOrbit.Domain\BookOrbit.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
