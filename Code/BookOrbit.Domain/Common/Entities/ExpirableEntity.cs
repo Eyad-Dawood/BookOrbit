@@ -1,6 +1,6 @@
 ﻿namespace BookOrbit.Domain.Common.Entities;
 
-    public abstract class ExpirableEntity : Entity
+    public abstract class ExpirableEntity : AuditableEntity
     {
         protected ExpirableEntity()
         { }
