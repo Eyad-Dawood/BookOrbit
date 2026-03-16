@@ -19,4 +19,6 @@ global using BookOrbit.Domain.Students;
 global using BookOrbit.Domain.LendingListings.Enums;
 global using BookOrbit.Domain.BookCopies;
 global using BookOrbit.Domain.BorrowingRequests.Enums;
-
+global using BookOrbit.Domain.LendingListings;
+global using BookOrbit.Domain.BorrowingTransactions.Enums;
+global using BookOrbit.Domain.BorrowingRequests;

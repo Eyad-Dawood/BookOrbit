@@ -1,13 +1,18 @@
-﻿namespace BookOrbit.Domain.BorrowingRequests;
+﻿
+namespace BookOrbit.Domain.BorrowingRequests;
 
-public class BorrwoingRequest : ExpirableEntity
+public class BorrowingRequest : ExpirableEntity
 {
     public Guid BorrowingStudentId { get; }
     public Guid LendingRecordId { get; }
     public BorrowingRequestState State { get; }
 
-    private BorrwoingRequest(){ }
-    private BorrwoingRequest(
+
+    public Student? BorrowingStudent { get; private set; }
+    public LendingListRecord? LendingRecord { get; private set; }
+
+    private BorrowingRequest(){ }
+    private BorrowingRequest(
         Guid id, 
         Guid borrowingStudentId, 
         Guid lendingRecordId,
@@ -19,7 +24,7 @@ public class BorrwoingRequest : ExpirableEntity
         ExpirationDateUtc = expirationDateUtc;
     }
 
-    static public Result<BorrwoingRequest> Create(
+    static public Result<BorrowingRequest> Create(
         Guid id,
         Guid borrowingStudentId,
         Guid lendingRecordId,
@@ -39,7 +44,7 @@ public class BorrwoingRequest : ExpirableEntity
         if (expirationDateUtc <= currentTime)
             return BorrowingRequestErrors.InvalidExpirationDate;
        
-        var borrowingRequest = new BorrwoingRequest(
+        var borrowingRequest = new BorrowingRequest(
             id,
             borrowingStudentId,
             lendingRecordId,

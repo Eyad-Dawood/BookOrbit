@@ -21,13 +21,8 @@ static public class StudentErrors
     #region Logic
 
     public static Error InvalidStateTransition(StudentState currentState, StudentState newState)=>
-        CommonErrors.Custom(
-            ClassName,
-            "InvalidStateTransition",
-            $"Cannot transition from {currentState} to {newState}.");
+        CommonErrors.InvalidStateTransition(ClassName,currentState.ToString(),newState.ToString());
     
-
-
     #endregion
 }
 
