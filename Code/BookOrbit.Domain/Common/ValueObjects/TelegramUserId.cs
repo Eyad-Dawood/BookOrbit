@@ -1,26 +1,36 @@
 ﻿namespace BookOrbit.Domain.Common.ValueObjects;
 
-public record TelegramUserId
+public record TelegramUserId : ValueObject<string>
 {
-    public string Value { get; }
+    private static readonly Regex TelegramUserIdRegex =
+       new(@"^(?=(?:[0-9_]*[a-z]){3})[a-z0-9_]{5,}$", RegexOptions.Compiled);
 
-    private TelegramUserId(string value)
+    private TelegramUserId(string value) : base(value){}
+    private static string Normalize(string value)
     {
-        Value = value;
+        return 
+            value.Trim()
+            .ToLower();
     }
+    private static Result<string> Validate(string value)
+    {
+        if (!TelegramUserIdRegex.IsMatch(value))
+            return TelegramUserIdErrors.InvalidTelegramUserId;
 
+        return value;
+    }
     public static Result<TelegramUserId> Create(string telegramUserId)
     {
         if (string.IsNullOrWhiteSpace(telegramUserId))
             return TelegramUserIdErrors.TelegramUserIdRequired;
 
+        var normalized = Normalize(telegramUserId);
+        var validationResult = Validate(normalized);
 
-        const string pattern = @"^(?=(?:[0-9_]*[a-z]){3})[a-z0-9_]{5,}$";
+        if (validationResult.IsSuccess)
+            return new TelegramUserId(validationResult.Value);
 
-        if (!Regex.IsMatch(telegramUserId, pattern))
-            return TelegramUserIdErrors.InvalidTelegramUserId;
-
-        return new TelegramUserId(telegramUserId);
+        return validationResult.Errors;
     }
 }
 

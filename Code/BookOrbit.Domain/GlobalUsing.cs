@@ -11,3 +11,5 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using BookOrbit.Domain.Common.ValueObjects;
 global using BookOrbit.Domain.Students.ValueObjects;
+global using BookOrbit.Domain.Books.Enums;
+global using BookOrbit.Domain.Books.ValueObjects;

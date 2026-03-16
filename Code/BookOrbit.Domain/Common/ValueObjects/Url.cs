@@ -1,20 +1,34 @@
 ﻿namespace BookOrbit.Domain.Common.ValueObjects
 {
-    public record Url
+    public record Url : ValueObject<string>
     {
-        public string Value { get; }
-        private Url(string value)
+        private Url(string value):base(value){}
+        private static string Normalize(string value)
         {
-            Value = value;
+            return
+                value
+                .Trim()
+                .ToLower();
+        }
+        private static Result<string> Validate(string value)
+        {
+            if (!Uri.IsWellFormedUriString(value,UriKind.Absolute))
+                return UrlErrors.InvalidUrl;
+
+            return value;
         }
         public static Result<Url> Create(string url)
         {
-
             if (string.IsNullOrWhiteSpace(url))
                 return UrlErrors.RequiredUrl;
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                return UrlErrors.InvalidUrl;
-            return new Url(url);
+
+            var normalized = Normalize(url);
+            var validationResult = Validate(normalized);
+
+            if (validationResult.IsSuccess)
+                return new Url(validationResult.Value);
+
+            return validationResult.Errors;
         }
     }
 

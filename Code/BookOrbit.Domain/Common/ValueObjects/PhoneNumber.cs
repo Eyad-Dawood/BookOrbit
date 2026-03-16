@@ -1,32 +1,50 @@
 ﻿namespace BookOrbit.Domain.Common.ValueObjects;
 
-public record PhoneNumber
+public record PhoneNumber : ValueObject<string>
 {
-    public string Value { get; }
-    private PhoneNumber(string value)
+    private static readonly Regex PhoneNumberRegex =
+       new(@"^(?:01|201)[0125][0-9]{8}$", RegexOptions.Compiled);
+
+    private PhoneNumber(string value) : base(value){}
+    private static string Normalize(string value)
     {
-        Value = value;
+        var normalized = value
+          .Trim()
+         .Replace(" ", "")
+         .Replace("-", "")
+         .Replace("+", "");
+
+        return normalized.StartsWith("01") ?
+            ("2" + normalized) :
+            normalized;
+    }
+    private static Result<string> Validate(string value)
+    {
+        if (!PhoneNumberRegex.IsMatch(value))
+            return PhoneNumberErrors.InvalidPhoneNumber;
+
+        return value;
     }
 
     public static Result<PhoneNumber> Create(string phoneNumber)
     {
-
+        // Hot path, so we check for null or whitespace before normalization and validation to avoid unnecessary processing.
         if (string.IsNullOrWhiteSpace(phoneNumber))
             return PhoneNumberErrors.RequiredPhoneNumber;
 
-        phoneNumber = phoneNumber.Replace(" ", "").Replace("-", "");
 
-        const string pattern = @"^(?:01|201)[0125][0-9]{8}$";
+        var normalized = Normalize(phoneNumber);
+        var validationResult = Validate(normalized);
 
-        if (!Regex.IsMatch(phoneNumber, pattern))
-            return PhoneNumberErrors.InvalidPhoneNumber;
+        if (validationResult.IsSuccess)
+            return new PhoneNumber(validationResult.Value);
 
-        return new PhoneNumber(phoneNumber);
+        return validationResult.Errors;
     }
 }
 
-static public class PhoneNumberErrors {
-
+static public class PhoneNumberErrors
+{
     private const string className = nameof(PhoneNumber);
 
     public static readonly Error InvalidPhoneNumber = CommonErrors.InvalidProp(

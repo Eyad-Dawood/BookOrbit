@@ -1,24 +1,36 @@
 ﻿namespace BookOrbit.Domain.Students.ValueObjects;
 
-public record UniversityMail
+public record UniversityMail : ValueObject<string>
 {
-    public string Value { get; }
-    private UniversityMail(string value)
+    private static readonly Regex UniversityMailRegex =
+   new(@"^[A-Za-z0-9._%+-]+@std\.mans\.edu\.eg$", RegexOptions.Compiled);
+
+    private UniversityMail(string value):base(value){}
+    private static string Normalize(string value)
     {
-        Value = value;
+        return value
+            .Trim()
+            .ToLower();
     }
+    private static Result<string> Validate(string value)
+    {
+        if (!UniversityMailRegex.IsMatch(value))
+            return StudentErrors.InvalidUniversityMail;
+
+        return value;
+    } 
     public static Result<UniversityMail> Create(string email)
     {
-        email = email.Trim().ToLower();
-
         if (string.IsNullOrWhiteSpace(email))
             return StudentErrors.UniversityMailRequired;
 
-        if (!email.EndsWith("@std.mans.edu.eg"))
-            return StudentErrors.InvalidUniversityMail;
+        var normalized = Normalize(email);
+        var validationResult = Validate(normalized);
 
-        return new UniversityMail(email);
+        if (validationResult.IsSuccess)
+            return new UniversityMail(validationResult.Value);
+
+        return validationResult.Errors;
     }
-
 }
 

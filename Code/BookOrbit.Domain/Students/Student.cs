@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Domain.Students;
+﻿namespace BookOrbit.Domain.Students;
 
 public class Student : AuditableEntity
 {
@@ -23,7 +22,6 @@ public class Student : AuditableEntity
         UniversityMail universityMail,
         Url personalPhotoUrl,
         DateOnly joinDate,
-        StudentState state,
         PhoneNumber? phoneNumber = null,
         TelegramUserId? telegramUsername = null) : base(id)
     {
@@ -33,7 +31,8 @@ public class Student : AuditableEntity
         JoinDate = joinDate;
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUsername;
-        State = state;
+        State = StudentState.Pending;
+        Points = 0;
     }
 
 
@@ -44,7 +43,6 @@ public class Student : AuditableEntity
         string personalPhotoUrlAddress,
         DateOnly joinDate,
         DateTime currentTime, // For Testing purposes, to avoid using DateTime.UtcNow directly
-        StudentState state,
         string? phoneNumber = null,
         string? telegramUsername = null)
     {
@@ -54,25 +52,23 @@ public class Student : AuditableEntity
         if(string.IsNullOrWhiteSpace(name))
             return StudentErrors.NameRequired;
 
-        if(name.Length > ValidationConstants.NameMaxLength || name.Length < ValidationConstants.NameMinLength)
+        name = name.Trim();
+        if (name.Length > StudentValidationConstants.NameMaxLength || name.Length < StudentValidationConstants.NameMinLength)
             return StudentErrors.InvalidName;
 
         if (joinDate > DateOnly.FromDateTime(currentTime))
             return StudentErrors.InvalidJoinDate;
-
-        if(!Enum.IsDefined(state))
-            return StudentErrors.InvalidState;
 
         if(string.IsNullOrWhiteSpace(phoneNumber)&&string.IsNullOrWhiteSpace(telegramUsername))
             return StudentErrors.AtLeastOneCommunicationMethod;
 
 
         var universityMailResult = UniversityMail.Create(universityMailAddress);
-        if(universityMailResult.IsError)
+        if(universityMailResult.IsFailure)
             return universityMailResult.Errors;
         
         var personalPhotoUrlResult = Url.Create(personalPhotoUrlAddress);
-        if(personalPhotoUrlResult.IsError)
+        if(personalPhotoUrlResult.IsFailure)
             return personalPhotoUrlResult.Errors;
 
 
@@ -82,7 +78,7 @@ public class Student : AuditableEntity
         if (!string.IsNullOrWhiteSpace(phoneNumber))
         {
             var phoneNumberResult = PhoneNumber.Create(phoneNumber);
-            if (phoneNumberResult.IsError)
+            if (phoneNumberResult.IsFailure)
                 return phoneNumberResult.Errors;
             else
                 OphoneNumber = phoneNumberResult.Value;
@@ -91,7 +87,7 @@ public class Student : AuditableEntity
         if (!string.IsNullOrWhiteSpace(telegramUsername))
         {
             var telegramUserIdResult = TelegramUserId.Create(telegramUsername);
-            if (telegramUserIdResult.IsError)
+            if (telegramUserIdResult.IsFailure)
                 return telegramUserIdResult.Errors;
             else
                 OtelegramUsername = telegramUserIdResult.Value;
@@ -104,7 +100,6 @@ public class Student : AuditableEntity
             universityMailResult.Value,
             personalPhotoUrlResult.Value,
             joinDate,
-            state,
             OphoneNumber,
             OtelegramUsername);
     }
