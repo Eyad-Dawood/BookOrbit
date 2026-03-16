@@ -8,7 +8,7 @@ public class Student : AuditableEntity
     public UniversityMail UniversityMail { get; }
     public Url PersonalPhotoUrl { get; }
     public int Points { get; private set; }
-    public DateOnly JoinDate { get; }
+    public DateTimeOffset JoinDateUtc { get; private set; }
     public StudentState State { get; private set; }
 
 #pragma warning disable CS8618
@@ -21,16 +21,14 @@ public class Student : AuditableEntity
         string name,
         UniversityMail universityMail,
         Url personalPhotoUrl,
-        DateOnly joinDate,
         PhoneNumber? phoneNumber = null,
-        TelegramUserId? telegramUsername = null) : base(id)
+        TelegramUserId? telegramUserId = null) : base(id)
     {
         Name = name;
         UniversityMail = universityMail;
         PersonalPhotoUrl = personalPhotoUrl;
-        JoinDate = joinDate;
         PhoneNumber = phoneNumber;
-        TelegramUserId = telegramUsername;
+        TelegramUserId = telegramUserId;
         State = StudentState.Pending;
         Points = 0;
     }
@@ -41,39 +39,33 @@ public class Student : AuditableEntity
         string name,
         string universityMailAddress,
         string personalPhotoUrlAddress,
-        DateOnly joinDate,
-        DateTime currentTime, // For Testing purposes, to avoid using DateTime.UtcNow directly
         string? phoneNumber = null,
-        string? telegramUsername = null)
+        string? telegramUserId = null)
     {
         if (id == Guid.Empty)
             return StudentErrors.IdRequired;
 
-        if(string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name))
             return StudentErrors.NameRequired;
 
         name = name.Trim();
         if (name.Length > StudentValidationConstants.NameMaxLength || name.Length < StudentValidationConstants.NameMinLength)
             return StudentErrors.InvalidName;
 
-        if (joinDate > DateOnly.FromDateTime(currentTime))
-            return StudentErrors.InvalidJoinDate;
-
-        if(string.IsNullOrWhiteSpace(phoneNumber)&&string.IsNullOrWhiteSpace(telegramUsername))
+        if (string.IsNullOrWhiteSpace(phoneNumber) && string.IsNullOrWhiteSpace(telegramUserId))
             return StudentErrors.AtLeastOneCommunicationMethod;
 
-
         var universityMailResult = UniversityMail.Create(universityMailAddress);
-        if(universityMailResult.IsFailure)
+        if (universityMailResult.IsFailure)
             return universityMailResult.Errors;
-        
+
         var personalPhotoUrlResult = Url.Create(personalPhotoUrlAddress);
-        if(personalPhotoUrlResult.IsFailure)
+        if (personalPhotoUrlResult.IsFailure)
             return personalPhotoUrlResult.Errors;
 
 
-        PhoneNumber? OphoneNumber = null;
-        TelegramUserId? OtelegramUsername = null;
+        PhoneNumber? parsedPhoneNumber = null;
+        TelegramUserId? parsedTelegramUserId = null;
 
         if (!string.IsNullOrWhiteSpace(phoneNumber))
         {
@@ -81,16 +73,16 @@ public class Student : AuditableEntity
             if (phoneNumberResult.IsFailure)
                 return phoneNumberResult.Errors;
             else
-                OphoneNumber = phoneNumberResult.Value;
+                parsedPhoneNumber = phoneNumberResult.Value;
         }
 
-        if (!string.IsNullOrWhiteSpace(telegramUsername))
+        if (!string.IsNullOrWhiteSpace(telegramUserId))
         {
-            var telegramUserIdResult = TelegramUserId.Create(telegramUsername);
+            var telegramUserIdResult = TelegramUserId.Create(telegramUserId);
             if (telegramUserIdResult.IsFailure)
                 return telegramUserIdResult.Errors;
             else
-                OtelegramUsername = telegramUserIdResult.Value;
+                parsedTelegramUserId = telegramUserIdResult.Value;
         }
 
 
@@ -99,11 +91,57 @@ public class Student : AuditableEntity
             name,
             universityMailResult.Value,
             personalPhotoUrlResult.Value,
-            joinDate,
-            OphoneNumber,
-            OtelegramUsername);
+            parsedPhoneNumber,
+            parsedTelegramUserId);
     }
 
 
-}
+    private bool CanTransitionToState(StudentState newState)
+    {
+        return State switch
+        {
+            StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected,
+            StudentState.Approved => newState is StudentState.Active or StudentState.Banned or StudentState.Suspended,
+            StudentState.Active => newState is StudentState.Banned or StudentState.Suspended,
+            StudentState.Rejected => false,
+            StudentState.Banned => false,
+            StudentState.Suspended => newState is StudentState.Active,
+            _ => false
+        };
+    }
+    private Result<Updated> UpdateState(StudentState newState)
+    {
+        if (!CanTransitionToState(newState))
+                return StudentErrors.InvalidStateTransition(State, newState);
 
+        State = newState;
+
+        return Result.Updated;
+    }
+
+    public Result<Updated> Approve(DateTimeOffset joinDateUtc)
+    {
+        if(joinDateUtc<CreatedAtUtc)
+            return StudentErrors.InvalidJoinDate;
+
+
+        var result = UpdateState(StudentState.Approved);
+        
+        if(result.IsFailure)
+            return result;
+
+        JoinDateUtc = joinDateUtc;
+        return result;
+    }
+    public Result<Updated> Activate()=>
+        UpdateState(StudentState.Active);
+
+    public Result<Updated> Reject() =>
+        UpdateState(StudentState.Rejected);
+
+    public Result<Updated> Ban() =>
+        UpdateState(StudentState.Banned);
+
+    public Result<Updated> Suspend() =>
+        UpdateState(StudentState.Suspended);
+}

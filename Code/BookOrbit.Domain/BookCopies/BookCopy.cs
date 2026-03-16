@@ -7,8 +7,8 @@ public class BookCopy : AuditableEntity
     public BookCopyCondition Condition { get; }
 
 
-    public Student? Owner { get; set; }
-    public Book? Book { get; set; }
+    public Student? Owner { get; private set; }
+    public Book? Book { get; private set; }
     
     private BookCopy(){ }
 
