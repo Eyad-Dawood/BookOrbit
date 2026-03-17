@@ -11,9 +11,9 @@ static public class StudentErrors
     static public readonly Error InvalidJoinDate = CommonErrors.InvalidProp(ClassName, "JoinDate", "Join Date", "It cannot be before creation date request");
     static public readonly Error InvalidState = CommonErrors.InvalidProp(ClassName, "StudentState", "Student State", $"Invalid state value");
     static public readonly Error AtLeastOneCommunicationMethod = CommonErrors.Custom(ClassName, "AtLeastOneCommunicationMethod", "At least one communication method (Phone Number or Telegram Username) must be provided.");
-    static public readonly Error StudentEmailExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same university mail already exists.");
-    static public readonly Error StudentTelegramIdExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same telegram user Id already exists.");
-    static public readonly Error StudentPhoneNumberExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same phone number user Id already exists.");
+    static public readonly Error StudentEmailExists = CommonErrors.Custom(ClassName, "StudentEmailExists", "A student with the same university mail already exists.");
+    static public readonly Error StudentTelegramIdExists = CommonErrors.Custom(ClassName, "StudentTelegramUserIdExists", "A student with the same telegram user Id already exists.");
+    static public readonly Error StudentPhoneNumberExists = CommonErrors.Custom(ClassName, "StudentPhoneNumberExists", "A student with the same phone number user Id already exists.");
     static public readonly Error PersonalImageRequired = CommonErrors.RequiredProp(ClassName,"PersonalImageId","Personal Image");
     static public readonly Error PersonalImageNotFound = CommonErrors.Custom(ClassName, "PersonalImageNotFound", "The specified personal image was not found.");
     #endregion

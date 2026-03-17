@@ -1,4 +1,6 @@
-﻿using BookOrbit.Domain.Students.ValueObjects;
+﻿using BookOrbit.Domain.Common.ValueObjects;
+using BookOrbit.Domain.Students.ValueObjects;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BookOrbit.Application.Features.Students.Commands.CreateStudent;
 
@@ -12,63 +14,57 @@ public class CreateStudentCommandHandler(
 {
     public async Task<Result<StudentDto>> Handle(CreateStudentCommand command, CancellationToken ct)
     {
-        var email = UniversityMail.Normalize(command.UniversityMailAddress);
+        var emailResult = await EnsureEmailIsValidAndUnique(command.UniversityMailAddress, ct);
+        if (emailResult.IsFailure)
+            return emailResult.Errors;
 
-        var emailExists = await context.Students.AnyAsync(
-            s => s.UniversityMail == email, ct);
 
-        if (emailExists)
+        TelegramUserId? telegramUserId = null;
+        if(!string.IsNullOrWhiteSpace(command.TelegramUserId))
         {
-            logger.LogWarning("Student creation aborted. Email already exists. Email:{Email}", formatService.MaskEmail(email));
+            var telegramUserIdResult =
+            await EnsureTelegramIdIsValidAndUnique(command.TelegramUserId, ct);
 
-            return StudentErrors.StudentEmailExists;
+            if(telegramUserIdResult.IsFailure)
+                return telegramUserIdResult.Errors;
+
+            telegramUserId = telegramUserIdResult.Value;
         }
 
-        if (!string.IsNullOrWhiteSpace(command.TelegramUserId))
-        {
-            var telegramUserId = TelegramUserId.Normalize(command.TelegramUserId);
 
-            var telegramUserIdExists = await context.Students.AnyAsync(
-                s => s.TelegramUserId != null
-                && s.TelegramUserId == telegramUserId, ct);
-
-            if (telegramUserIdExists)
-            {
-                logger.LogWarning("Student creation aborted. Telegram user ID already exists.");
-                return StudentErrors.StudentTelegramIdExists;
-            }
-        }
-
+        PhoneNumber? phoneNumber = null;
         if (!string.IsNullOrWhiteSpace(command.PhoneNumber))
         {
-            var phoneNumber = PhoneNumber.Normalize(command.PhoneNumber);
+            var phoneNumberResult = 
+                await EnsurePhoneNumberIsValidAndUnique(command.PhoneNumber, ct);
 
-            var phoneNumberExists = await context.Students.AnyAsync(
-                 s => s.PhoneNumber != null && s.PhoneNumber == phoneNumber, ct);
+            if (phoneNumberResult.IsFailure)
+                return phoneNumberResult.Errors;
 
-            if (phoneNumberExists)
-            {
-                logger.LogWarning("Student creation aborted. Phone number already exists.");
-                return StudentErrors.StudentPhoneNumberExists;
-            }
+            phoneNumber = phoneNumberResult.Value;
         }
 
-        var imageUrlResult = await imageService.GetImageUrlById(command.PersonalImageId, ct);
 
-        if (imageUrlResult.IsFailure)
+        var imageUrlFindingResult = await imageService.GetImageUrlById(command.PersonalImageId, ct);
+        if (imageUrlFindingResult.IsFailure)
         {
             logger.LogWarning("Student creation aborted. Personal image not found.");
             return StudentErrors.PersonalImageNotFound;
         }
 
-        var Id = Guid.NewGuid();
+        var imageUrlCreationResult = Url.Create(imageUrlFindingResult.Value);
+
+        if (imageUrlCreationResult.IsFailure)
+            return imageUrlCreationResult.Errors;
+
+
         var createdStudentResult = Student.Create(
-            id: Id,
+            id: Guid.NewGuid(),
             name: command.Name,
-            universityMailAddress: command.UniversityMailAddress,
-            personalPhotoUrlAddress: imageUrlResult.Value,
-            phoneNumber: command.PhoneNumber,
-            telegramUserId: command.TelegramUserId);
+            universityMail: emailResult.Value,
+            personalPhotoUrl: imageUrlCreationResult.Value,
+            phoneNumber: phoneNumber,
+            telegramUserId: telegramUserId);
 
         if (createdStudentResult.IsFailure)
         {
@@ -76,14 +72,70 @@ public class CreateStudentCommandHandler(
         }
 
         context.Students.Add(createdStudentResult.Value);
-
         await context.SaveChangesAsync(ct);
 
         await cache.RemoveByTagAsync(CachingConstants.StudentTag, ct);
+
 
         logger.LogInformation("Student created successfully with ID: {StudentId}", createdStudentResult.Value.Id);
 
         return StudentDto.FromEntity(createdStudentResult.Value);
     }
-}
 
+    public async Task<Result<UniversityMail>> EnsureEmailIsValidAndUnique(string email, CancellationToken ct)
+    {
+        var emailResult = UniversityMail.Create(email);
+
+        if (emailResult.IsFailure)
+            return emailResult.Errors;
+
+        var emailExists = await context.Students.AnyAsync(
+            s => s.UniversityMail == emailResult.Value, ct);
+
+        if (emailExists)
+        {
+            logger.LogWarning("Student creation aborted. Email already exists. Email:{Email}", formatService.MaskEmail(emailResult.Value));
+
+            return StudentErrors.StudentEmailExists;
+        }
+
+        return emailResult;
+    }
+    public async Task<Result<TelegramUserId>> EnsureTelegramIdIsValidAndUnique(string telegrameUserId, CancellationToken ct)
+    {
+        var telegramUserIdResult = TelegramUserId.Create(telegrameUserId);
+
+        if (telegramUserIdResult.IsFailure)
+            return telegramUserIdResult.Errors;
+
+        var telegramUserIdExists = await context.Students.AnyAsync(
+            s => s.TelegramUserId != null
+            && s.TelegramUserId == telegramUserIdResult.Value, ct);
+
+        if (telegramUserIdExists)
+        {
+            logger.LogWarning("Student creation aborted. Telegram user ID already exists. ID : {Id}",telegramUserIdResult.Value);
+            return StudentErrors.StudentTelegramIdExists;
+        }
+
+        return telegramUserIdResult;
+    }
+    public async Task<Result<PhoneNumber>> EnsurePhoneNumberIsValidAndUnique(string phoneNumber, CancellationToken ct)
+    {
+        var phoneNumberResult = PhoneNumber.Create(phoneNumber);
+
+        if (phoneNumberResult.IsFailure)
+            return phoneNumberResult.Errors;
+
+        var phoneNumberExists = await context.Students.AnyAsync(
+            s => s.PhoneNumber != null
+            && s.PhoneNumber == phoneNumberResult.Value, ct);
+
+        if (phoneNumberExists)
+        {
+            logger.LogWarning("Student creation aborted. Phone number already exists. Phone Number : {PhoneNumber}",phoneNumberResult.Value);
+            return StudentErrors.StudentPhoneNumberExists;
+        }
+        return phoneNumberResult;
+    }
+}

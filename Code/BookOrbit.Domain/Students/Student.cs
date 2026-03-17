@@ -8,7 +8,7 @@ public class Student : AuditableEntity
     public UniversityMail UniversityMail { get; }
     public Url PersonalPhotoUrl { get; }
     public int Points { get; private set; }
-    public DateTimeOffset JoinDateUtc { get; private set; }
+    public DateTimeOffset? JoinDateUtc { get; private set; } = null;
     public StudentState State { get; private set; }
 
 #pragma warning disable CS8618
@@ -37,10 +37,10 @@ public class Student : AuditableEntity
     public static Result<Student> Create(
         Guid id,
         string name,
-        string universityMailAddress,
-        string personalPhotoUrlAddress,
-        string? phoneNumber = null,
-        string? telegramUserId = null)
+        UniversityMail universityMail,
+        Url personalPhotoUrl,
+        PhoneNumber? phoneNumber = null,
+        TelegramUserId? telegramUserId = null)
     {
         if (id == Guid.Empty)
             return StudentErrors.IdRequired;
@@ -52,47 +52,22 @@ public class Student : AuditableEntity
         if (name.Length > StudentValidationConstants.NameMaxLength || name.Length < StudentValidationConstants.NameMinLength)
             return StudentErrors.InvalidName;
 
-        if (string.IsNullOrWhiteSpace(phoneNumber) && string.IsNullOrWhiteSpace(telegramUserId))
+        if (universityMail is null)
+            return StudentErrors.UniversityMailRequired;
+
+        if (personalPhotoUrl is null)
+            return StudentErrors.PersonalImageRequired;
+
+        if (phoneNumber is null && telegramUserId is null)
             return StudentErrors.AtLeastOneCommunicationMethod;
-
-        var universityMailResult = UniversityMail.Create(universityMailAddress);
-        if (universityMailResult.IsFailure)
-            return universityMailResult.Errors;
-
-        var personalPhotoUrlResult = Url.Create(personalPhotoUrlAddress);
-        if (personalPhotoUrlResult.IsFailure)
-            return personalPhotoUrlResult.Errors;
-
-
-        PhoneNumber? parsedPhoneNumber = null;
-        TelegramUserId? parsedTelegramUserId = null;
-
-        if (!string.IsNullOrWhiteSpace(phoneNumber))
-        {
-            var phoneNumberResult = PhoneNumber.Create(phoneNumber);
-            if (phoneNumberResult.IsFailure)
-                return phoneNumberResult.Errors;
-            else
-                parsedPhoneNumber = phoneNumberResult.Value;
-        }
-
-        if (!string.IsNullOrWhiteSpace(telegramUserId))
-        {
-            var telegramUserIdResult = TelegramUserId.Create(telegramUserId);
-            if (telegramUserIdResult.IsFailure)
-                return telegramUserIdResult.Errors;
-            else
-                parsedTelegramUserId = telegramUserIdResult.Value;
-        }
-
 
         return new Student(
             id,
             name,
-            universityMailResult.Value,
-            personalPhotoUrlResult.Value,
-            parsedPhoneNumber,
-            parsedTelegramUserId);
+            universityMail,
+            personalPhotoUrl,
+            phoneNumber,
+            telegramUserId);
     }
 
 
