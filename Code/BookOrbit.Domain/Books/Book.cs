@@ -31,11 +31,11 @@ public class Book : AuditableEntity
     public static Result<Book> Create(
         Guid id,
         string title,
-        string isbn,
+        ISBN isbn,
         string publisher,
         BookCategory category,
         string author,
-        string coverImageUrl)
+        Url coverImageUrl)
     {
         if (id == Guid.Empty)
             return BookErrors.IdRequired;
@@ -66,23 +66,14 @@ public class Book : AuditableEntity
             return BookErrors.InvalidCategory;
 
 
-        var isbnResult = ISBN.Create(isbn);
-        if (isbnResult.IsFailure)
-            return isbnResult.Errors;
-
-        var coverImageUrlResult = Url.Create(coverImageUrl);
-        if (coverImageUrlResult.IsFailure)
-            return coverImageUrlResult.Errors;
-
-
         return new Book(
             id,
             title,
-            isbnResult.Value,
+            isbn,
             publisher,
             category,
             author,
-            coverImageUrlResult.Value);
+            coverImageUrl);
     }
 }
 
