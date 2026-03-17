@@ -15,6 +15,8 @@ public readonly record struct Error
 
     public ErrorKind Type { get; }
 
+
+
     public static Error Failure(string code = nameof(Failure), string description = "General failure.")
         => new(code, description, ErrorKind.Failure);
 

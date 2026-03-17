@@ -29,7 +29,7 @@ public class Student : AuditableEntity
         PersonalPhotoUrl = personalPhotoUrl;
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
-        State = StudentState.Pending;
+        State = StudentState.UnVerified;
         Points = 0;
     }
 
@@ -100,6 +100,7 @@ public class Student : AuditableEntity
     {
         return State switch
         {
+            StudentState.UnVerified => newState is StudentState.Pending,
             StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected,
             StudentState.Approved => newState is StudentState.Active or StudentState.Banned or StudentState.Suspended,
             StudentState.Active => newState is StudentState.Banned or StudentState.Suspended,
@@ -133,6 +134,7 @@ public class Student : AuditableEntity
         JoinDateUtc = joinDateUtc;
         return result;
     }
+
     public Result<Updated> Activate()=>
         UpdateState(StudentState.Active);
 
@@ -144,4 +146,7 @@ public class Student : AuditableEntity
 
     public Result<Updated> Suspend() =>
         UpdateState(StudentState.Suspended);
+
+    public Result<Updated> Verify() =>
+        UpdateState(StudentState.Pending);
 }

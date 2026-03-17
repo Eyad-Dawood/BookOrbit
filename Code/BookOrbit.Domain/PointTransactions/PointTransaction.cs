@@ -7,7 +7,8 @@ public class PointTransaction : AuditableEntity
     public Guid? BorrowingReviewId { get; }
     public int Points { get; }
     public PointTransactionReason Reason { get; }
-    public PointTransactionDirection Direction { get; }
+
+    public PointTransactionDirection Direction => GetDirection(Reason);
 
     private PointTransaction() { }
     private PointTransaction(
@@ -15,14 +16,12 @@ public class PointTransaction : AuditableEntity
         Guid studentId,
         Guid? borrowingReviewId,
         int points,
-        PointTransactionReason reason,
-        PointTransactionDirection direction) : base(id)
+        PointTransactionReason reason) : base(id)
     {
         StudentId = studentId;
         BorrowingReviewId = borrowingReviewId;
         Points = points;
         Reason = reason;
-        Direction = direction;
     }
 
     static private bool CanDeductPoints(PointTransactionReason reason) =>
@@ -100,7 +99,6 @@ public class PointTransaction : AuditableEntity
             studentId,
             borrowingReviewId,
             points,
-            reason,
-            direction);
+            reason);
     }
 }

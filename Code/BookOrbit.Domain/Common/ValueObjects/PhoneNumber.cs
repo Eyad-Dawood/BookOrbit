@@ -5,8 +5,8 @@ public record PhoneNumber : ValueObject<string>
     private static readonly Regex PhoneNumberRegex =
        new(@"^(?:01|201)[0125][0-9]{8}$", RegexOptions.Compiled);
 
-    private PhoneNumber(string value) : base(value){}
-    private static string Normalize(string value)
+    private PhoneNumber(string value) : base(value) { }
+    public static string Normalize(string value)
     {
         var normalized = value
           .Trim()
@@ -40,6 +40,12 @@ public record PhoneNumber : ValueObject<string>
             return new PhoneNumber(validationResult.Value);
 
         return validationResult.Errors;
+    }
+    public static implicit operator string(PhoneNumber? user)
+    {
+        if (user is null) return string.Empty;
+
+        return user.Value;
     }
 }
 

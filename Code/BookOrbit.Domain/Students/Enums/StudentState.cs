@@ -6,5 +6,6 @@ public enum StudentState
     Active,
     Rejected,
     Banned,
-    Suspended // temporary state, used when a student is banned for a specific period of time, after which they can be reactivated
+    Suspended,    // temporary state, used when a student is banned for a specific period of time, after which they can be reactivated
+    UnVerified
 }

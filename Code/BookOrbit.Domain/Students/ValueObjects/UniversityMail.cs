@@ -6,7 +6,7 @@ public record UniversityMail : ValueObject<string>
    new(@"^[A-Za-z0-9._%+-]+@std\.mans\.edu\.eg$", RegexOptions.Compiled);
 
     private UniversityMail(string value):base(value){}
-    private static string Normalize(string value)
+    public static string Normalize(string value)
     {
         return value
             .Trim()
@@ -31,6 +31,13 @@ public record UniversityMail : ValueObject<string>
             return new UniversityMail(validationResult.Value);
 
         return validationResult.Errors;
+    }
+
+    public static implicit operator string(UniversityMail? user)
+    {
+        if (user is null) return string.Empty;
+
+        return user.Value;
     }
 }
 

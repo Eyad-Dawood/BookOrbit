@@ -3,13 +3,14 @@
 public record TelegramUserId : ValueObject<string>
 {
     private static readonly Regex TelegramUserIdRegex =
-       new(@"^(?=(?:[0-9_]*[a-z]){3})[a-z0-9_]{5,}$", RegexOptions.Compiled);
+       new(@"^(?=(?:[0-9_]*[a-z]){3})[a-z0-9_]{5,32}$", RegexOptions.Compiled);
 
     private TelegramUserId(string value) : base(value){}
-    private static string Normalize(string value)
+    public static string Normalize(string value)
     {
         return 
-            value.Trim()
+            value
+            .Trim()
             .ToLower();
     }
     private static Result<string> Validate(string value)
@@ -31,6 +32,12 @@ public record TelegramUserId : ValueObject<string>
             return new TelegramUserId(validationResult.Value);
 
         return validationResult.Errors;
+    }
+
+    public static implicit operator string(TelegramUserId? user)
+    {
+        if (user is null) return string.Empty;
+        return user.Value;
     }
 }
 

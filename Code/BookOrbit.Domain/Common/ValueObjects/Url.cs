@@ -1,45 +1,54 @@
-﻿namespace BookOrbit.Domain.Common.ValueObjects
+﻿namespace BookOrbit.Domain.Common.ValueObjects;
+
+public record Url : ValueObject<string>
 {
-    public record Url : ValueObject<string>
+    private Url(string value) : base(value) { }
+    private static string Normalize(string value)
     {
-        private Url(string value):base(value){}
-        private static string Normalize(string value)
-        {
-            return
-                value
-                .Trim();
-        }
-        private static Result<string> Validate(string value)
-        {
-            if (!Uri.IsWellFormedUriString(value,UriKind.Absolute))
-                return UrlErrors.InvalidUrl;
+        return
+            value
+            .Trim();
+    }
+    private static Result<string> Validate(string value)
+    {
+        if (!Uri.IsWellFormedUriString(value, UriKind.Absolute))
+            return UrlErrors.InvalidUrl;
 
-            return value;
-        }
-        public static Result<Url> Create(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                return UrlErrors.RequiredUrl;
+        return value;
+    }
+    public static Result<Url> Create(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+            return UrlErrors.RequiredUrl;
 
-            var normalized = Normalize(url);
-            var validationResult = Validate(normalized);
+        var normalized = Normalize(url);
+        var validationResult = Validate(normalized);
 
-            if (validationResult.IsSuccess)
-                return new Url(validationResult.Value);
+        if (validationResult.IsSuccess)
+            return new Url(validationResult.Value);
 
-            return validationResult.Errors;
-        }
+        return validationResult.Errors;
     }
 
-    public static class UrlErrors
+    public static implicit operator string(Url? user)
     {
-        private const string className = nameof(Url);
+        if (user is null) return string.Empty;
 
-
-        public static Error InvalidUrl =
-            CommonErrors.InvalidProp(className, "Value", "URL", "It must be a valid absolute URL.");
-
-        public static Error RequiredUrl = 
-            CommonErrors.RequiredProp(className, "Value", "URL");
+        return user.Value;
     }
 }
+
+
+
+public static class UrlErrors
+{
+    private const string className = nameof(Url);
+
+
+    public static Error InvalidUrl =
+        CommonErrors.InvalidProp(className, "Value", "URL", "It must be a valid absolute URL.");
+
+    public static Error RequiredUrl =
+        CommonErrors.RequiredProp(className, "Value", "URL");
+}
+

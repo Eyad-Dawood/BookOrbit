@@ -1,0 +1,13 @@
+﻿global using BookOrbit.Application.Features.Students.Dtos;
+global using BookOrbit.Domain.Common.Constants;
+global using BookOrbit.Domain.Common.Results;
+global using BookOrbit.Domain.Common.ValueObjects;
+global using BookOrbit.Domain.Students;
+global using BookOrbit.Domain.Students.Enums;
+global using FluentValidation;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+global using BookOrbit.Application.Common.Interfaces;
+global using Microsoft.Extensions.Caching.Hybrid;
+global using Microsoft.Extensions.Logging;
+global using BookOrbit.Application.Common.Constants;

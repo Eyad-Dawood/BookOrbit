@@ -36,4 +36,11 @@ public record ISBN : ValueObject<string>
 
         return validationResult.Errors;
     }
+
+    public static implicit operator string(ISBN? user)
+    {
+        if (user is null) return string.Empty;
+
+        return user.Value;
+    }
 }

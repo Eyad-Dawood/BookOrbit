@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookOrbit.Application\BookOrbit.Application.csproj" />
-    <ProjectReference Include="..\BookOrbit.Contracts\BookOrbit.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

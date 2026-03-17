@@ -11,11 +11,16 @@ static public class StudentErrors
     static public readonly Error InvalidJoinDate = CommonErrors.InvalidProp(ClassName, "JoinDate", "Join Date", "It cannot be before creation date request");
     static public readonly Error InvalidState = CommonErrors.InvalidProp(ClassName, "StudentState", "Student State", $"Invalid state value");
     static public readonly Error AtLeastOneCommunicationMethod = CommonErrors.Custom(ClassName, "AtLeastOneCommunicationMethod", "At least one communication method (Phone Number or Telegram Username) must be provided.");
+    static public readonly Error StudentEmailExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same university mail already exists.");
+    static public readonly Error StudentTelegramIdExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same telegram user Id already exists.");
+    static public readonly Error StudentPhoneNumberExists = CommonErrors.Custom(ClassName, "StudentExists", "A student with the same phone number user Id already exists.");
+    static public readonly Error PersonalImageRequired = CommonErrors.RequiredProp(ClassName,"PersonalImageId","Personal Image");
+    static public readonly Error PersonalImageNotFound = CommonErrors.Custom(ClassName, "PersonalImageNotFound", "The specified personal image was not found.");
     #endregion
 
     #region Mail
     static public readonly Error UniversityMailRequired = CommonErrors.RequiredProp(ClassName,"UniversityMail","University Mail");
-    static public readonly Error InvalidUniversityMail = CommonErrors.InvalidProp(ClassName, "UniversityMail", "University Mail", "It must end with @std.mans.edu.eg");
+    static public readonly Error InvalidUniversityMail = CommonErrors.InvalidProp(ClassName, "UniversityMail", "University Mail", "It must be a valid email address , and end with @std.mans.edu.eg");
     #endregion
 
     #region Logic
