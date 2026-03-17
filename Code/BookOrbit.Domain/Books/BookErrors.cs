@@ -10,7 +10,7 @@ static public class BookErrors
     static public readonly Error InvalidPublisher = CommonErrors.InvalidProp(ClassName, "Publisher", "Publisher", $"It must be between {BookValidationConstants.PublisherMinLength} and {BookValidationConstants.PublisherMaxLength} characters");
     static public readonly Error AuthorRequired = CommonErrors.RequiredProp(ClassName,"Author","Author");
     static public readonly Error InvalidAuthor = CommonErrors.InvalidProp(ClassName, "Author", "Author", $"It must be between {BookValidationConstants.AuthorMinLength} and {BookValidationConstants.AuthorMaxLength} characters");
-    static public readonly Error InvalidCategory = CommonErrors.InvalidProp(ClassName, "Category", "Category", $"It must be one of the following: {string.Join(", ", Enum.GetNames(typeof(BookCategory)))}");
+    static public readonly Error InvalidCategory = CommonErrors.InvalidProp(ClassName, "Category", "Category", $"Invalid category value");
     #region ISBN
     static public readonly Error ISBNRequired = CommonErrors.RequiredProp(ClassName,"ISBN","ISBN");
     static public readonly Error InvalidISBN = CommonErrors.InvalidProp(ClassName, "ISBN", "ISBN", "It must be a valid ISBN-10 or ISBN-13 format");

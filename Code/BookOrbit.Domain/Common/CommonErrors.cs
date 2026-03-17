@@ -26,6 +26,5 @@ static public class CommonErrors
 
     static public Error InvalidStateTransition(string Class, string FromState, string ToState) =>
         Error.Failure($"{Class}.InvalidStateTransition", $"Cannot transition from {FromState} to {ToState}");
-
 }
 

@@ -7,8 +7,7 @@
         {
             return
                 value
-                .Trim()
-                .ToLower();
+                .Trim();
         }
         private static Result<string> Validate(string value)
         {

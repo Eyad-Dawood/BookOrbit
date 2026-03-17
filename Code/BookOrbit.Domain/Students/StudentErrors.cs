@@ -9,7 +9,7 @@ static public class StudentErrors
     static public readonly Error NameRequired = CommonErrors.RequiredProp(ClassName,"Name","Name");
     static public readonly Error InvalidName = CommonErrors.InvalidProp(ClassName, "Name", "Name", $"It must be between {StudentValidationConstants.NameMinLength} and {StudentValidationConstants.NameMaxLength} characters");
     static public readonly Error InvalidJoinDate = CommonErrors.InvalidProp(ClassName, "JoinDate", "Join Date", "It cannot be before creation date request");
-    static public readonly Error InvalidState = CommonErrors.InvalidProp(ClassName, "State", "State", $"It must be one of the following: {string.Join(", ", Enum.GetNames(typeof(StudentState)))}");
+    static public readonly Error InvalidState = CommonErrors.InvalidProp(ClassName, "State", "State", $"Invalid state value");
     static public readonly Error AtLeastOneCommunicationMethod = CommonErrors.Custom(ClassName, "AtLeastOneCommunicationMethod", "At least one communication method (Phone Number or Telegram Username) must be provided.");
     #endregion
 
