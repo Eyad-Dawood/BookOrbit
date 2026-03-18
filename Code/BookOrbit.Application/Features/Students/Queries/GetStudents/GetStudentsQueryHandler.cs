@@ -33,9 +33,6 @@ public class GetStudentsQueryHandler(IAppDbContext context)
         };
     }
 
-   
-
-
     private static IQueryable<Student> ApplySearchTerm(IQueryable<Student> query, GetStudentsQuery searchQuery)
     {
         if (string.IsNullOrWhiteSpace(searchQuery.SearchTerm))
