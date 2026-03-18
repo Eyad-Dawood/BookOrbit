@@ -15,6 +15,7 @@ static public class StudentGeneralValidation
     static public IRuleBuilder<T, string> StudentUniversityMailRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
         ruleBuilder
             .NotEmpty().WithMessage(StudentErrors.UniversityMailRequired.Description)
+            .MaximumLength(UniversityMailConstants.MaxLength).WithMessage(StudentErrors.InvalidUniversityMail.Description)
             .EmailAddress().WithMessage(StudentErrors.InvalidUniversityMail.Description)
             .Must(x => x.EndsWith(@"std.mans.edu.eg")).WithMessage(StudentErrors.InvalidUniversityMail.Description);//Simple Email check , the rest in domain
 

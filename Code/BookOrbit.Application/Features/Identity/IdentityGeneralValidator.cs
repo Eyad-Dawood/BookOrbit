@@ -12,5 +12,5 @@ static public class IdentityGeneralValidator
     static public IRuleBuilder<T, string> PasswordRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
         ruleBuilder
         .NotEmpty().WithMessage(IdentityApplicationErrors.PasswordRequired.Description)
-        .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$").WithMessage(IdentityApplicationErrors.InvalidPassword.Description);
+        .Matches("^(?=.*[a-zA-Z])(?=.*\\d).{6,}$").WithMessage(IdentityApplicationErrors.InvalidPassword.Description);
 }

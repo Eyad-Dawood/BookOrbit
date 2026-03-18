@@ -1,14 +1,4 @@
-﻿
-using BookOrbit.Domain.Identity;
-using BookOrbit.Infrastructure.Common.Constants;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace BookOrbit.Infrastructure.Identity;
+﻿namespace BookOrbit.Infrastructure.Identity;
 
 public class TokenProvider
     (IAppDbContext context,

@@ -16,7 +16,7 @@ static public class StudentErrors
 
     #region Mail
     static public readonly Error UniversityMailRequired = DomainCommonErrors.RequiredProp(ClassName,"UniversityMail","University Mail");
-    static public readonly Error InvalidUniversityMail = DomainCommonErrors.InvalidProp(ClassName, "UniversityMail", "University Mail", "It must be a valid email address , and end with @std.mans.edu.eg");
+    static public readonly Error InvalidUniversityMail = DomainCommonErrors.InvalidProp(ClassName, "UniversityMail", "University Mail", "It must be a valid email address , and end with @std.mans.edu.eg less than 320 characters");
     #endregion
 
     #region Logic
