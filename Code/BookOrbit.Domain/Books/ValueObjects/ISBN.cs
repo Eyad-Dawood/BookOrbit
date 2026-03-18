@@ -22,7 +22,7 @@ public record ISBN : ValueObject<string>
 
         return value;
     }
-    public static Result<ISBN> Create(string isbn)
+    public static Result<ISBN> Create(string? isbn)
     {
         if (string.IsNullOrWhiteSpace(isbn))
             return BookErrors.ISBNRequired;

@@ -16,7 +16,7 @@ public record Url : ValueObject<string>
 
         return value;
     }
-    public static Result<Url> Create(string url)
+    public static Result<Url> Create(string? url)
     {
         if (string.IsNullOrWhiteSpace(url))
             return UrlErrors.RequiredUrl;

@@ -2,6 +2,10 @@
 
 public record StudentName : ValueObject<string>
 {
+    //Arabic , english , spaces
+    private static readonly Regex NameRegex =
+   new(@"^[A-Za-z ]+$", RegexOptions.Compiled);
+
     private StudentName(string Value) : base(Value) { }
 
     public static string Normalize(string value)
@@ -15,9 +19,12 @@ public record StudentName : ValueObject<string>
         if (value.Length > StudentValidationConstants.NameMaxLength || value.Length < StudentValidationConstants.NameMinLength)
             return StudentErrors.InvalidName;
 
+        if (!NameRegex.IsMatch(value))
+            return StudentErrors.InvalidName;
+
         return value;
     }
-    public static Result<StudentName> Create(string name)
+    public static Result<StudentName> Create(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
             return StudentErrors.NameRequired;
@@ -32,11 +39,11 @@ public record StudentName : ValueObject<string>
 
     }
 
-    //public static implicit operator string(StudentName? user)
-    //{
-    //    if (user is null) return string.Empty;
+    public static implicit operator string(StudentName? user)
+    {
+        if (user is null) return string.Empty;
 
-    //    return user.Value;
-    //}
+        return user.Value;
+    }
 }
 

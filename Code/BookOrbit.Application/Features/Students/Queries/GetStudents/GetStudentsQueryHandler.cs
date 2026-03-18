@@ -1,0 +1,85 @@
+﻿
+namespace BookOrbit.Application.Features.Students.Queries.GetStudents;
+
+public class GetStudentsQueryHandler(IAppDbContext context)
+    : IRequestHandler<GetStudentsQuery, Result<PaginatedList<StudentListItemDto>>>
+{
+    public async Task<Result<PaginatedList<StudentListItemDto>>> Handle(GetStudentsQuery query, CancellationToken ct)
+    {
+        var studentQuery = context.Students.AsNoTracking();
+
+        studentQuery = ApplySearchTerm(studentQuery, query);
+
+        studentQuery = ApplySorting(studentQuery, query.SortColumn, query.SortDirection);
+       
+        int count = await studentQuery.CountAsync(ct);
+
+        int page = Math.Max(1, query.Page);
+        int pageSize = Math.Max(1, query.PageSize);
+        studentQuery = ApplyPagination(studentQuery, page, pageSize);
+
+
+        var items = await studentQuery.
+            Select(StudentListItemDto.Projection)
+            .ToListAsync(ct);
+
+        return new PaginatedList<StudentListItemDto>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = count,
+            TotalPages = MathHelper.CalculateTotalPages(count, pageSize)
+        };
+    }
+
+   
+
+
+    private static IQueryable<Student> ApplySearchTerm(IQueryable<Student> query, GetStudentsQuery searchQuery)
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery.SearchTerm))
+            return query;//no need for filters
+
+        var normalizedName = StudentName.Normalize(searchQuery.SearchTerm);
+        var normalizedPhoneNumber = PhoneNumber.Normalize(searchQuery.SearchTerm);
+        var normalizedMail = UniversityMail.Normalize(searchQuery.SearchTerm);
+        var normalizedTelegramUserId = TelegramUserId.Normalize(searchQuery.SearchTerm);
+
+        query = query.Where(s =>
+            s.Name.Value.StartsWith(normalizedName) ||
+            (s.PhoneNumber != null && s.PhoneNumber.Value.StartsWith(normalizedPhoneNumber)) ||
+            s.UniversityMail.Value.StartsWith(normalizedMail) ||
+            (s.TelegramUserId != null && s.TelegramUserId.Value.StartsWith(normalizedTelegramUserId)));
+
+
+        return query;
+    }
+
+    private static IQueryable<Student> ApplySorting(IQueryable<Student> query, string? sortColumn, string? sortDirection)
+    {
+        if (string.IsNullOrWhiteSpace(sortColumn))
+            sortColumn = "createdat";
+
+        if (string.IsNullOrWhiteSpace(sortDirection))
+            sortDirection = "desc";
+
+        var isDescending = sortDirection.Equals("desc", StringComparison.OrdinalIgnoreCase);
+
+        return sortColumn.ToLower() switch
+        {
+            "createdat" => isDescending ? query.OrderByDescending(s => s.CreatedAtUtc) : query.OrderBy(s => s.CreatedAtUtc),
+            "updatedat" => isDescending ? query.OrderByDescending(s => s.LastModifiedUtc) : query.OrderBy(s => s.LastModifiedUtc),
+            "name" => isDescending ? query.OrderByDescending(s => s.Name.Value) : query.OrderBy(s => s.Name.Value),
+            "state" => isDescending ? query.OrderByDescending(s => s.State) : query.OrderBy(s => s.State),
+            "joindate" => isDescending ? query.OrderByDescending(s => s.JoinDateUtc) : query.OrderBy(s => s.JoinDateUtc),
+            _ => query.OrderByDescending(wo => wo.CreatedAtUtc) // Default sorting
+        };
+    }
+
+    private static IQueryable<Student> ApplyPagination(IQueryable<Student> query,int page,int pageSize)
+    {
+        return query.Skip((page - 1) * pageSize)
+              .Take(pageSize);
+    }
+}

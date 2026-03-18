@@ -12,6 +12,8 @@ public class StudentDto
     public int Points { get; set; }
     public StudentState State { get; set; }
 
+
+
     private StudentDto(
     Guid id,
     string name,
@@ -44,5 +46,17 @@ public class StudentDto
             entity.Points,
             entity.State);
     }
+
+    public static Expression<Func<Student, StudentDto>> Projection =>
+     s => new StudentDto(
+         s.Id,
+         s.Name.Value,
+         s.PhoneNumber != null ? s.PhoneNumber.Value : null,
+         s.TelegramUserId != null ? s.TelegramUserId.Value : null,
+         s.UniversityMail.Value,
+         s.PersonalPhotoUrl.Value,
+         s.Points,
+         s.State
+     );
 
 }

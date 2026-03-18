@@ -29,7 +29,7 @@ public class UpdateStudentCommandHandler
             return updateResult.Errors;
 
         await context.SaveChangesAsync(ct);
-        await cache.RemoveByTagAsync(CachingConstants.StudentTag, ct);
+        await cache.RemoveByTagAsync(StudentCachingConstants.StudentTag, ct);
 
 
         logger.LogInformation(

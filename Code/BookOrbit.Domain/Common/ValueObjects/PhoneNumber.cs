@@ -26,7 +26,7 @@ public record PhoneNumber : ValueObject<string>
         return value;
     }
 
-    public static Result<PhoneNumber> Create(string phoneNumber)
+    public static Result<PhoneNumber> Create(string? phoneNumber)
     {
         // Hot path, so we check for null or whitespace before normalization and validation to avoid unnecessary processing.
         if (string.IsNullOrWhiteSpace(phoneNumber))

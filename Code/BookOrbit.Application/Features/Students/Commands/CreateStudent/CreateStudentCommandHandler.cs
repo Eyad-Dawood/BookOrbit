@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Application.Features.Students.Commands.CreateStudent;
+﻿namespace BookOrbit.Application.Features.Students.Commands.CreateStudent;
 
 public class CreateStudentCommandHandler(
     ILogger<CreateStudentCommandHandler> logger,
@@ -78,7 +77,7 @@ public class CreateStudentCommandHandler(
         context.Students.Add(createdStudentResult.Value);
         await context.SaveChangesAsync(ct);
 
-        await cache.RemoveByTagAsync(CachingConstants.StudentTag, ct);
+        await cache.RemoveByTagAsync(StudentCachingConstants.StudentTag, ct);
 
 
         logger.LogInformation("Student created successfully with ID: {StudentId}", createdStudentResult.Value.Id);

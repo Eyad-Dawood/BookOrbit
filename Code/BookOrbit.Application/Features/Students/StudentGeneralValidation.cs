@@ -1,4 +1,4 @@
-﻿namespace BookOrbit.Application.Features.Students.Commands;
+﻿namespace BookOrbit.Application.Features.Students;
 static public class StudentGeneralValidation
 {
     static public IRuleBuilder<T,Guid> IdRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>

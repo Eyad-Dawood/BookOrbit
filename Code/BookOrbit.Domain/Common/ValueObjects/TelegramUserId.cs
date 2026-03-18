@@ -20,7 +20,7 @@ public record TelegramUserId : ValueObject<string>
 
         return value;
     }
-    public static Result<TelegramUserId> Create(string telegramUserId)
+    public static Result<TelegramUserId> Create(string? telegramUserId)
     {
         if (string.IsNullOrWhiteSpace(telegramUserId))
             return TelegramUserIdErrors.TelegramUserIdRequired;

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Students\Queries\" />
+    <Folder Include="Common\Helpers\" />
   </ItemGroup>
 
 </Project>

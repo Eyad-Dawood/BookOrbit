@@ -5,7 +5,7 @@ public record UniversityMail : ValueObject<string>
     private static readonly Regex UniversityMailRegex =
    new(@"^[A-Za-z0-9._%+-]+@std\.mans\.edu\.eg$", RegexOptions.Compiled);
 
-    private UniversityMail(string value):base(value){}
+    private UniversityMail(string value) : base(value) { }
     public static string Normalize(string value)
     {
         return value
@@ -18,8 +18,8 @@ public record UniversityMail : ValueObject<string>
             return StudentErrors.InvalidUniversityMail;
 
         return value;
-    } 
-    public static Result<UniversityMail> Create(string email)
+    }
+    public static Result<UniversityMail> Create(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))
             return StudentErrors.UniversityMailRequired;
