@@ -10,4 +10,6 @@ static public class ApplicationCommonErrors
         Error.NotFound($"{Class}.{PropertyCode}.NotFound", $"{PropertyDescription} was not found in the system.");
 
     static public Error CustomConflict(string Class, string Code, string Description) => DomainCommonErrors.CustomConflict(Class, Code, Description);
+    static public Error CustomValidation(string Class, string Code, string Description) => DomainCommonErrors.CustomValidation(Class, Code, Description);
+
 }
