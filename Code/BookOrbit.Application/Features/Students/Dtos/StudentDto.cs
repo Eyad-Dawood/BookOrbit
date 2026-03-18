@@ -36,7 +36,7 @@ public class StudentDto
     {
         return new StudentDto(
             entity.Id,
-            entity.Name,
+            entity.Name.Value,
             entity.PhoneNumber?.Value,
             entity.TelegramUserId?.Value,
             entity.UniversityMail.Value,
