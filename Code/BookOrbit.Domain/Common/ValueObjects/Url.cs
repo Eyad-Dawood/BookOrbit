@@ -46,9 +46,9 @@ public static class UrlErrors
 
 
     public static Error InvalidUrl =
-        CommonErrors.InvalidProp(className, "Value", "URL", "It must be a valid absolute URL.");
+        DomainCommonErrors.InvalidProp(className, "Value", "URL", "It must be a valid absolute URL.");
 
     public static Error RequiredUrl =
-        CommonErrors.RequiredProp(className, "Value", "URL");
+        DomainCommonErrors.RequiredProp(className, "Value", "URL");
 }
 

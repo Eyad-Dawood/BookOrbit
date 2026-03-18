@@ -45,13 +45,13 @@ public static class TelegramUserIdErrors
 {
     private const string className = nameof(TelegramUserId);
 
-    public static readonly Error InvalidTelegramUserId = CommonErrors.InvalidProp(
+    public static readonly Error InvalidTelegramUserId = DomainCommonErrors.InvalidProp(
                 className,
                 "Value",
                 "Telegram User ID",
                 "It must be a valid telegram user Id.");
 
-    public static readonly Error TelegramUserIdRequired = CommonErrors.RequiredProp(
+    public static readonly Error TelegramUserIdRequired = DomainCommonErrors.RequiredProp(
                 className,
                 "Value",
                 "Telegram User ID");

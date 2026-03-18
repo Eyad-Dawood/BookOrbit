@@ -1,7 +1,4 @@
-﻿using BookOrbit.Domain.Common.ValueObjects;
-using BookOrbit.Domain.Students.ValueObjects;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
+﻿
 namespace BookOrbit.Application.Features.Students.Commands.CreateStudent;
 
 public class CreateStudentCommandHandler(
@@ -9,7 +6,7 @@ public class CreateStudentCommandHandler(
     IAppDbContext context,
     HybridCache cache,
     IImageService imageService,
-    IFormatService formatService)
+    IMaskingService maskingService)
     : IRequestHandler<CreateStudentCommand, Result<StudentDto>>
 {
     public async Task<Result<StudentDto>> Handle(CreateStudentCommand command, CancellationToken ct)
@@ -49,7 +46,7 @@ public class CreateStudentCommandHandler(
         if (imageUrlFindingResult.IsFailure)
         {
             logger.LogWarning("Student creation aborted. Personal image not found.");
-            return StudentErrors.PersonalImageNotFound;
+            return StudentApplicationErrors.PersonalImageNotFound;
         }
 
         var imageUrlCreationResult = Url.Create(imageUrlFindingResult.Value);
@@ -58,9 +55,16 @@ public class CreateStudentCommandHandler(
             return imageUrlCreationResult.Errors;
 
 
+
+        var nameCreationResult = StudentName.Create(command.Name);
+
+        if(nameCreationResult.IsFailure)
+            return nameCreationResult.Errors;
+
+
         var createdStudentResult = Student.Create(
             id: Guid.NewGuid(),
-            name: command.Name,
+            name: nameCreationResult.Value,
             universityMail: emailResult.Value,
             personalPhotoUrl: imageUrlCreationResult.Value,
             phoneNumber: phoneNumber,
@@ -94,9 +98,11 @@ public class CreateStudentCommandHandler(
 
         if (emailExists)
         {
-            logger.LogWarning("Student creation aborted. Email already exists. Email:{Email}", formatService.MaskEmail(emailResult.Value));
-
-            return StudentErrors.StudentEmailExists;
+            logger.LogWarning(
+                "Student creation failed. Reason: {Reason}, Value: {Value}",
+                "Email Exists",
+                maskingService.MaskEmail(email));
+            return StudentApplicationErrors.EmailAlreadyExists;
         }
 
         return emailResult;
@@ -114,8 +120,12 @@ public class CreateStudentCommandHandler(
 
         if (telegramUserIdExists)
         {
-            logger.LogWarning("Student creation aborted. Telegram user ID already exists. ID : {Id}",telegramUserIdResult.Value);
-            return StudentErrors.StudentTelegramIdExists;
+            logger.LogWarning(
+               "Student creation failed. Reason: {Reason}, Value: {Value}",
+               "Telegramuser ID Exists",
+              maskingService.MaskTelegramUserId(telegramUserIdResult.Value));
+
+            return StudentApplicationErrors.TelegramUserIdAlreadyExists;
         }
 
         return telegramUserIdResult;
@@ -133,8 +143,12 @@ public class CreateStudentCommandHandler(
 
         if (phoneNumberExists)
         {
-            logger.LogWarning("Student creation aborted. Phone number already exists. Phone Number : {PhoneNumber}",phoneNumberResult.Value);
-            return StudentErrors.StudentPhoneNumberExists;
+            logger.LogWarning(
+               "Student creation failed. Reason: {Reason}, Value: {Value}",
+               "Phone Number Exists",
+              maskingService.MaskPhoneNumber(phoneNumberResult.Value));
+
+            return StudentApplicationErrors.PhoneNumberAlreadyExists;
         }
         return phoneNumberResult;
     }

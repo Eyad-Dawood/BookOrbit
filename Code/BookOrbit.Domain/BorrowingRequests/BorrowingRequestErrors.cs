@@ -4,8 +4,8 @@ static public class BorrowingRequestErrors
 {
     private const string ClassName = nameof(BorrowingRequest);
 
-    static public readonly Error IdRequired = CommonErrors.RequiredProp(ClassName, "Id", "Id");
-    static public readonly Error BorrowingStudentIdRequired = CommonErrors.RequiredProp(ClassName, "BorrowingStudentId", "Borrowing Student Id");
-    static public readonly Error LendingRecordIdRequired = CommonErrors.RequiredProp(ClassName, "LendingRecordId", "Lending Record Id");
-    static public readonly Error InvalidExpirationDate = CommonErrors.DateShouldBeInFuture(ClassName, "ExpirationDate", "Expiration Date");
+    static public readonly Error IdRequired = DomainCommonErrors.RequiredProp(ClassName, "Id", "Id");
+    static public readonly Error BorrowingStudentIdRequired = DomainCommonErrors.RequiredProp(ClassName, "BorrowingStudentId", "Borrowing Student Id");
+    static public readonly Error LendingRecordIdRequired = DomainCommonErrors.RequiredProp(ClassName, "LendingRecordId", "Lending Record Id");
+    static public readonly Error InvalidExpirationDate = DomainCommonErrors.DateShouldBeInFuture(ClassName, "ExpirationDate", "Expiration Date");
 }

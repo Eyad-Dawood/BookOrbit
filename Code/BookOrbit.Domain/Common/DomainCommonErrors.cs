@@ -1,6 +1,6 @@
 ﻿namespace BookOrbit.Domain.Common;
 
-static public class CommonErrors
+static public class DomainCommonErrors
 {
     static public Error RequiredProp(string Class, string PropertyCode, string PropertyDescription) =>
         Error.Validation($"{Class}.{PropertyCode}.Required", $"{Class} {PropertyDescription} is required.");

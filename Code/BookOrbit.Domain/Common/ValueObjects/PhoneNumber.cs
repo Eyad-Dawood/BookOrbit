@@ -53,14 +53,14 @@ static public class PhoneNumberErrors
 {
     private const string className = nameof(PhoneNumber);
 
-    public static readonly Error InvalidPhoneNumber = CommonErrors.InvalidProp(
+    public static readonly Error InvalidPhoneNumber = DomainCommonErrors.InvalidProp(
                 className,
                 "Value",
                 "Phone number",
                 "It must be a valid Egyptian phone number."
             );
 
-    public static readonly Error RequiredPhoneNumber = CommonErrors.RequiredProp(
+    public static readonly Error RequiredPhoneNumber = DomainCommonErrors.RequiredProp(
                 className,
                 "Value",
                 "Phone number"

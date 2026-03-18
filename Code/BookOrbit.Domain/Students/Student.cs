@@ -2,7 +2,7 @@
 
 public class Student : AuditableEntity
 {
-    public string Name { get; }
+    public StudentName Name { get; private set; }
     public PhoneNumber? PhoneNumber { get; }
     public TelegramUserId? TelegramUserId { get; }
     public UniversityMail UniversityMail { get; }
@@ -18,7 +18,7 @@ public class Student : AuditableEntity
 
     private Student(
         Guid id,
-        string name,
+        StudentName name,
         UniversityMail universityMail,
         Url personalPhotoUrl,
         PhoneNumber? phoneNumber = null,
@@ -36,7 +36,7 @@ public class Student : AuditableEntity
 
     public static Result<Student> Create(
         Guid id,
-        string name,
+        StudentName name,
         UniversityMail universityMail,
         Url personalPhotoUrl,
         PhoneNumber? phoneNumber = null,
@@ -45,12 +45,8 @@ public class Student : AuditableEntity
         if (id == Guid.Empty)
             return StudentErrors.IdRequired;
 
-        if (string.IsNullOrWhiteSpace(name))
+        if (name is null)
             return StudentErrors.NameRequired;
-
-        name = name.Trim();
-        if (name.Length > StudentValidationConstants.NameMaxLength || name.Length < StudentValidationConstants.NameMinLength)
-            return StudentErrors.InvalidName;
 
         if (universityMail is null)
             return StudentErrors.UniversityMailRequired;
@@ -71,6 +67,15 @@ public class Student : AuditableEntity
     }
 
 
+    public Result<Updated> Update(StudentName name)
+    {
+        //No need to return a result because Value object already validated
+        //BUTTTTTTT it will return a result to keep the pattern consistant
+        Name = name;
+
+        return Result.Updated;
+    }
+
     private bool CanTransitionToState(StudentState newState)
     {
         return State switch
@@ -88,7 +93,7 @@ public class Student : AuditableEntity
     private Result<Updated> UpdateState(StudentState newState)
     {
         if (!CanTransitionToState(newState))
-                return StudentErrors.InvalidStateTransition(State, newState);
+            return StudentErrors.InvalidStateTransition(State, newState);
 
         State = newState;
 
@@ -97,20 +102,20 @@ public class Student : AuditableEntity
 
     public Result<Updated> Approve(DateTimeOffset joinDateUtc)
     {
-        if(joinDateUtc<CreatedAtUtc)
+        if (joinDateUtc < CreatedAtUtc)
             return StudentErrors.InvalidJoinDate;
 
 
         var result = UpdateState(StudentState.Approved);
-        
-        if(result.IsFailure)
+
+        if (result.IsFailure)
             return result;
 
         JoinDateUtc = joinDateUtc;
         return result;
     }
 
-    public Result<Updated> Activate()=>
+    public Result<Updated> Activate() =>
         UpdateState(StudentState.Active);
 
     public Result<Updated> Reject() =>

@@ -11,3 +11,5 @@ global using BookOrbit.Application.Common.Interfaces;
 global using Microsoft.Extensions.Caching.Hybrid;
 global using Microsoft.Extensions.Logging;
 global using BookOrbit.Application.Common.Constants;
+global using BookOrbit.Domain.Students.ValueObjects;
+global using BookOrbit.Application.Common.Errors;
