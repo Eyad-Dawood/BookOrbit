@@ -3,7 +3,7 @@
 public interface IAppDbContext
 {
     public DbSet<Student> Students { get; }
-
+    public DbSet<RefreshToken> RefreshTokens { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

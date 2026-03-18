@@ -17,3 +17,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Caching.Hybrid;
 global using Microsoft.Extensions.Logging;
 global using System.Linq.Expressions;
+global using BookOrbit.Application.Features.Identity.Dtos;
+global using BookOrbit.Domain.Common;
+global using System.Security.Claims;
+global using BookOrbit.Domain.Identity;

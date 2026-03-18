@@ -26,4 +26,8 @@
     <ProjectReference Include="..\BookOrbit.Domain\BookOrbit.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Identity\Queries\RefreshTokens\" />
+  </ItemGroup>
+
 </Project>

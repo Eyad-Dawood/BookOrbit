@@ -1,6 +1,4 @@
-﻿using BookOrbit.Domain.BookCopies;
-
-namespace BookOrbit.Application.Features.Students.Dtos;
+﻿namespace BookOrbit.Application.Features.Students.Dtos;
 
 public class StudentDto
 {
