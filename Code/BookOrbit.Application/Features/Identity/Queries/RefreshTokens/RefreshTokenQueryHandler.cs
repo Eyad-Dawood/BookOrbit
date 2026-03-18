@@ -40,9 +40,7 @@ public class RefreshTokenQueryHandler(
             ct);
 
         if (refreshToken is null
-            || refreshToken.ExpiresOnUtc < DateTimeOffset.UtcNow
-            || refreshToken.IsRevoked
-            || refreshToken.IsUsed)
+            || refreshToken.ExpiresOnUtc < DateTimeOffset.UtcNow)
         {
             logger.LogWarning("Invalid refresh token for user {UserId}", userId);
 

@@ -8,8 +8,11 @@ static public class DomainCommonErrors
     static public Error InvalidProp(string Class, string PropertyCode, string PropertyDescription, string Details = "") =>
         Error.Validation($"{Class}.{PropertyCode}.Invalid", $"{Class} {PropertyDescription} is invalid. {Details}");
 
-    static public Error Custom(string Class, string Code, string Description) =>
+    static public Error CustomValidation(string Class, string Code, string Description) =>
         Error.Validation($"{Class}.{Code}", Description);
+
+    static public Error CustomConflict(string Class, string Code, string Description) =>
+        Error.Conflict($"{Class}.{Code}", Description);
 
     static public Error DateCannotBeInFuture(string Class, string PropertyCode, string PropertyDescription) =>
         Error.Validation($"{Class}.{PropertyCode}.DateCannotBeInFuture", $"{Class} {PropertyDescription} cannot be in the future.");

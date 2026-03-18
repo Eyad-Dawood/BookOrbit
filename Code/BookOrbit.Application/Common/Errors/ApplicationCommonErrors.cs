@@ -8,4 +8,6 @@ static public class ApplicationCommonErrors
 
     static public Error NotFoundProp(string Class, string PropertyCode, string PropertyDescription) =>
         Error.NotFound($"{Class}.{PropertyCode}.NotFound", $"{PropertyDescription} was not found in the system.");
+
+    static public Error CustomConflict(string Class, string Code, string Description) => DomainCommonErrors.CustomConflict(Class, Code, Description);
 }

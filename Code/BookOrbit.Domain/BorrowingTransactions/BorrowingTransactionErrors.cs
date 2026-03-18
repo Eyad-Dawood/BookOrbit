@@ -12,10 +12,10 @@ static public class BorrowingTransactionErrors
     static public readonly Error BookCopyIdRequired = DomainCommonErrors.RequiredProp(ClassName, "BookCopyId", "BookCopyId");
     static public readonly Error ExpectedReturnDateRequired = DomainCommonErrors.RequiredProp(ClassName, "ExpectedReturnDate", "Expected Return Date");
     static public readonly Error InvalidExpectedReturnDate = DomainCommonErrors.DateShouldBeInFuture(ClassName, "ExpectedReturnDate", "Expected Return Date");
-    static public readonly Error LenderAndBorrowerCannotBeTheSame = DomainCommonErrors.Custom(ClassName, "LenderAndBorrowerCannotBeTheSame", "Lender and borrower cannot be the same student.");
-    static public readonly Error ReturnDateShouldBeAfterCreationDate = DomainCommonErrors.Custom(ClassName, "ReturnDateShouldBeAfterCreaionDate", "Return date should be after creation date.");
+    static public readonly Error LenderAndBorrowerCannotBeTheSame = DomainCommonErrors.CustomValidation(ClassName, "LenderAndBorrowerCannotBeTheSame", "Lender and borrower cannot be the same student.");
+    static public readonly Error ReturnDateShouldBeAfterCreationDate = DomainCommonErrors.CustomValidation(ClassName, "ReturnDateShouldBeAfterCreaionDate", "Return date should be after creation date.");
     static public readonly Error ReturnDateCannotBeInTheFuture = DomainCommonErrors.DateCannotBeInFuture(ClassName, "ReturnDate", "Return Date");
-    static public readonly Error CannotMarkOverdueWhileExpectedReturnDateNotPast = DomainCommonErrors.Custom(ClassName, "CannotMarkOverdueWhileExcpectedReturnDateNotPast", "Cannot mark overdue while expected return date not past.");
+    static public readonly Error CannotMarkOverdueWhileExpectedReturnDateNotPast = DomainCommonErrors.CustomValidation(ClassName, "CannotMarkOverdueWhileExcpectedReturnDateNotPast", "Cannot mark overdue while expected return date not past.");
     #endregion
 
     #region Logic

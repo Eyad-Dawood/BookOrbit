@@ -5,8 +5,6 @@ public sealed class RefreshToken : AuditableEntity
     public string? Token { get; }
     public string? UserId { get; }
     public DateTimeOffset ExpiresOnUtc { get; }
-    public bool IsRevoked { get; private set; }
-    public bool IsUsed { get; private set; }
 
     private RefreshToken()
     { }
@@ -21,8 +19,6 @@ public sealed class RefreshToken : AuditableEntity
         Token = token;
         UserId = userId;
         ExpiresOnUtc = expiresOnUtc;
-        IsRevoked = false;
-        IsUsed = false;
     }
 
     public static Result<RefreshToken> Create(
@@ -56,28 +52,5 @@ public sealed class RefreshToken : AuditableEntity
             token,
             userId,
             expiresOnUtc);
-    }
-
-    public Result<Updated> MarkAsRevoke()
-    {
-        if (IsRevoked)
-            return RefreshTokenErrors.AlreadRevoked;
-
-        IsRevoked = true;
-
-        return Result.Updated;
-    }
-
-    public Result<Updated> MarkAsUsed()
-    {
-        if (IsRevoked)
-            return RefreshTokenErrors.CannotUseRevokedToken;
-
-        if (IsUsed)
-            return RefreshTokenErrors.AlreadyUsed;
-
-        IsUsed = true;
-
-        return Result.Updated;
     }
 }
