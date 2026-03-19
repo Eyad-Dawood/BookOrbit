@@ -1,34 +1,16 @@
+var builder = WebApplication.CreateBuilder(args);
 
-namespace BookOrbit.Api
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+builder.Services.
+    AddPresentation(builder.Configuration)
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
-            // Add services to the container.
+builder.Host.UseSerilog((context, loggerConfig) =>
+loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+var app = builder.Build();
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
+app.MapControllers();
 
 
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
+app.Run();

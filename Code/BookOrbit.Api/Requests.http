@@ -1,0 +1,4 @@
+﻿@baseurl = https://localhost:7240/api
+
+### get students - page 8 with page size 500
+GET {{baseurl}}/students?page=8&pageSize=500

@@ -1,0 +1,17 @@
+﻿global using BookOrbit.Infrastructure.Settings;
+global using BookOrbit.Api;
+global using BookOrbit.Infrastructure;
+global using Serilog;
+global using System.Text.Json.Serialization;
+global using BookOrbit.Application.Common.Interfaces;
+global using System.Security.Claims;
+global using BookOrbit.Api.Services;
+global using Microsoft.AspNetCore.Mvc;
+global using BookOrbit.Domain.Common.Results;
+global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using MediatR;
+global using BookOrbit.Api.Contracts.Requests.Common;
+global using BookOrbit.Application.Features.Students.Queries.GetStudents;
+global using BookOrbit.Application;
+global using BookOrbit.Application.Common.Models;
+global using BookOrbit.Application.Features.Students.Dtos;

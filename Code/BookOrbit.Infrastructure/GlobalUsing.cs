@@ -28,3 +28,5 @@ global using BookOrbit.Infrastructure.Data.Interceptors;
 global using BookOrbit.Infrastructure.Services;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.EntityFrameworkCore.Diagnostics;
+global using Microsoft.Extensions.Caching.Hybrid;
+global using System.Text.Json.Serialization;

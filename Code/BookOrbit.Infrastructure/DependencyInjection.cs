@@ -1,4 +1,5 @@
-﻿namespace BookOrbit.Infrastructure;
+﻿
+namespace BookOrbit.Infrastructure;
 static public class DependencyInjection
 {
     static public IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
@@ -7,7 +8,9 @@ static public class DependencyInjection
             .AddDbContext(configuration)
             .AddAuthentication(configuration)
             .AddIdentity()
-            .AddInfrastrucureServices();
+            .AddInfrastrucureServices()
+            .AddHybridCaching()
+            .AddAppOutputCaching();
     }
     static private IServiceCollection AddDbContext(this IServiceCollection services,IConfiguration configuration)
     {
@@ -77,6 +80,27 @@ static public class DependencyInjection
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ITokenProvider, TokenProvider>();
         services.AddTransient<IMaskingService, MaskingService>();
+        return services;
+    }
+    static private IServiceCollection AddHybridCaching(this IServiceCollection services)
+    {
+        services.AddHybridCache(options => options.DefaultEntryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromMinutes(DefaultValues.RemoteCachExpirationInMinutes), //Remote
+            LocalCacheExpiration = TimeSpan.FromSeconds(DefaultValues.LocalCachExpirationInSeconds), // Local
+        });
+
+        return services;
+    }
+    public static IServiceCollection AddAppOutputCaching(this IServiceCollection services)
+    {
+        services.AddOutputCache(options =>
+        {
+            options.SizeLimit = 100 * 1024 * 1024; // 100 mb
+            options.AddBasePolicy(policy =>
+                policy.Expire(TimeSpan.FromSeconds(DefaultValues.OutputCachExpirationInSeconds)));
+        });
+
         return services;
     }
 }

@@ -8,7 +8,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.ToTable("Students");
 
-        builder.HasKey(s => s.Id).IsClustered(false);
+        builder.HasKey(s => s.Id);
 
         builder.Property(s => s.Id)
             .ValueGeneratedNever();
@@ -67,5 +67,14 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.HasIndex(s=>s.UniversityMail)
             .IsUnique();
+
+        builder.HasIndex(s => s.UserId)
+            .IsUnique();
+
+        builder.HasOne<AppUser>()
+            .WithOne()
+            .HasForeignKey<Student>(x => x.UserId)
+            .HasPrincipalKey<AppUser>(x => x.Id)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

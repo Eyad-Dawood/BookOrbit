@@ -21,3 +21,5 @@ global using BookOrbit.Application.Features.Identity.Dtos;
 global using BookOrbit.Domain.Common;
 global using System.Security.Claims;
 global using BookOrbit.Domain.Identity;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;
