@@ -1,4 +1,4 @@
-﻿namespace BookOrbit.Application.Contracts.Requests.Students;
+﻿namespace BookOrbit.Api.Contracts.Requests.Students;
 
 public class UpdateStudentRequest
 {

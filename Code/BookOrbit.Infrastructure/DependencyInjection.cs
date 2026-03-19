@@ -1,10 +1,4 @@
-﻿using BookOrbit.Infrastructure.Data;
-using BookOrbit.Infrastructure.Data.Interceptors;
-using BookOrbit.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-
-namespace BookOrbit.Infrastructure;
+﻿namespace BookOrbit.Infrastructure;
 static public class DependencyInjection
 {
     static public IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
@@ -15,7 +9,6 @@ static public class DependencyInjection
             .AddIdentity()
             .AddInfrastrucureServices();
     }
-
     static private IServiceCollection AddDbContext(this IServiceCollection services,IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");

@@ -3,7 +3,7 @@
 public record CreateStudentCommand(
         string Name,
         string UniversityMailAddress,
-        Guid PersonalImageId,
+        string PersonalPhotoUrl,
         string Password,
         string? PhoneNumber = null,
         string? TelegramUserId = null)

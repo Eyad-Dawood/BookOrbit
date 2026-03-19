@@ -12,7 +12,7 @@ public sealed class CreateStudentValidator : AbstractValidator<CreateStudentComm
             .StudentUniversityMailRules();
 
 
-        RuleFor(x => x.PersonalImageId)
+        RuleFor(x => x.PersonalPhotoUrl)
             .Cascade(CascadeMode.Stop)
             .StudentPersonalImageRules();
 

@@ -19,11 +19,9 @@ static public class StudentGeneralValidation
             .EmailAddress().WithMessage(StudentErrors.InvalidUniversityMail.Description)
             .Must(x => x.EndsWith(@"std.mans.edu.eg")).WithMessage(StudentErrors.InvalidUniversityMail.Description);//Simple Email check , the rest in domain
 
-    static public IRuleBuilder<T, Guid> StudentPersonalImageRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>
+    static public IRuleBuilder<T, string> StudentPersonalImageRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
         ruleBuilder
-            .NotEmpty().WithMessage(StudentErrors.PersonalImageRequired.Description)
-            .Must(id => id != Guid.Empty).WithMessage(StudentErrors.PersonalImageRequired.Description);
-
+            .NotEmpty().WithMessage(StudentErrors.PersonalImageRequired.Description);
 
     static public IRuleBuilderOptions<T, string?> StudentPhoneNumberRules<T>(this IRuleBuilder<T, string?> ruleBuilder) =>
         ruleBuilder

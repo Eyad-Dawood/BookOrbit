@@ -4,7 +4,6 @@ public class CreateStudentCommandHandler(
     ILogger<CreateStudentCommandHandler> logger,
     IAppDbContext context,
     HybridCache cache,
-    IImageService imageService,
     IMaskingService maskingService,
     IIdentityService identityService)
     : IRequestHandler<CreateStudentCommand, Result<StudentDto>>
@@ -42,18 +41,10 @@ public class CreateStudentCommandHandler(
         }
 
 
-        var imageUrlFindingResult = await imageService.GetImageUrlById(command.PersonalImageId, ct);
-        if (imageUrlFindingResult.IsFailure)
-        {
-            logger.LogWarning("Student creation aborted. Personal image not found.");
-            return StudentApplicationErrors.PersonalImageNotFound;
-        }
-
-        var imageUrlCreationResult = Url.Create(imageUrlFindingResult.Value);
+        var imageUrlCreationResult = Url.Create(command.PersonalPhotoUrl);
 
         if (imageUrlCreationResult.IsFailure)
             return imageUrlCreationResult.Errors;
-
 
 
         var nameCreationResult = StudentName.Create(command.Name);
@@ -119,13 +110,11 @@ public class CreateStudentCommandHandler(
         if (emailResult.IsFailure)
             return emailResult.Errors;
 
-        var userEmailExists = await identityService.UserEmailExists(emailResult.Value, ct);
-       
-        var studentEmailExists = await context.Students.AnyAsync(
-            s => s.UniversityMail == emailResult.Value, ct);
 
-
-        if (studentEmailExists||userEmailExists)
+        if (
+            await identityService.UserEmailExists(emailResult.Value, ct)
+        || await context.Students.AnyAsync(s => s.UniversityMail == emailResult.Value, ct)
+        )
         {
             logger.LogWarning(
                 "Student creation failed. Reason: {Reason}, Value: {Value}",

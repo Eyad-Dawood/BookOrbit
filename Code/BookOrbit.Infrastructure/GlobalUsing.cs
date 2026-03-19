@@ -23,3 +23,8 @@ global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using BookOrbit.Infrastructure.Identity.Enums;
 global using Microsoft.Extensions.Logging;
+global using BookOrbit.Infrastructure.Data;
+global using BookOrbit.Infrastructure.Data.Interceptors;
+global using BookOrbit.Infrastructure.Services;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
