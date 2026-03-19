@@ -21,3 +21,5 @@ global using BookOrbit.Domain.Common.Entities;
 global using BookOrbit.Infrastructure.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
+global using BookOrbit.Infrastructure.Identity.Enums;
+global using Microsoft.Extensions.Logging;

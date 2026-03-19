@@ -11,6 +11,9 @@ public class Student : AuditableEntity
     public DateTimeOffset? JoinDateUtc { get; private set; } = null;
     public StudentState State { get; private set; }
 
+   //Identity
+   public string UserId { get; }
+
 #pragma warning disable CS8618
     private Student()
     { }
@@ -21,12 +24,14 @@ public class Student : AuditableEntity
         StudentName name,
         UniversityMail universityMail,
         Url personalPhotoUrl,
+        string userId,
         PhoneNumber? phoneNumber = null,
         TelegramUserId? telegramUserId = null) : base(id)
     {
         Name = name;
         UniversityMail = universityMail;
         PersonalPhotoUrl = personalPhotoUrl;
+        UserId = userId;
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
         State = StudentState.UnVerified;
@@ -39,6 +44,7 @@ public class Student : AuditableEntity
         StudentName name,
         UniversityMail universityMail,
         Url personalPhotoUrl,
+        string userId,
         PhoneNumber? phoneNumber = null,
         TelegramUserId? telegramUserId = null)
     {
@@ -57,11 +63,15 @@ public class Student : AuditableEntity
         if (phoneNumber is null && telegramUserId is null)
             return StudentErrors.AtLeastOneCommunicationMethod;
 
+        if(string.IsNullOrWhiteSpace(userId))
+            return StudentErrors.UserIdRequired;
+
         return new Student(
             id,
             name,
             universityMail,
             personalPhotoUrl,
+            userId,
             phoneNumber,
             telegramUserId);
     }

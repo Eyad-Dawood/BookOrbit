@@ -72,6 +72,7 @@ static public class DependencyInjection
             options.Password.RequireLowercase = false;
             options.Password.RequiredUniqueChars = 4;
             options.SignIn.RequireConfirmedAccount = true;
+            options.User.RequireUniqueEmail = true;
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<AppDbContext>();

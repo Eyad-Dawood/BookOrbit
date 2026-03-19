@@ -64,5 +64,18 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
            .HasConversion<string>()
            .HasMaxLength(20)
            .IsRequired();
+
+
+        builder.HasIndex(s => s.PhoneNumber)
+            .IsUnique();
+
+        builder.HasIndex(s=>s.TelegramUserId)
+            .IsUnique();
+
+        builder.HasIndex(s=>s.UniversityMail)
+            .IsUnique();
+
+        builder.HasIndex(s=>s.PersonalPhotoUrl)
+            .IsUnique();
     }
 }

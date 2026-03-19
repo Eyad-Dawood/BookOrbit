@@ -5,7 +5,8 @@ public class CreateStudentCommandHandler(
     IAppDbContext context,
     HybridCache cache,
     IImageService imageService,
-    IMaskingService maskingService)
+    IMaskingService maskingService,
+    IIdentityService identityService)
     : IRequestHandler<CreateStudentCommand, Result<StudentDto>>
 {
     public async Task<Result<StudentDto>> Handle(CreateStudentCommand command, CancellationToken ct)
@@ -60,42 +61,71 @@ public class CreateStudentCommandHandler(
         if(nameCreationResult.IsFailure)
             return nameCreationResult.Errors;
 
+        //Create User
+
+        var userCreationResult =await identityService.CreateStudent(emailResult.Value,command.Password,ct);
+
+        if(userCreationResult.IsFailure)
+            return userCreationResult.Errors;
 
         var createdStudentResult = Student.Create(
             id: Guid.NewGuid(),
             name: nameCreationResult.Value,
             universityMail: emailResult.Value,
             personalPhotoUrl: imageUrlCreationResult.Value,
+            userId:userCreationResult.Value,
             phoneNumber: phoneNumber,
             telegramUserId: telegramUserId);
 
         if (createdStudentResult.IsFailure)
         {
+            await RollbackCreatedUserAsync(userCreationResult.Value, ct);
             return createdStudentResult.Errors;
         }
 
-        context.Students.Add(createdStudentResult.Value);
-        await context.SaveChangesAsync(ct);
+        try
+        {
+            context.Students.Add(createdStudentResult.Value);
+            await context.SaveChangesAsync(ct);
+        }
+        catch
+        {
+            await RollbackCreatedUserAsync(userCreationResult.Value, ct);
+            throw; //To Pipeline to be handled
+        }
 
         await cache.RemoveByTagAsync(StudentCachingConstants.StudentTag, ct);
-
 
         logger.LogInformation("Student created successfully with ID: {StudentId}", createdStudentResult.Value.Id);
 
         return StudentDto.FromEntity(createdStudentResult.Value);
     }
 
-    public async Task<Result<UniversityMail>> EnsureEmailIsValidAndUnique(string email, CancellationToken ct)
+    private async Task RollbackCreatedUserAsync(string UserId,CancellationToken ct)
+    {
+        var deleteResult = await identityService.DeleteUserByIdAsync(UserId, ct);
+
+        if (deleteResult.IsFailure)
+        {
+            logger.LogCritical(
+                "CRITICAL: Failed to rollback user creation for user {UserId}",
+                UserId);
+        }
+    }
+    private async Task<Result<UniversityMail>> EnsureEmailIsValidAndUnique(string email, CancellationToken ct)
     {
         var emailResult = UniversityMail.Create(email);
 
         if (emailResult.IsFailure)
             return emailResult.Errors;
 
-        var emailExists = await context.Students.AnyAsync(
+        var userEmailExists = await identityService.UserEmailExists(emailResult.Value, ct);
+       
+        var studentEmailExists = await context.Students.AnyAsync(
             s => s.UniversityMail == emailResult.Value, ct);
 
-        if (emailExists)
+
+        if (studentEmailExists||userEmailExists)
         {
             logger.LogWarning(
                 "Student creation failed. Reason: {Reason}, Value: {Value}",
@@ -106,7 +136,7 @@ public class CreateStudentCommandHandler(
 
         return emailResult;
     }
-    public async Task<Result<TelegramUserId>> EnsureTelegramIdIsValidAndUnique(string telegrameUserId, CancellationToken ct)
+    private async Task<Result<TelegramUserId>> EnsureTelegramIdIsValidAndUnique(string telegrameUserId, CancellationToken ct)
     {
         var telegramUserIdResult = TelegramUserId.Create(telegrameUserId);
 
@@ -129,7 +159,7 @@ public class CreateStudentCommandHandler(
 
         return telegramUserIdResult;
     }
-    public async Task<Result<PhoneNumber>> EnsurePhoneNumberIsValidAndUnique(string phoneNumber, CancellationToken ct)
+    private async Task<Result<PhoneNumber>> EnsurePhoneNumberIsValidAndUnique(string phoneNumber, CancellationToken ct)
     {
         var phoneNumberResult = PhoneNumber.Create(phoneNumber);
 

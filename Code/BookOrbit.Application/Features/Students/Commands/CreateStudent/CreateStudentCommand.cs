@@ -4,6 +4,7 @@ public record CreateStudentCommand(
         string Name,
         string UniversityMailAddress,
         Guid PersonalImageId,
+        string Password,
         string? PhoneNumber = null,
         string? TelegramUserId = null)
     :IRequest<Result<StudentDto>>;

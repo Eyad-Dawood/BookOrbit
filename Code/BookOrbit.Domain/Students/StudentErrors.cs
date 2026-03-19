@@ -6,6 +6,7 @@ static public class StudentErrors
 
     #region General
     static public readonly Error IdRequired = DomainCommonErrors.RequiredProp(ClassName,"Id","Id");
+    static public readonly Error UserIdRequired = DomainCommonErrors.RequiredProp(ClassName,"UserId","User Id");
     static public readonly Error NameRequired = DomainCommonErrors.RequiredProp(ClassName,"Name","Name");
     static public readonly Error InvalidName = DomainCommonErrors.InvalidProp(ClassName, "Name", "Name", $"It must be between {StudentValidationConstants.NameMinLength} and {StudentValidationConstants.NameMaxLength} English characters");
     static public readonly Error InvalidJoinDate = DomainCommonErrors.InvalidProp(ClassName, "JoinDate", "Join Date", "It cannot be before creation date request");
