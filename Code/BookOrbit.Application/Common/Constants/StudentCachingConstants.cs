@@ -10,7 +10,7 @@ static public class StudentCachingConstants
         =>
         $"students:p={query.Page}:ps={query.PageSize}" +
         $":v={query.SearchTerm ?? "-"}" +
-        $":sort={query.SortColumn}:{query.SortDirection}";
+        $":sort={query.SortColumn}:{query.SortDirection??"-"}";
 
     public const int ExpirationInMinutes = 10;
 }

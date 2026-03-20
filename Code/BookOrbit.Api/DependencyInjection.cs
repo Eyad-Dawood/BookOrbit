@@ -141,7 +141,6 @@ static public class DependencyInjection
 
         return services;
     }
-
     public static IApplicationBuilder UseCoreMiddlewares(this IApplicationBuilder app, IConfiguration configuration)
     {
         var appSettings = configuration.GetSection(AppSettingsSectionName).Get<AppSettings>()!;
