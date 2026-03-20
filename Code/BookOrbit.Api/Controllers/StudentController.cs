@@ -1,7 +1,8 @@
-﻿
-namespace BookOrbit.Api.Controllers;
+﻿namespace BookOrbit.Api.Controllers;
 
-[Route("api/students")]
+[Route("api/v{version:apiVersion}/students")]
+[ApiVersion("1.0")]
+[Authorize]
 public sealed class StudentController(ISender sender) : ApiController
 {
     [HttpGet]
@@ -9,6 +10,7 @@ public sealed class StudentController(ISender sender) : ApiController
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status500InternalServerError)]
     [EndpointSummary("Retrieves a paginated list of students.")]
     [EndpointDescription("Supports filtering by searching by term. Pagination and sorting are supported.")]
+    [MapToApiVersion("1.0")]
     [EndpointName("GetStudents")]
     [OutputCache(PolicyName = ApiConstatns.DefaultOutputCachePolicyName)]
     public async Task<IActionResult> Get([FromQuery] PagedFilterRequest request, CancellationToken ct)

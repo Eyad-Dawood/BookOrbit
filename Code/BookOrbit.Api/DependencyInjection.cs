@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Api;
+﻿namespace BookOrbit.Api;
 static public class DependencyInjection
 {
     private const string AppSettingsSectionName = "AppSettings";
@@ -17,7 +16,8 @@ static public class DependencyInjection
             .AddConfiguredCors(configuration)
             .AddExceptionHandling()
             .AddAppOutputCaching(configuration)
-            .AddHybridCaching(configuration);
+            .AddHybridCaching(configuration)
+            .AddCustomApiVersioning();
 
         return services;
     }
@@ -165,4 +165,22 @@ static public class DependencyInjection
 
         return app;
     }
+    public static IServiceCollection AddCustomApiVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.AssumeDefaultVersionWhenUnspecified = true;//Doesnt work with URL segment
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        }).AddMvc()
+        .AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
+        return services;
+    }
+
 }

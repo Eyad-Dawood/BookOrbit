@@ -22,10 +22,19 @@ public class CachingBehaviour<TRequest, TResponse>(
                 request.CacheKey,
                 async cancelToken =>
                 {
+                    logger.LogInformation(
+                    "Cache factory invoked for {RequestName} with key {CacheKey}",
+                    typeof(TRequest).Name,
+                    request.CacheKey);
+
                     var response = await next(cancelToken);
 
                     if (!response.IsSuccess)
                     {
+                        logger.LogWarning(
+                        "Handler returned failure. Skipping cache for {RequestName}",
+                        typeof(TRequest).Name);
+
                         throw new CacheFailureException<TResponse>(response);
                     }
 
