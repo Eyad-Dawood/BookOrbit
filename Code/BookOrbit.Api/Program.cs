@@ -1,3 +1,5 @@
+﻿using Serilog.Enrichers.Span;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.
@@ -5,8 +7,15 @@ builder.Services.
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
-builder.Host.UseSerilog((context, loggerConfig) =>
-loggerConfig.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseSerilog((context, services, loggerConfig) =>
+{
+    loggerConfig
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+
+        .Enrich.FromLogContext()
+        .Enrich.WithSpan();
+});
 
 var app = builder.Build();
 

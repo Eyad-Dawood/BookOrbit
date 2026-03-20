@@ -26,3 +26,6 @@ global using System.Security.Claims;
 global using System.Text;
 global using System.Text.Json.Serialization;
 global using System.Threading.RateLimiting;
+global using OpenTelemetry.Metrics;
+global using OpenTelemetry.Resources;
+global using OpenTelemetry.Trace;

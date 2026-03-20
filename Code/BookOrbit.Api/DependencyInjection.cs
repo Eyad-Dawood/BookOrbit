@@ -17,7 +17,9 @@ static public class DependencyInjection
             .AddExceptionHandling()
             .AddAppOutputCaching(configuration)
             .AddHybridCaching(configuration)
-            .AddCustomApiVersioning();
+            .AddCustomApiVersioning()
+            .AddAppOpenTelemetry()
+            .AddHelthChecks();
 
         return services;
     }
@@ -145,8 +147,12 @@ static public class DependencyInjection
     {
         var appSettings = configuration.GetSection(AppSettingsSectionName).Get<AppSettings>()!;
 
+        app.UseHealthChecks("/health");
+
+        app.UseOpenTelemetryPrometheusScrapingEndpoint();
+
         app.UseSerilogRequestLogging();
-        
+
         app.UseExceptionHandler();
 
         app.UseStatusCodePages();
@@ -180,6 +186,48 @@ static public class DependencyInjection
             options.SubstituteApiVersionInUrl = true;
         });
 
+        return services;
+    }
+    public static IServiceCollection AddAppOpenTelemetry(this IServiceCollection services)
+    {
+        services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource
+                .AddService("bookorbit", serviceVersion: "1.0.0")
+                .AddAttributes(new[]
+                {
+                new KeyValuePair<string, object>("environment", "dev")
+                }))
+
+            .WithTracing(tracing =>
+            {
+                tracing
+                    .SetSampler(new AlwaysOnSampler())  // dev only
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        options.RecordException = true;
+                    })
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation()
+                    .AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri("http://jaeger:4317");
+                        options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                    });
+            })
+            .WithMetrics(metrics =>
+            {
+                metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddPrometheusExporter()
+                    .AddOtlpExporter();
+            });
+
+        return services;
+    }
+    public static IServiceCollection AddHelthChecks(this IServiceCollection services)
+    {
+        services.AddHealthChecks();
         return services;
     }
 
