@@ -15,7 +15,7 @@ static public class StudentGeneralValidation
     static public IRuleBuilder<T, string> StudentUniversityMailRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
         ruleBuilder
             .NotEmpty().WithMessage(StudentErrors.UniversityMailRequired.Description)
-            .MaximumLength(UniversityMailConstants.MaxLength).WithMessage(StudentErrors.InvalidUniversityMail.Description)
+            .MaximumLength(UniversityMailValidationConstants.MaxLength).WithMessage(StudentErrors.InvalidUniversityMail.Description)
             .EmailAddress().WithMessage(StudentErrors.InvalidUniversityMail.Description)
             .Must(x => x.EndsWith(@"std.mans.edu.eg")).WithMessage(StudentErrors.InvalidUniversityMail.Description);//Simple Email check , the rest in domain
 
@@ -25,15 +25,15 @@ static public class StudentGeneralValidation
 
     static public IRuleBuilderOptions<T, string?> StudentPhoneNumberRules<T>(this IRuleBuilder<T, string?> ruleBuilder) =>
         ruleBuilder
-        .MinimumLength(PhoneNumberConstants.MinLength).WithMessage(PhoneNumberErrors.InvalidPhoneNumber.Description)
-        .MaximumLength(PhoneNumberConstants.MaxLength).WithMessage(PhoneNumberErrors.InvalidPhoneNumber.Description)
+        .MinimumLength(PhoneNumberValidationConstants.MinLength).WithMessage(PhoneNumberErrors.InvalidPhoneNumber.Description)
+        .MaximumLength(PhoneNumberValidationConstants.MaxLength).WithMessage(PhoneNumberErrors.InvalidPhoneNumber.Description)
         .Must(PhoneNumberCorrectPrefix).WithMessage(PhoneNumberErrors.InvalidPhoneNumber.Description)
         .Matches(@"^\d+$"); // Only digits allowed
 
     static public IRuleBuilderOptions<T, string?> StudentTelegramUserIdRules<T>(this IRuleBuilder<T, string?> ruleBuilder) =>
         ruleBuilder
-            .MinimumLength(TelegramUserIdConstants.MinLength).WithMessage(TelegramUserIdErrors.InvalidTelegramUserId.Description)
-            .MaximumLength(TelegramUserIdConstants.MaxLength).WithMessage(TelegramUserIdErrors.InvalidTelegramUserId.Description)
+            .MinimumLength(TelegramUserIdValidationConstants.MinLength).WithMessage(TelegramUserIdErrors.InvalidTelegramUserId.Description)
+            .MaximumLength(TelegramUserIdValidationConstants.MaxLength).WithMessage(TelegramUserIdErrors.InvalidTelegramUserId.Description)
             .Matches("^[a-zA-Z0-9_]+$").WithMessage(TelegramUserIdErrors.InvalidTelegramUserId.Description); // lower chars, digits, underscores only 
 
 
@@ -41,7 +41,7 @@ static public class StudentGeneralValidation
     {
         if (string.IsNullOrWhiteSpace(phoneNumber)) return true; // optional
 
-        return PhoneNumberConstants.Prefixes
+        return PhoneNumberValidationConstants.Prefixes
             .Any(prefix => phoneNumber.StartsWith(prefix));
     }
 }

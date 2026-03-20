@@ -23,3 +23,6 @@ global using System.Security.Claims;
 global using BookOrbit.Domain.Identity;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Reflection;
+global using MediatR.Pipeline;
+global using BookOrbit.Domain.Common.Results.Abstractions;
+global using BookOrbit.Application.Common.Behaviours;

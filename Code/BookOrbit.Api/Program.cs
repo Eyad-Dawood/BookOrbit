@@ -10,6 +10,7 @@ loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
 
+app.UseCoreMiddlewares(builder.Configuration);
 app.MapControllers();
 
 

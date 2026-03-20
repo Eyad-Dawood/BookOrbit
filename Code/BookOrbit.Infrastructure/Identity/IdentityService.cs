@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+
 namespace BookOrbit.Infrastructure.Identity;
 
 public class IdentityService(
@@ -101,6 +103,13 @@ public class IdentityService(
             user.Email!,
             await userManager.GetRolesAsync(user),
             await userManager.GetClaimsAsync(user));
+    }
+
+    public async Task<string?> GetUserNameAsync(string userId, CancellationToken ct)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        return user?.UserName;
     }
 
     public async Task<bool> UserEmailExists(string email, CancellationToken ct) =>

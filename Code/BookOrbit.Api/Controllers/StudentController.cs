@@ -1,4 +1,5 @@
-﻿namespace BookOrbit.Api.Controllers;
+﻿
+namespace BookOrbit.Api.Controllers;
 
 [Route("api/students")]
 public sealed class StudentController(ISender sender) : ApiController
@@ -9,6 +10,7 @@ public sealed class StudentController(ISender sender) : ApiController
     [EndpointSummary("Retrieves a paginated list of students.")]
     [EndpointDescription("Supports filtering by searching by term. Pagination and sorting are supported.")]
     [EndpointName("GetStudents")]
+    //[OutputCache(PolicyName = ApiConstatns.DefaultOutputCachePolicyName)]
     public async Task<IActionResult> Get([FromQuery] PagedFilterRequest request, CancellationToken ct)
     {
         var query = new GetStudentsQuery(

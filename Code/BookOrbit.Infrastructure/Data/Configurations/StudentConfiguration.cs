@@ -24,7 +24,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasConversion(
                 phoneNumber => phoneNumber == null ? null : phoneNumber.Value,
                 value => string.IsNullOrWhiteSpace(value) ? null : PhoneNumber.Create(value).Value)
-            .HasMaxLength(PhoneNumberConstants.MaxLength)
+            .HasMaxLength(PhoneNumberValidationConstants.MaxLength)
             .IsUnicode(false)
             .IsRequired(false);
 
@@ -32,7 +32,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasConversion(
                 telegramUserId => telegramUserId == null ? null : telegramUserId.Value,
                 value => string.IsNullOrWhiteSpace(value) ? null : TelegramUserId.Create(value).Value)
-            .HasMaxLength(TelegramUserIdConstants.MaxLength)
+            .HasMaxLength(TelegramUserIdValidationConstants.MaxLength)
             .IsUnicode(false)
             .IsRequired(false);
 
@@ -40,7 +40,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasConversion(
                 universityMail => universityMail.Value,
                 value => UniversityMail.Create(value).Value)
-            .HasMaxLength(UniversityMailConstants.MaxLength)
+            .HasMaxLength(UniversityMailValidationConstants.MaxLength)
             .IsUnicode(false)
             .IsRequired();
 

@@ -6,11 +6,8 @@ static public class DependencyInjection
     {
         return services
             .AddDbContext(configuration)
-            .AddAuthentication(configuration)
             .AddIdentity()
-            .AddInfrastrucureServices()
-            .AddHybridCaching()
-            .AddAppOutputCaching();
+            .AddInfrastrucureServices();
     }
     static private IServiceCollection AddDbContext(this IServiceCollection services,IConfiguration configuration)
     {
@@ -27,32 +24,6 @@ static public class DependencyInjection
 
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
-
-        return services;
-    }
-    static private IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options=>
-        {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["Issuer"],
-                ValidAudience = jwtSettings["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(
-                       Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
-            };
-        });
 
         return services;
     }
@@ -80,27 +51,7 @@ static public class DependencyInjection
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ITokenProvider, TokenProvider>();
         services.AddTransient<IMaskingService, MaskingService>();
-        return services;
-    }
-    static private IServiceCollection AddHybridCaching(this IServiceCollection services)
-    {
-        services.AddHybridCache(options => options.DefaultEntryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(DefaultValues.RemoteCachExpirationInMinutes), //Remote
-            LocalCacheExpiration = TimeSpan.FromSeconds(DefaultValues.LocalCachExpirationInSeconds), // Local
-        });
-
-        return services;
-    }
-    public static IServiceCollection AddAppOutputCaching(this IServiceCollection services)
-    {
-        services.AddOutputCache(options =>
-        {
-            options.SizeLimit = 100 * 1024 * 1024; // 100 mb
-            options.AddBasePolicy(policy =>
-                policy.Expire(TimeSpan.FromSeconds(DefaultValues.OutputCachExpirationInSeconds)));
-        });
-
+        services.AddTransient<IAppCache, AppCache>();
         return services;
     }
 }

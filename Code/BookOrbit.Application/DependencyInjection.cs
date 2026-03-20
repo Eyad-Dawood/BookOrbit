@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Application;
+﻿namespace BookOrbit.Application;
     static public class DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
@@ -9,6 +8,12 @@ namespace BookOrbit.Application;
             services.AddMediatR(cfg=>
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
+                cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+                cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+                cfg.AddOpenBehavior(typeof(CachingBehaviour<,>));
             });
 
             return services;

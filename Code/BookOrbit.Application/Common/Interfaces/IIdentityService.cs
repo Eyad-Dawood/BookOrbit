@@ -6,5 +6,5 @@ public interface IIdentityService
     Task<Result<string>> CreateStudent(string email,string password,CancellationToken ct);
     Task<Result<Deleted>> DeleteUserByIdAsync(string userId, CancellationToken ct);
     Task<bool> UserEmailExists(string email,CancellationToken ct);
-
+    Task<string?> GetUserNameAsync(string userId,CancellationToken ct);
 }
