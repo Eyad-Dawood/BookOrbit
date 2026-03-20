@@ -1,4 +1,12 @@
-﻿@baseurl = https://localhost:7240/api/v1
+﻿@baseurl = https://localhost:7240/api
+@rawurl = https://localhost:7240
+
 
 ### get students - page 8 with page size 500
-GET {{baseurl}}/students?page=8&pageSize=500
+GET {{baseurl}}/v1.0/students?page=8&pageSize=500
+
+### get OpenApi
+GET {{rawurl}}/openapi/v1.json
+
+### get refresh token
+GET {{baseurl}}/v1.0/token

@@ -19,6 +19,16 @@ builder.Host.UseSerilog((context, services, loggerConfig) =>
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+else
+{
+    app.UseHsts();
+}
+
+
 app.UseCoreMiddlewares(builder.Configuration);
 app.MapControllers();
 

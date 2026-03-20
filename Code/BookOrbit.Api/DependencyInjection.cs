@@ -1,4 +1,6 @@
-﻿namespace BookOrbit.Api;
+﻿using BookOrbit.Api.OpenApi.Transformers;
+
+namespace BookOrbit.Api;
 static public class DependencyInjection
 {
     private const string AppSettingsSectionName = "AppSettings";
@@ -19,7 +21,8 @@ static public class DependencyInjection
             .AddHybridCaching(configuration)
             .AddCustomApiVersioning()
             .AddAppOpenTelemetry()
-            .AddHelthChecks();
+            .AddHelthChecks()
+            .AddApiDocumentation();
 
         return services;
     }
@@ -84,15 +87,21 @@ static public class DependencyInjection
     {
         services.AddRateLimiter(options =>
         {
-            options.AddSlidingWindowLimiter("SlidingWindow", limiterOptions =>
-            {
-                limiterOptions.PermitLimit = ApiConstatns.RateLimiteMaxRequests;
-                limiterOptions.Window = TimeSpan.FromMinutes(ApiConstatns.RateLimitWindowSpanInMinutes);
-                limiterOptions.SegmentsPerWindow = ApiConstatns.RateLimitSegmentPerWindow;
-                limiterOptions.QueueLimit = ApiConstatns.RateLimitQueueLimit;
-                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                limiterOptions.AutoReplenishment = true;
-            });
+            RateLimitHelper.AddSlidingPolicy(
+                options,
+                ApiConstants.NormalRateLimitingPolicyName,
+                ApiConstants.NormalRateLimiteMaxRequests,
+                ApiConstants.NormalRateLimitWindowSpanInMinutes,
+                ApiConstants.NormalRateLimitSegmentPerWindow,
+                ApiConstants.NormalRateLimitQueueLimit);
+
+            RateLimitHelper.AddSlidingPolicy(
+                options,
+                ApiConstants.SensitiveRateLimmitingPolicyName,
+                ApiConstants.SensistiveRateLimiteMaxRequests,
+                ApiConstants.SensistiveRateLimitWindowSpanInMinutes,
+                ApiConstants.SensistiveRateLimitSegmentPerWindow,
+                ApiConstants.SensistiveRateLimitQueueLimit);
 
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
@@ -125,7 +134,7 @@ static public class DependencyInjection
         services.AddOutputCache(options =>
         {
             options.SizeLimit = 100 * 1024 * 1024; // 100 mb
-            options.AddPolicy(ApiConstatns.DefaultOutputCachePolicyName, policy =>
+            options.AddPolicy(ApiConstants.DefaultOutputCachePolicyName, policy =>
                 policy.Expire(TimeSpan.FromSeconds(cacheSettings.OutputCachExpirationInSeconds)));
         });
 
@@ -142,34 +151,6 @@ static public class DependencyInjection
         });
 
         return services;
-    }
-    public static IApplicationBuilder UseCoreMiddlewares(this IApplicationBuilder app, IConfiguration configuration)
-    {
-        var appSettings = configuration.GetSection(AppSettingsSectionName).Get<AppSettings>()!;
-
-        app.UseHealthChecks("/health");
-
-        app.UseOpenTelemetryPrometheusScrapingEndpoint();
-
-        app.UseSerilogRequestLogging();
-
-        app.UseExceptionHandler();
-
-        app.UseStatusCodePages();
-
-        app.UseHttpsRedirection();
-
-        app.UseCors(appSettings.CorsPolicyName);
-
-        app.UseRateLimiter();
-
-        app.UseAuthentication();
-
-        app.UseAuthorization();
-
-        app.UseOutputCache();
-
-        return app;
     }
     public static IServiceCollection AddCustomApiVersioning(this IServiceCollection services)
     {
@@ -229,6 +210,54 @@ static public class DependencyInjection
     {
         services.AddHealthChecks();
         return services;
+    }
+    public static IServiceCollection AddApiDocumentation(this IServiceCollection services)
+    {
+        string[] versions = ["v1"];
+
+        foreach (var version in versions)
+        {
+            services.AddOpenApi(version, options =>
+            {
+                // Versioning config
+                options.AddDocumentTransformer<VersionInfoTransformer>();
+
+                // Security Scheme config
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+                options.AddOperationTransformer<BearerSecuritySchemeTransformer>();
+            });
+        }
+
+        return services;
+    }
+
+    public static IApplicationBuilder UseCoreMiddlewares(this IApplicationBuilder app, IConfiguration configuration)
+    {
+        var appSettings = configuration.GetSection(AppSettingsSectionName).Get<AppSettings>()!;
+
+        app.UseHealthChecks("/health");
+
+        app.UseOpenTelemetryPrometheusScrapingEndpoint();
+
+        app.UseSerilogRequestLogging();
+
+        app.UseExceptionHandler();
+
+        app.UseStatusCodePages();
+
+        app.UseHttpsRedirection();
+
+        app.UseCors(appSettings.CorsPolicyName);
+
+        app.UseRateLimiter();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.UseOutputCache();
+
+        return app;
     }
 
 }

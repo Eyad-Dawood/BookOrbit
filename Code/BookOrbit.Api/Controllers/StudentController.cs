@@ -8,12 +8,15 @@ public sealed class StudentController(ISender sender) : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<StudentListItemDto>),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [EndpointSummary("Retrieves a paginated list of students.")]
     [EndpointDescription("Supports filtering by searching by term. Pagination and sorting are supported.")]
     [MapToApiVersion("1.0")]
     [EndpointName("GetStudents")]
-    [OutputCache(PolicyName = ApiConstatns.DefaultOutputCachePolicyName)]
-    public async Task<IActionResult> Get([FromQuery] PagedFilterRequest request, CancellationToken ct)
+    [OutputCache(PolicyName = ApiConstants.DefaultOutputCachePolicyName)]
+    [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
+    public async Task<ActionResult<PaginatedList<StudentListItemDto>>> Get([FromQuery] PagedFilterRequest request, CancellationToken ct)
     {
         var query = new GetStudentsQuery(
             request.Page,
@@ -28,4 +31,5 @@ public sealed class StudentController(ISender sender) : ApiController
             Ok,
             Problem);
     }
+
 }
