@@ -26,3 +26,4 @@ global using System.Reflection;
 global using MediatR.Pipeline;
 global using BookOrbit.Domain.Common.Results.Abstractions;
 global using BookOrbit.Application.Common.Behaviours;
+global using BookOrbit.Application.Common.Interfaces;
