@@ -1,12 +1,35 @@
 ﻿@baseurl = https://localhost:7240/api
 @rawurl = https://localhost:7240
-
+@AccessToken = eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNDc5ZmEwZC1hMjZhLTRlYWItYmEyZC01NGNjNWM0NjhlMDYiLCJlbWFpbCI6ImFkbWluQGJvb2tvcmJpdC5jb20iLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NzQwOTY3NzYsImV4cCI6MTc3NDA5NzM3NiwiaWF0IjoxNzc0MDk2Nzc2LCJhdWQiOiJsb2NhbGhvc3QifQ.X8rz1C13rDe5UhYYDOP1M2voiIXttkV8Txo6BSzS_B4
+@RefreshToken = TlC/2Tld4qDTEI/JrxZeDE6MNJI55yroIs1BJw6R3Q0=
 
 ### get students - page 8 with page size 500
 GET {{baseurl}}/v1.0/students?page=8&pageSize=500
+Authorization: Bearer {{AccessToken}}
 
 ### get OpenApi
 GET {{rawurl}}/openapi/v1.json
 
 ### get refresh token
-GET {{baseurl}}/v1.0/token
+POST {{baseurl}}/v1.0/identity/token/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{RefreshToken}}",
+  "expiredAccessToken": "{{AccessToken}}"
+}
+
+
+### generateToken
+POST {{baseurl}}/v1.0/identity/token
+Content-Type: application/json
+
+{
+  "email": "admin@bookorbit.com",
+  "password": "Admin@123456"
+}
+
+
+###
+GET {{baseurl}}/v1.0/identity/users/me
+Authorization: Bearer {{AccessToken}}

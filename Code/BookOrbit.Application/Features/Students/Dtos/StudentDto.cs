@@ -1,4 +1,6 @@
-﻿namespace BookOrbit.Application.Features.Students.Dtos;
+﻿using System.Text.Json.Serialization;
+
+namespace BookOrbit.Application.Features.Students.Dtos;
 
 public class StudentDto
 {
@@ -12,6 +14,8 @@ public class StudentDto
     public int Points { get; set; }
     public StudentState State { get; set; }
 
+    [JsonConstructor]
+    private StudentDto() { }
 
 
     private StudentDto(

@@ -11,6 +11,7 @@ public class IdentityController(ISender sender) : ApiController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status429TooManyRequests)]
+    [ProducesDefaultResponseType]
     [EndpointSummary("Generates an access and refresh token for a valid user.")]
     [EndpointDescription("Authenticates a user using provided credentials and returns a JWT token pair.")]
     [EndpointName("GenerateToken")]
@@ -21,7 +22,7 @@ public class IdentityController(ISender sender) : ApiController
         var result = await sender.Send(request,ct);
         return result.Match(
             Ok,
-            Problem);
+            e => Problem(e,HttpContext));
     }
 
     [HttpPost("token/refresh")]
@@ -30,6 +31,7 @@ public class IdentityController(ISender sender) : ApiController
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesDefaultResponseType]
     [EndpointSummary("Refreshes access token using a valid refresh token.")]
     [EndpointDescription("Exchanges an expired access token and a valid refresh token for a new token pair.")]
     [EndpointName("RefreshToken")]
@@ -40,18 +42,19 @@ public class IdentityController(ISender sender) : ApiController
         var result = await sender.Send(request, ct);
         return result.Match(
             Ok,
-            Problem);
+            e => Problem(e, HttpContext));
     }
 
 
     [HttpGet("users/me")]
-    [Authorize]
+    [Authorize(Policy = PoliciesNames.ActiveUsersPolicy)]
     [ProducesResponseType(typeof(AppUserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesDefaultResponseType]
     [MapToApiVersion("1.0")]
     [EndpointSummary("Gets the current authenticated user's info.")]
     [EndpointDescription("Returns user information for the currently authenticated user based on the access token.")]
@@ -67,7 +70,6 @@ public class IdentityController(ISender sender) : ApiController
 
         return result.Match(
             Ok,
-            Problem);
+            e => Problem(e, HttpContext));
     }
 }
-

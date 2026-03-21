@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using BookOrbit.Application.Common.Enums;
 
 namespace BookOrbit.Infrastructure.Identity;
 
@@ -13,7 +12,7 @@ public class IdentityService(
         var user = await userManager.FindByEmailAsync(email);
 
         if (user is null)
-            return InfrastrucureIdentityErrors.UserNotFoundByEmail;
+            return InfrastrucureIdentityErrors.InvalidLoginAttempt;
 
         if (!user.EmailConfirmed)
             return InfrastrucureIdentityErrors.EmailNotConfirmed;
@@ -29,6 +28,13 @@ public class IdentityService(
             await userManager.GetClaimsAsync(user));
     }
 
+    public async Task<bool> IsInRoleAsync(string userId, IdentityRoles role)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        string srole = role.ToString();
+        return user != null && await userManager.IsInRoleAsync(user, srole);
+    }
+
     public async Task<Result<string>> CreateStudent(string email, string password,CancellationToken ct)
     {
         var user = new AppUser
@@ -39,7 +45,7 @@ public class IdentityService(
         };
 
         var createResult = await userManager.CreateAsync(user, password);
-
+        
         if (!createResult.Succeeded)
         {
             logger.LogError(
@@ -50,7 +56,7 @@ public class IdentityService(
             return InfrastrucureIdentityErrors.UserCreationFaild;
         }
 
-        string role = nameof(IdentityRoles.student);
+        string role = IdentityRoles.student.ToString();
         var roleResult = await userManager.AddToRoleAsync(user, role);
 
         if (!roleResult.Succeeded)

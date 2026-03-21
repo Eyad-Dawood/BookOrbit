@@ -1,6 +1,4 @@
-﻿using Serilog.Enrichers.Span;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.
     AddPresentation(builder.Configuration)
@@ -22,6 +20,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    await app.InitialiseDatabaseAsync();
 }
 else
 {

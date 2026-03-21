@@ -20,7 +20,7 @@ public class TokenProvider
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
 
-        var issure = jwtSettings["Issure"]!;
+        var issure = jwtSettings["Issuer"]!;
         var audience = jwtSettings["Audience"]!;
         var key = jwtSettings["Key"]!;
 
@@ -28,8 +28,8 @@ public class TokenProvider
 
         var claims = new List<Claim>()
         {
-            new(JwtRegisteredClaimNames.Sub,user.UserId),
-            new(JwtRegisteredClaimNames.Email,user.Email),
+            new(ClaimTypes.NameIdentifier,user.UserId),
+            new(ClaimTypes.Email,user.Email),
         };
 
         foreach (var claim in user.Claims) 

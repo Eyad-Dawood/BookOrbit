@@ -1,7 +1,9 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace BookOrbit.Application.Features.Students.Dtos;
 
-public class StudentListItemDto
+public record StudentListItemDto
 {
     public Guid Id { get; set; } = Guid.Empty;
     public string Name { get; set; } = string.Empty;
@@ -11,6 +13,9 @@ public class StudentListItemDto
     public string PersonalPhotoUrlAddress { get; set; } = string.Empty;
     public int Points { get; set; }
     public StudentState State { get; set; }
+
+    [JsonConstructor]
+    private StudentListItemDto() { }
 
     private StudentListItemDto(
   Guid id,

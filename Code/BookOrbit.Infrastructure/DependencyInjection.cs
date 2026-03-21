@@ -1,4 +1,7 @@
 ﻿
+
+using BookOrbit.Application.Common.Constants;
+
 namespace BookOrbit.Infrastructure;
 static public class DependencyInjection
 {
@@ -7,7 +10,8 @@ static public class DependencyInjection
         return services
             .AddDbContext(configuration)
             .AddIdentity()
-            .AddInfrastrucureServices();
+            .AddInfrastrucureServices()
+            .AddPolicies();
     }
     static private IServiceCollection AddDbContext(this IServiceCollection services,IConfiguration configuration)
     {
@@ -52,6 +56,28 @@ static public class DependencyInjection
         services.AddTransient<ITokenProvider, TokenProvider>();
         services.AddTransient<IMaskingService, MaskingService>();
         services.AddTransient<IAppCache, AppCache>();
+        services.AddScoped<AppDbContextInitialiser>();
         return services;
     }
+    static private IServiceCollection AddPolicies(this IServiceCollection services)
+    {
+        services.AddScoped<IAuthorizationHandler,ActiveUserHandler>();
+        services.AddScoped<IAuthorizationHandler,AdminOnlyHandler>();
+
+
+
+        services.AddAuthorizationBuilder()
+
+            .AddPolicy(PoliciesNames.ActiveUsersPolicy, policy =>
+            policy.Requirements.Add(new ActiveUserRequirement()))
+
+            .AddPolicy(PoliciesNames.AdminOnlyPolicy, policy => {
+            policy.Requirements.Add(new ActiveUserRequirement());
+            policy.Requirements.Add(new AdminOnlyRequirement());
+            })
+            ;
+
+        return services;
+    }
+
 }
