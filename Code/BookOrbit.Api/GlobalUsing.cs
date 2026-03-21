@@ -14,6 +14,7 @@ global using BookOrbit.Application.Features.Identity.Queries.GenerateTokens;
 global using BookOrbit.Application.Features.Identity.Queries.GetUserById;
 global using BookOrbit.Application.Features.Identity.Queries.RefreshTokens;
 global using BookOrbit.Application.Features.Students.Dtos;
+global using BookOrbit.Application.Features.Students.Queries.GetStudentById;
 global using BookOrbit.Application.Features.Students.Queries.GetStudents;
 global using BookOrbit.Domain.Common.Results;
 global using BookOrbit.Infrastructure;

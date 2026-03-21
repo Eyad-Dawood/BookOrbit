@@ -1,4 +1,5 @@
 ﻿using BookOrbit.Api.OpenApi.Transformers;
+using System.Text.Json;
 
 namespace BookOrbit.Api;
 static public class DependencyInjection
@@ -35,9 +36,17 @@ static public class DependencyInjection
     }
     public static IServiceCollection AddControllerWithJsonConfiguration(this IServiceCollection services)
     {
-        services.AddControllers().AddJsonOptions(options => options
+        services.AddControllers().AddJsonOptions(options => {
+            
+            options
             .JsonSerializerOptions
-            .DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+            .DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+
+            options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
 
         return services;
     }
