@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookOrbit.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260319134034_AddedStudentAndRefreshToken")]
-    partial class AddedStudentAndRefreshToken
+    [Migration("20260321212105_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,7 +94,7 @@ namespace BookOrbit.Infrastructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PersonalPhotoUrl")
+                    b.Property<string>("PersonalPhotoFileName")
                         .IsRequired()
                         .HasMaxLength(2048)
                         .IsUnicode(false)

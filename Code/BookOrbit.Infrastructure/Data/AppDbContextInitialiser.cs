@@ -133,7 +133,7 @@ public class AppDbContextInitialiser(
 
         var nameResult = StudentName.Create($"Student {index.ToWords(new CultureInfo("en"))} Name");
         var emailResult = UniversityMail.Create(user.Email!);
-        var urlResult = Url.Create("https://example.com/photo"+$"{index}.png");
+        string personalPhoto =$"{Guid.NewGuid()}.png";
         var telegramUserIdResult = TelegramUserId.Create($"student{index}");
         var phoneNumberResult = PhoneNumber.Create($"0109690981{index}");
 
@@ -149,11 +149,6 @@ public class AppDbContextInitialiser(
             return;
         }
 
-        if (urlResult.IsFailure)
-        {
-            logger.LogError("Failed to create student value objects for user {Email} Errro {Error}", user.Email, urlResult.Errors);
-            return;
-        }
 
         if (telegramUserIdResult.IsFailure)
         {
@@ -172,7 +167,7 @@ public class AppDbContextInitialiser(
             Guid.NewGuid(),
             nameResult.Value,
             emailResult.Value,
-            urlResult.Value,
+            personalPhoto,
             user.Id,
             phoneNumber: phoneNumberResult.Value,
             telegramUserId: telegramUserIdResult.Value

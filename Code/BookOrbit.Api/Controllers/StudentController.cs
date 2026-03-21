@@ -1,10 +1,16 @@
 ﻿
+using BookOrbit.Api.Common.Helpers;
+using BookOrbit.Api.Contracts.Requests.Students;
+using BookOrbit.Application.Features.Students.Commands.CreateStudent;
+
 namespace BookOrbit.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/students")]
 [ApiVersion("1.0")]
 [Authorize]
-public sealed class StudentController(ISender sender) : ApiController
+public sealed class StudentController(
+    ISender sender,
+    ImageUploadHelper imageUploadHelper) : ApiController
 {
     [HttpGet]
     [Authorize(Policy = PoliciesNames.AdminOnlyPolicy)]
@@ -64,38 +70,47 @@ public sealed class StudentController(ISender sender) : ApiController
            Ok,
            e => Problem(e, HttpContext));
     }
+
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesDefaultResponseType]
+    [EndpointSummary("Register a new student with an associated account.")]
+    [EndpointDescription("Registers a student and creates a linked account used for authentication and access to the system.")]
+    [EndpointName("CreateStudentAccount")]
+    [MapToApiVersion("1.0")]
+    [EnableRateLimiting(ApiConstants.SensitiveRateLimmitingPolicyName)]
+    public async Task<ActionResult<StudentDto>> CreateStudentAccount([FromForm] CreateStudentRequest request,CancellationToken ct)
+    {
+        //Upload Image, Get Image Name 
+        var ImageUploadResult = await imageUploadHelper.UploadImage(request.PersonalPhoto);
+
+        if(ImageUploadResult.IsFailure)
+            return Problem(ImageUploadResult.Errors, HttpContext);
+
+        var command = new CreateStudentCommand(
+            request.Name,
+            request.UniversityMailAddress,
+            ImageUploadResult.Value,
+            request.Password,
+            request.PhoneNumber,
+            request.TelegramUserId);
+
+        var result = await sender.Send(command, ct);
+
+        if (result.IsFailure)
+            await imageUploadHelper.DeleteImage(ImageUploadResult.Value);
+
+
+        return result.Match(
+           Ok,
+           e => Problem(e, HttpContext));
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

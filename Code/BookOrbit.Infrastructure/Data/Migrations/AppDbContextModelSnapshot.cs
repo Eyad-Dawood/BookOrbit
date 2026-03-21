@@ -91,7 +91,7 @@ namespace BookOrbit.Infrastructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PersonalPhotoUrl")
+                    b.Property<string>("PersonalPhotoFileName")
                         .IsRequired()
                         .HasMaxLength(2048)
                         .IsUnicode(false)

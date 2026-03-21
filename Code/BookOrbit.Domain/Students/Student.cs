@@ -6,7 +6,7 @@ public class Student : AuditableEntity
     public PhoneNumber? PhoneNumber { get; }
     public TelegramUserId? TelegramUserId { get; }
     public UniversityMail UniversityMail { get; }
-    public Url PersonalPhotoUrl { get; }
+    public string PersonalPhotoFileName { get; }
     public int Points { get; private set; }
     public DateTimeOffset? JoinDateUtc { get; private set; } = null;
     public StudentState State { get; private set; }
@@ -23,14 +23,14 @@ public class Student : AuditableEntity
         Guid id,
         StudentName name,
         UniversityMail universityMail,
-        Url personalPhotoUrl,
+        string personalPhotoFileName,
         string userId,
         PhoneNumber? phoneNumber = null,
         TelegramUserId? telegramUserId = null) : base(id)
     {
         Name = name;
         UniversityMail = universityMail;
-        PersonalPhotoUrl = personalPhotoUrl;
+        PersonalPhotoFileName = personalPhotoFileName;
         UserId = userId;
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
@@ -43,7 +43,7 @@ public class Student : AuditableEntity
         Guid id,
         StudentName name,
         UniversityMail universityMail,
-        Url personalPhotoUrl,
+        string personalPhotoFileName,
         string userId,
         PhoneNumber? phoneNumber = null,
         TelegramUserId? telegramUserId = null)
@@ -57,20 +57,20 @@ public class Student : AuditableEntity
         if (universityMail is null)
             return StudentErrors.UniversityMailRequired;
 
-        if (personalPhotoUrl is null)
-            return StudentErrors.PersonalImageRequired;
-
         if (phoneNumber is null && telegramUserId is null)
             return StudentErrors.AtLeastOneCommunicationMethod;
 
         if(string.IsNullOrWhiteSpace(userId))
             return StudentErrors.UserIdRequired;
 
+        if (string.IsNullOrWhiteSpace(personalPhotoFileName))
+            return StudentErrors.PersonalImageRequired;
+
         return new Student(
             id,
             name,
             universityMail,
-            personalPhotoUrl,
+            personalPhotoFileName,
             userId,
             phoneNumber,
             telegramUserId);

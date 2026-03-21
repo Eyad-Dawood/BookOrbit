@@ -31,7 +31,7 @@ public class CreateStudentCommandHandler(
         PhoneNumber? phoneNumber = null;
         if (!string.IsNullOrWhiteSpace(command.PhoneNumber))
         {
-            var phoneNumberResult = 
+            var phoneNumberResult =
                 await EnsurePhoneNumberIsValidAndUnique(command.PhoneNumber, ct);
 
             if (phoneNumberResult.IsFailure)
@@ -39,12 +39,6 @@ public class CreateStudentCommandHandler(
 
             phoneNumber = phoneNumberResult.Value;
         }
-
-
-        var imageUrlCreationResult = Url.Create(command.PersonalPhotoUrl);
-
-        if (imageUrlCreationResult.IsFailure)
-            return imageUrlCreationResult.Errors;
 
 
         var nameCreationResult = StudentName.Create(command.Name);
@@ -63,7 +57,7 @@ public class CreateStudentCommandHandler(
             id: Guid.NewGuid(),
             name: nameCreationResult.Value,
             universityMail: emailResult.Value,
-            personalPhotoUrl: imageUrlCreationResult.Value,
+            personalPhotoFileName: command.PersonalPhotoFileName,
             userId:userCreationResult.Value,
             phoneNumber: phoneNumber,
             telegramUserId: telegramUserId);

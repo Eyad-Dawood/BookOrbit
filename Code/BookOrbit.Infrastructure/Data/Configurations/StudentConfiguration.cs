@@ -44,10 +44,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .IsUnicode(false)
             .IsRequired();
 
-        builder.Property(s => s.PersonalPhotoUrl)
-            .HasConversion(
-                url => url.Value,
-                value => Url.Create(value).Value)
+        builder.Property(s => s.PersonalPhotoFileName)
             .HasMaxLength(2048)
             .IsUnicode(false)
             .IsRequired();

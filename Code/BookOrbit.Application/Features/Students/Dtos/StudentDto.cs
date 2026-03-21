@@ -10,7 +10,7 @@ public class StudentDto
     public string? PhoneNumber { get; set; } = null;
     public string? TelegramUserId { get; set; } = null;
     public string UniversityMailAddress { get; set; } = string.Empty;
-    public string PersonalPhotoUrlAddress { get; set; } = string.Empty;
+    public string PersonalPhotoFileName { get; set; } = string.Empty;
     public int Points { get; set; }
     public StudentState State { get; set; }
 
@@ -24,7 +24,7 @@ public class StudentDto
     string? phoneNumber,
     string? telegramUserId,
     string universityMailAddress,
-    string personalPhotoUrlAddress,
+    string ersonalPhotoFileName,
     int points,
     StudentState state)
     {
@@ -33,7 +33,7 @@ public class StudentDto
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
         UniversityMailAddress = universityMailAddress;
-        PersonalPhotoUrlAddress = personalPhotoUrlAddress;
+        PersonalPhotoFileName = ersonalPhotoFileName;
         Points = points;
         State = state;
     }
@@ -46,7 +46,7 @@ public class StudentDto
             entity.PhoneNumber?.Value,
             entity.TelegramUserId?.Value,
             entity.UniversityMail.Value,
-            entity.PersonalPhotoUrl.Value,
+            entity.PersonalPhotoFileName,
             entity.Points,
             entity.State);
     }
@@ -58,7 +58,7 @@ public class StudentDto
          s.PhoneNumber != null ? s.PhoneNumber.Value : null,
          s.TelegramUserId != null ? s.TelegramUserId.Value : null,
          s.UniversityMail.Value,
-         s.PersonalPhotoUrl.Value,
+         s.PersonalPhotoFileName,
          s.Points,
          s.State
      );

@@ -1,4 +1,5 @@
-﻿using BookOrbit.Api.OpenApi.Transformers;
+﻿using BookOrbit.Api.Common.Helpers;
+using BookOrbit.Api.OpenApi.Transformers;
 using System.Text.Json;
 
 namespace BookOrbit.Api;
@@ -23,7 +24,8 @@ static public class DependencyInjection
             .AddCustomApiVersioning()
             .AddAppOpenTelemetry()
             .AddHelthChecks()
-            .AddApiDocumentation();
+            .AddApiDocumentation()
+            .AddPresentationServices();
 
         return services;
     }
@@ -237,6 +239,11 @@ static public class DependencyInjection
             });
         }
 
+        return services;
+    }
+    public static IServiceCollection AddPresentationServices(this IServiceCollection services)
+    {
+        services.AddScoped<ImageUploadHelper>();
         return services;
     }
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookOrbit.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedStudentAndRefreshToken : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,7 +189,7 @@ namespace BookOrbit.Infrastructure.Data.Migrations
                     PhoneNumber = table.Column<string>(type: "varchar(12)", unicode: false, maxLength: 12, nullable: true),
                     TelegramUserId = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: true),
                     UniversityMail = table.Column<string>(type: "varchar(320)", unicode: false, maxLength: 320, nullable: false),
-                    PersonalPhotoUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: false),
+                    PersonalPhotoFileName = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: false),
                     Points = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     JoinDateUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     State = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),

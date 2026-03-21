@@ -418,3 +418,4 @@ FodyWeavers.xsd
 *.msp
 Code/.dotnet-cli/
 Code/containers/
+Code/BookOrbit.Api/uploads/

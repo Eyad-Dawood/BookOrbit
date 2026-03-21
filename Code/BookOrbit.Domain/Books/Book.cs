@@ -6,7 +6,7 @@ public class Book : AuditableEntity
     public string Publisher { get; }
     public BookCategory Category { get; }
     public string Author { get; }
-    public Url CoverImageUrl { get; }
+    public string CoverImageFileName { get; }
 
 #pragma warning disable CS8618
     private Book() { }
@@ -18,14 +18,14 @@ public class Book : AuditableEntity
         string publisher,
         BookCategory category,
         string author,
-        Url coverImageUrl) : base(id)
+        string coverImageFileName) : base(id)
     {
         Title = title;
         ISBN = isbn;
         Publisher = publisher;
         Category = category;
         Author = author;
-        CoverImageUrl = coverImageUrl;
+        CoverImageFileName = coverImageFileName;
     }
 
     public static Result<Book> Create(
@@ -35,7 +35,7 @@ public class Book : AuditableEntity
         string publisher,
         BookCategory category,
         string author,
-        Url coverImageUrl)
+        string coverImageFileName)
     {
         if (id == Guid.Empty)
             return BookErrors.IdRequired;
@@ -73,7 +73,7 @@ public class Book : AuditableEntity
             publisher,
             category,
             author,
-            coverImageUrl);
+            coverImageFileName);
     }
 }
 
