@@ -4,7 +4,7 @@ public class ImageUploadHelper(
     IWebHostEnvironment environment,
     ILogger<ImageUploadHelper>logger)
 {
-    public async Task<Result<string>> UploadImage(IFormFile imageFile)
+    public async Task<Result<string>> UploadImage(IFormFile imageFile,string FolderPath)
     {
         if (imageFile == null || imageFile.Length == 0)
             return Error.Failure("Image.Required", "No Image Was Uploaded");
@@ -20,7 +20,7 @@ public class ImageUploadHelper(
 
         var fileName = $"{Guid.NewGuid()}{extension}";
 
-        var uploadsFolder = Path.Combine(environment.ContentRootPath, "uploads");
+        var uploadsFolder = Path.Combine(environment.ContentRootPath,FolderPath);
 
         if (!Directory.Exists(uploadsFolder))
             Directory.CreateDirectory(uploadsFolder);
@@ -43,11 +43,11 @@ public class ImageUploadHelper(
         return fileName;
     }
 
-    public Task DeleteImage(string fileName)
+    public Task DeleteImage(string fileName,string FolderPath)
     {
         try
         {
-            var uploadsFolder = Path.Combine(environment.ContentRootPath, "uploads");
+            var uploadsFolder = Path.Combine(environment.ContentRootPath, FolderPath);
             var filePath = Path.Combine(uploadsFolder, fileName);
 
             if (File.Exists(filePath))

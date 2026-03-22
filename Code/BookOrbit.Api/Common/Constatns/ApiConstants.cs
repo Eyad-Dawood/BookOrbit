@@ -13,13 +13,16 @@ static public class ApiConstants
     public const int SensistiveRateLimitQueueLimit = 0;
 
 
-    public const string DefaultOutputCachePolicyName = "DefaultCache";
-
+    public const QueueProcessingOrder RateLimitQueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    public const bool RateLimitAutoReplenishment = true;
 
     public const string SensitiveRateLimmitingPolicyName = "SensitiveRateLimite";
     public const string NormalRateLimitingPolicyName = "NormalRateLimite";
 
-    public const QueueProcessingOrder RateLimitQueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    public const bool RateLimitAutoReplenishment = true;
+
+    public const string DefaultOutputCachePolicyName = "DefaultCache";
+
+    public const string StudentImagesUploadFolderPath = "uploads/Students";
+
 }
 

@@ -33,3 +33,14 @@ Content-Type: application/json
 ###
 GET {{baseurl}}/v1.0/identity/users/me
 Authorization: Bearer {{AccessToken}}
+
+
+
+
+###
+PUT {{baseurl}}/v1.0/students/D350784C-C542-4274-82A9-086E334D6124
+Content-Type: application/json
+
+{
+  "Name": "Ali Reda one"
+}

@@ -1,9 +1,4 @@
-﻿
-using BookOrbit.Api.Common.Helpers;
-using BookOrbit.Api.Contracts.Requests.Students;
-using BookOrbit.Application.Features.Students.Commands.CreateStudent;
-
-namespace BookOrbit.Api.Controllers;
+﻿namespace BookOrbit.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/students")]
 [ApiVersion("1.0")]
@@ -44,7 +39,7 @@ public sealed class StudentController(
 
 
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}",Name = "GetCustomerById")]
     [Authorize(Policy = PoliciesNames.StudentOwnershipPolicy)]
     [ProducesResponseType(typeof(StudentDto),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
@@ -88,7 +83,7 @@ public sealed class StudentController(
     public async Task<ActionResult<StudentDto>> CreateStudentAccount([FromForm] CreateStudentRequest request,CancellationToken ct)
     {
         //Upload Image, Get Image Name 
-        var ImageUploadResult = await imageUploadHelper.UploadImage(request.PersonalPhoto);
+        var ImageUploadResult = await imageUploadHelper.UploadImage(request.PersonalPhoto,ApiConstants.StudentImagesUploadFolderPath);
 
         if(ImageUploadResult.IsFailure)
             return Problem(ImageUploadResult.Errors, HttpContext);
@@ -104,13 +99,43 @@ public sealed class StudentController(
         var result = await sender.Send(command, ct);
 
         if (result.IsFailure)
-            await imageUploadHelper.DeleteImage(ImageUploadResult.Value);
+            await imageUploadHelper.DeleteImage(ImageUploadResult.Value, ApiConstants.StudentImagesUploadFolderPath);
 
 
         return result.Match(
-           Ok,
+           studentDto=> CreatedAtRoute(
+               routeName:"GetCustomerById",
+               routeValues:new { version = "1.0", id = studentDto.Id},
+               value: studentDto),
+
            e => Problem(e, HttpContext));
     }
 
 
+    [HttpPut("{id:guid}")]
+    [Authorize(Policy = PoliciesNames.StudentOwnershipPolicy)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [EndpointSummary("Update a student Informations.")]
+    [EndpointDescription("Update Student Data By Id.")]
+    [EndpointName("UpdateStudent")]
+    [MapToApiVersion("1.0")]
+    [EnableRateLimiting(ApiConstants.SensitiveRateLimmitingPolicyName)]
+    public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateStudentRequest request,CancellationToken ct)
+    {
+        var result = await sender.Send(
+            new UpdateStudentCommand(
+                id,
+            request.Name),
+            ct);
+
+        return result.Match(
+           response => NoContent(),
+           e => Problem(e, HttpContext));
+    }
 }
