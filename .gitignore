@@ -418,4 +418,6 @@ FodyWeavers.xsd
 *.msp
 Code/.dotnet-cli/
 Code/containers/
-Code/BookOrbit.Api/uploads/
+Code/BookOrbit.Api/uploads/*
+!Code\BookOrbit.Api\uploads\Students\DefaultStudentImage.png
+Code/BookOrbit.Api/Requests.http

@@ -9,7 +9,6 @@ global using BookOrbit.Domain.Common.ValueObjects;
 global using BookOrbit.Domain.Identity;
 global using BookOrbit.Domain.Students;
 global using BookOrbit.Domain.Students.ValueObjects;
-global using BookOrbit.Infrastructure.Common.Constants;
 global using BookOrbit.Infrastructure.Data;
 global using BookOrbit.Infrastructure.Data.Interceptors;
 global using BookOrbit.Infrastructure.Identity;

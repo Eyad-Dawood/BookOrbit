@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Infrastructure.Identity.Policies;
+﻿namespace BookOrbit.Infrastructure.Identity.Policies;
 
 public class ActiveUserRequirement : IAuthorizationRequirement;
 
@@ -10,7 +9,7 @@ public class ActiveUserHandler(
         AuthorizationHandlerContext context,
         ActiveUserRequirement requirement)
     {
-        var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userId))
         {

@@ -5,7 +5,7 @@
 [Authorize]
 public sealed class StudentController(
     ISender sender,
-    ImageUploadHelper imageUploadHelper) : ApiController
+    ImageHelper imageHelper) : ApiController
 {
     [HttpGet]
     [Authorize(Policy = PoliciesNames.AdminOnlyPolicy)]
@@ -39,17 +39,17 @@ public sealed class StudentController(
 
 
 
-    [HttpGet("{id:guid}",Name = "GetCustomerById")]
+    [HttpGet("{id:guid}", Name = "GetStudentById")]
     [Authorize(Policy = PoliciesNames.StudentOwnershipPolicy)]
-    [ProducesResponseType(typeof(StudentDto),StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status429TooManyRequests)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesDefaultResponseType]
-    [EndpointSummary("Retrieves a stude-nt by ID.")]
+    [EndpointSummary("Retrieves a student by ID.")]
     [EndpointDescription("Returns detailed information about the specified student if found.")]
     [EndpointName("GetStudentById")]
     [MapToApiVersion("1.0")]
@@ -59,7 +59,7 @@ public sealed class StudentController(
     {
         var query = new GetStudentByIdQuery(id);
 
-        var result = await sender.Send(query,ct);
+        var result = await sender.Send(query, ct);
 
         return result.Match(
            Ok,
@@ -80,12 +80,12 @@ public sealed class StudentController(
     [EndpointName("CreateStudentAccount")]
     [MapToApiVersion("1.0")]
     [EnableRateLimiting(ApiConstants.SensitiveRateLimmitingPolicyName)]
-    public async Task<ActionResult<StudentDto>> CreateStudentAccount([FromForm] CreateStudentRequest request,CancellationToken ct)
+    public async Task<ActionResult<StudentDto>> CreateStudentAccount([FromForm] CreateStudentRequest request, CancellationToken ct)
     {
         //Upload Image, Get Image Name 
-        var ImageUploadResult = await imageUploadHelper.UploadImage(request.PersonalPhoto,ApiConstants.StudentImagesUploadFolderPath);
+        var ImageUploadResult = await imageHelper.UploadImage(request.PersonalPhoto, ApiConstants.StudentImagesUploadFolderPath);
 
-        if(ImageUploadResult.IsFailure)
+        if (ImageUploadResult.IsFailure)
             return Problem(ImageUploadResult.Errors, HttpContext);
 
         var command = new CreateStudentCommand(
@@ -99,13 +99,13 @@ public sealed class StudentController(
         var result = await sender.Send(command, ct);
 
         if (result.IsFailure)
-            await imageUploadHelper.DeleteImage(ImageUploadResult.Value, ApiConstants.StudentImagesUploadFolderPath);
+            await imageHelper.DeleteImage(ImageUploadResult.Value, ApiConstants.StudentImagesUploadFolderPath);
 
 
         return result.Match(
-           studentDto=> CreatedAtRoute(
-               routeName:"GetCustomerById",
-               routeValues:new { version = "1.0", id = studentDto.Id},
+           studentDto => CreatedAtRoute(
+               routeName: "GetStudentById",
+               routeValues: new { version = "1.0", id = studentDto.Id },
                value: studentDto),
 
            e => Problem(e, HttpContext));
@@ -126,7 +126,7 @@ public sealed class StudentController(
     [EndpointName("UpdateStudent")]
     [MapToApiVersion("1.0")]
     [EnableRateLimiting(ApiConstants.SensitiveRateLimmitingPolicyName)]
-    public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateStudentRequest request,CancellationToken ct)
+    public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateStudentRequest request, CancellationToken ct)
     {
         var result = await sender.Send(
             new UpdateStudentCommand(

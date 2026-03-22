@@ -53,11 +53,14 @@ public class CreateStudentCommandHandler(
         if(userCreationResult.IsFailure)
             return userCreationResult.Errors;
 
+        string personalPhotoFileName = Path.GetFileName(command.PersonalPhotoFileName);// ignore the path
+
+
         var createdStudentResult = Student.Create(
             id: Guid.NewGuid(),
             name: nameCreationResult.Value,
             universityMail: emailResult.Value,
-            personalPhotoFileName: command.PersonalPhotoFileName,
+            personalPhotoFileName: personalPhotoFileName,
             userId:userCreationResult.Value,
             phoneNumber: phoneNumber,
             telegramUserId: telegramUserId);

@@ -1,6 +1,6 @@
 ﻿@baseurl = https://localhost:7240/api
 @rawurl = https://localhost:7240
-@AccessToken = eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNDc5ZmEwZC1hMjZhLTRlYWItYmEyZC01NGNjNWM0NjhlMDYiLCJlbWFpbCI6ImFkbWluQGJvb2tvcmJpdC5jb20iLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NzQwOTY3NzYsImV4cCI6MTc3NDA5NzM3NiwiaWF0IjoxNzc0MDk2Nzc2LCJhdWQiOiJsb2NhbGhvc3QifQ.X8rz1C13rDe5UhYYDOP1M2voiIXttkV8Txo6BSzS_B4
+@AccessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NGJjZGEzOS0xMTRkLTRhY2QtODgzYS1hYzI5YThjNDhmNGQiLCJlbWFpbCI6ImFkbWluQGJvb2tvcmJpdC5jb20iLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NzQxODA0MDksImV4cCI6MTc3NDE4MTAwOSwiaWF0IjoxNzc0MTgwNDA5LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.HHQQfE8b3jA9kir1HtctrSiF0ldbOh9n_PNsEu7FfQQ
 @RefreshToken = TlC/2Tld4qDTEI/JrxZeDE6MNJI55yroIs1BJw6R3Q0=
 
 ### get students - page 8 with page size 500
@@ -25,8 +25,8 @@ POST {{baseurl}}/v1.0/identity/token
 Content-Type: application/json
 
 {
-  "email": "admin@bookorbit.com",
-  "password": "Admin@123456"
+  "email": "eyadreda.dev.new@std.mans.edu.eg",
+  "password": "sa123456"
 }
 
 
@@ -39,8 +39,14 @@ Authorization: Bearer {{AccessToken}}
 
 ###
 PUT {{baseurl}}/v1.0/students/D350784C-C542-4274-82A9-086E334D6124
+Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
   "Name": "Ali Reda one"
 }
+
+
+###
+GET {{baseurl}}/v1.0/images/students/DefaultStudentImage.png
+Authorization: Bearer {{AccessToken}}

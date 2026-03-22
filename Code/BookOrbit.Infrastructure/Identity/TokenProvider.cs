@@ -23,8 +23,9 @@ public class TokenProvider
         var issure = jwtSettings["Issuer"]!;
         var audience = jwtSettings["Audience"]!;
         var key = jwtSettings["Key"]!;
+        var accessTokenExpritesInMinutes = int.Parse(jwtSettings["AccessTokenExpirationInMinutes"]!);
 
-        var expires = DateTime.UtcNow.AddMinutes(InfrastructureIdentityConstants.AccessTokenExpirationInMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(accessTokenExpritesInMinutes);
 
         var claims = new List<Claim>()
         {
@@ -59,14 +60,18 @@ public class TokenProvider
         //delete old refresh token
         await context.RefreshTokens.
             Where(rt => rt.UserId == user.UserId)
-            .ExecuteDeleteAsync(ct);
+            .ExecuteDeleteAsync(ct); //Delete NOW!!
 
         //create new one
+
+        var refreshTokenExpritesInMinutes = int.Parse(jwtSettings["RefreshTokenExpirationInDays"]!);
+
+
         var refreshTokenCreationResult = RefreshToken.Create(
             Guid.NewGuid(),
             GenerateRefreshToken(),
             user.UserId,
-            DateTime.UtcNow.AddDays(InfrastructureIdentityConstants.RefreshTokenExpirationInDays));
+            DateTime.UtcNow.AddDays(refreshTokenExpritesInMinutes));
 
         if (refreshTokenCreationResult.IsFailure)
         {

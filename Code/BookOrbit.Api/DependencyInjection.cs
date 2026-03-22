@@ -243,7 +243,7 @@ static public class DependencyInjection
     }
     public static IServiceCollection AddPresentationServices(this IServiceCollection services)
     {
-        services.AddScoped<ImageUploadHelper>();
+        services.AddScoped<ImageHelper>();
         return services;
     }
 
