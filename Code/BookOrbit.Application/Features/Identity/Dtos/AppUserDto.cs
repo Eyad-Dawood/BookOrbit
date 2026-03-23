@@ -4,4 +4,5 @@ public record AppUserDto(
     string UserId,
     string Email, 
     IList<string> Roles,
-    IList<Claim> Claims);
+    IList<Claim> Claims,
+    bool EmailConfirmed);

@@ -1,13 +1,10 @@
-﻿using BookOrbit.Api.Common.Helpers;
-using BookOrbit.Api.OpenApi.Transformers;
-using System.Text.Json;
-
+﻿
 namespace BookOrbit.Api;
 static public class DependencyInjection
 {
     private const string AppSettingsSectionName = "AppSettings";
     private const string CacheSettingsSectionName = "CacheSettings";
-
+    private const string EmailSettingsSectionName = "EmailSettings";
     public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -33,7 +30,7 @@ static public class DependencyInjection
     {
         services.Configure<AppSettings>(configuration.GetSection(AppSettingsSectionName));
         services.Configure<CacheSettings>(configuration.GetSection(CacheSettingsSectionName));
-
+        services.Configure<EmailSettings>(configuration.GetSection(EmailSettingsSectionName));
         return services;
     }
     public static IServiceCollection AddControllerWithJsonConfiguration(this IServiceCollection services)

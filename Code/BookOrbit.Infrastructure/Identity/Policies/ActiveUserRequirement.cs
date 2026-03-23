@@ -3,9 +3,10 @@
 public class ActiveUserRequirement : IAuthorizationRequirement;
 
 public class ActiveUserHandler(
-    ILogger<ActiveUserHandler> logger) : AuthorizationHandler<ActiveUserRequirement>
+    ILogger<ActiveUserHandler> logger,
+    UserManager<AppUser> userManager) : AuthorizationHandler<ActiveUserRequirement>
 {
-    protected override Task HandleRequirementAsync(
+    protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         ActiveUserRequirement requirement)
     {
@@ -15,21 +16,20 @@ public class ActiveUserHandler(
         {
             context.Fail();
             logger.LogWarning("Authorization failed: userId not found in token");
-            return Task.CompletedTask;
+            return;
         }
 
-        //No need right now Its enough to have id in token
-        //Maybe when i add User state in database
-        //var user = await identityService.GetUserByIdAsync(userId);
+        var userConfirmedEmail = await userManager.Users
+            .FirstOrDefaultAsync(u=>u.Id==userId&&u.EmailConfirmed);
 
-        //if (user.IsFailure)
-        //{
-        //    context.Fail();
-        //    logger.LogWarning("Authorization failed: user {UserId} was not found in the system", userId);
-        //    return;
-        //}
+        if(userConfirmedEmail is null)
+        {
+            context.Fail();
+            logger.LogWarning("Authorization failed: userId : [{userId}] not found in system or hasnt confirm his email",userId);
+            return;
+        }
 
         context.Succeed(requirement);
-        return Task.CompletedTask;
+        return;
     }
 }

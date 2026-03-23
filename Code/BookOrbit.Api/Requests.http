@@ -23,10 +23,19 @@ Content-Type: application/json
 ### generateToken
 POST {{baseurl}}/v1.0/identity/token
 Content-Type: application/json
+{
+    "email": "eyadreda@std.mans.edu.eg",
+  "password": "sa123456"
+}
+
+
+### generateToken
+POST {{baseurl}}/v1.0/identity/token
+Content-Type: application/json
 
 {
-  "email": "eyadreda.dev.new@std.mans.edu.eg",
-  "password": "sa123456"
+  "email": "admin@bookorbit.com",
+  "password": "Admin@123456"
 }
 
 

@@ -34,7 +34,7 @@ public class Student : AuditableEntity
         UserId = userId;
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
-        State = StudentState.UnVerified;
+        State = StudentState.Pending;
         Points = 0;
     }
 
@@ -90,16 +90,15 @@ public class Student : AuditableEntity
     {
         return State switch
         {
-            StudentState.UnVerified => newState is StudentState.Pending,
             StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected,
-            StudentState.Approved => newState is StudentState.Active or StudentState.Banned or StudentState.Suspended,
-            StudentState.Active => newState is StudentState.Banned or StudentState.Suspended,
+            StudentState.Approved => newState is StudentState.Active or StudentState.Banned,
+            StudentState.Active => newState is StudentState.Banned,
             StudentState.Rejected => false,
             StudentState.Banned => false,
-            StudentState.Suspended => newState is StudentState.Active,
             _ => false
         };
     }
+
     private Result<Updated> UpdateState(StudentState newState)
     {
         if (!CanTransitionToState(newState))
@@ -133,9 +132,6 @@ public class Student : AuditableEntity
 
     public Result<Updated> Ban() =>
         UpdateState(StudentState.Banned);
-
-    public Result<Updated> Suspend() =>
-        UpdateState(StudentState.Suspended);
 
     public Result<Updated> Verify() =>
         UpdateState(StudentState.Pending);

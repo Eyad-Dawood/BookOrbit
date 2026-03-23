@@ -8,7 +8,7 @@ public class ImagesController
 {
 
     [HttpGet("students/{fileName}")]
-    [Authorize(Policy = PoliciesNames.ActiveUsersPolicy)]
+    [Authorize(Policy = PoliciesNames.RegisteredUserPolicy)]
     [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -19,7 +19,7 @@ public class ImagesController
     [MapToApiVersion("1.0")]
     [EndpointName("GetStudentImage")]
     [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
-    //[ResponseCache(Duration = ApiConstants.ImagesResponseCacheDurationInSeconds, Location = ResponseCacheLocation.Any)]
+    [ResponseCache(Duration = ApiConstants.ImagesResponseCacheDurationInSeconds, Location = ResponseCacheLocation.Any)]
     public async Task<ActionResult> GetStudentImage([FromRoute]string fileName)
     {
         fileName = Path.GetFileName(fileName);

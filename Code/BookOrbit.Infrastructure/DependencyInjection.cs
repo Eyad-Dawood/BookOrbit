@@ -46,7 +46,8 @@ static public class DependencyInjection
             options.User.RequireUniqueEmail = true;
         })
         .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<AppDbContext>();
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
         return services;
     }
@@ -57,6 +58,7 @@ static public class DependencyInjection
         services.AddTransient<IMaskingService, MaskingService>();
         services.AddTransient<IAppCache, AppCache>();
         services.AddScoped<AppDbContextInitialiser>();
+        services.AddTransient<IEmailService, EmailService>();
         return services;
     }
     static private IServiceCollection AddPolicies(this IServiceCollection services)
@@ -64,11 +66,12 @@ static public class DependencyInjection
         services.AddScoped<IAuthorizationHandler,ActiveUserHandler>();
         services.AddScoped<IAuthorizationHandler,AdminOnlyHandler>();
         services.AddScoped<IAuthorizationHandler,StudentOwnerShipHandler>();
-
+        services.AddScoped<IAuthorizationHandler,RegisteredUserHandler>();
+        services.AddScoped<IAuthorizationHandler, RegisteredUserOwnershipHandler>();
 
         services.AddAuthorizationBuilder()
 
-            .AddPolicy(PoliciesNames.ActiveUsersPolicy, policy =>
+            .AddPolicy(PoliciesNames.ActiveUserPolicy, policy =>
             policy.Requirements.Add(new ActiveUserRequirement()))
 
             .AddPolicy(PoliciesNames.AdminOnlyPolicy, policy => {
@@ -78,8 +81,19 @@ static public class DependencyInjection
 
             .AddPolicy(PoliciesNames.StudentOwnershipPolicy,policy =>
             {
-                policy.Requirements.Add(new ActiveUserRequirement());
+                policy.Requirements.Add(new RegisteredUserRequirement());
                 policy.Requirements.Add(new StudentOwnerShipRequirement());
+            })
+
+            .AddPolicy(PoliciesNames.RegisteredUserPolicy,policy =>
+            {
+                policy.Requirements.Add(new RegisteredUserRequirement());
+            })
+
+            .AddPolicy(PoliciesNames.RegisteredUserOwnershipPolicy,policy =>
+            {
+                policy.Requirements.Add(new RegisteredUserRequirement());
+                policy.Requirements.Add(new RegisteredUserOwnershipRequirement());
             })
 
             ;

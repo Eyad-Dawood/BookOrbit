@@ -1,7 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-
-namespace BookOrbit.Infrastructure.Identity.Policies;
+﻿namespace BookOrbit.Infrastructure.Identity.Policies;
 public class StudentOwnerShipRequirement : IAuthorizationRequirement;
 
 public class StudentOwnerShipHandler(
@@ -36,10 +33,10 @@ public class StudentOwnerShipHandler(
             return;
         }
 
-        var routeValue = contextAccessor.HttpContext?
+        var idRouteValue = contextAccessor.HttpContext?
             .Request.RouteValues["id"]?.ToString();
 
-        if (!Guid.TryParse(routeValue, out var routeStudentId))
+        if (!Guid.TryParse(idRouteValue, out var routeStudentId))
         {
             logger.LogWarning("Authorization failed: invalid or missing route id");
             context.Fail();

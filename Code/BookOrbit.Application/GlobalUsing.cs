@@ -27,3 +27,4 @@ global using System.Linq.Expressions;
 global using System.Reflection;
 global using System.Security.Claims;
 global using BookOrbit.Application.Common.Enums;
+global using System.Text.Json.Serialization;

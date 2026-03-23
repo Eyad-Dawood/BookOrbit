@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace BookOrbit.Application.Features.Students.Dtos;
 
-namespace BookOrbit.Application.Features.Students.Dtos;
-
-public class StudentDto
+public record StudentDto
 {
 
     public Guid Id { get; set; } = Guid.Empty;

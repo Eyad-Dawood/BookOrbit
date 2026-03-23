@@ -1,4 +1,4 @@
-﻿using BookOrbit.Application.Common.Enums;
+﻿using Microsoft.AspNetCore.WebUtilities;
 
 namespace BookOrbit.Infrastructure.Identity;
 
@@ -14,8 +14,13 @@ public class IdentityService(
         if (user is null)
             return InfrastrucureIdentityErrors.InvalidLoginAttempt;
 
-        if (!user.EmailConfirmed)
-            return InfrastrucureIdentityErrors.EmailNotConfirmed;
+        //User now can Authenticate without confirmation to 
+        //access his user Id , 
+        // But cant integrate with other end points
+        //(Active User Policy in infrastrucure)
+
+        //if (!user.EmailConfirmed)
+        //    return InfrastrucureIdentityErrors.EmailNotConfirmed;
 
         if (!await userManager.CheckPasswordAsync(user, password))
             return InfrastrucureIdentityErrors.InvalidLoginAttempt;
@@ -25,7 +30,8 @@ public class IdentityService(
             user.Id,
             user.Email!,
             await userManager.GetRolesAsync(user),
-            await userManager.GetClaimsAsync(user));
+            await userManager.GetClaimsAsync(user),
+            user.EmailConfirmed);
     }
 
     public async Task<bool> IsInRoleAsync(string userId, IdentityRoles role)
@@ -35,7 +41,7 @@ public class IdentityService(
         return user != null && await userManager.IsInRoleAsync(user, srole);
     }
 
-    public async Task<Result<string>> CreateStudent(string email, string password,CancellationToken ct)
+    public async Task<Result<string>> CreateStudent(string email, string password, CancellationToken ct = default)
     {
         var user = new AppUser
         {
@@ -45,7 +51,7 @@ public class IdentityService(
         };
 
         var createResult = await userManager.CreateAsync(user, password);
-        
+
         if (!createResult.Succeeded)
         {
             logger.LogError(
@@ -75,7 +81,7 @@ public class IdentityService(
         return user.Id;
     }
 
-    public async Task<Result<Deleted>> DeleteUserByIdAsync(string userId, CancellationToken ct)
+    public async Task<Result<Deleted>> DeleteUserByIdAsync(string userId, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
@@ -96,8 +102,7 @@ public class IdentityService(
         return Result.Deleted;
     }
 
-
-    public async Task<Result<AppUserDto>> GetUserByIdAsync(string id, CancellationToken ct)
+    public async Task<Result<AppUserDto>> GetUserByIdAsync(string id, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(id);
 
@@ -108,17 +113,70 @@ public class IdentityService(
             user.Id,
             user.Email!,
             await userManager.GetRolesAsync(user),
-            await userManager.GetClaimsAsync(user));
+            await userManager.GetClaimsAsync(user),
+            user.EmailConfirmed);
     }
 
-    public async Task<string?> GetUserNameAsync(string userId, CancellationToken ct)
+    public async Task<string?> GetUserNameAsync(string userId, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
         return user?.UserName;
     }
 
-    public async Task<bool> UserEmailExists(string email, CancellationToken ct) =>
+    public async Task<bool> UserEmailExists(string email, CancellationToken ct = default) =>
          await userManager.Users.AnyAsync(u => u.Email == email, ct);
 
+    public async Task<Result<EmailConfirmationTokenDto>> GenerateEmailConfirmationTokenAsync(string userId, CancellationToken ct = default)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            return InfrastrucureIdentityErrors.UserNotFoundById;
+
+        if (string.IsNullOrWhiteSpace(user.Email))
+        {
+            logger.LogError("User {userId} Has No Email Related To It",user.Id);
+            return InfrastrucureIdentityErrors.UserNotFoundByEmail;
+        }
+
+        if (user.EmailConfirmed)
+            return InfrastrucureIdentityErrors.EmailAlreadyConfirmed;
+
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+        return new EmailConfirmationTokenDto(encodedToken,user.Email);
+    }
+
+    public async Task<Result<Updated>> ConfirmEmailAsync(string userId, string encodedToken, CancellationToken ct = default)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            return InfrastrucureIdentityErrors.UserNotFoundById;
+
+        if (user.EmailConfirmed)
+            return InfrastrucureIdentityErrors.EmailAlreadyConfirmed;
+
+        string decodedToken;
+
+        try
+        {
+            decodedToken = Encoding.UTF8.GetString(
+                WebEncoders.Base64UrlDecode(encodedToken));
+        }
+        catch
+        {
+            return InfrastrucureIdentityErrors.InvalidEmailConfirmationToken;
+        }
+
+        var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+
+        if (!result.Succeeded)
+            return InfrastrucureIdentityErrors.InvalidEmailConfirmationToken;
+
+        return Result.Updated;
+    }
 }

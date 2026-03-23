@@ -1,6 +1,8 @@
 ﻿namespace BookOrbit.Application.Common.Interfaces;
 public interface IIdentityService
 {
+    Task<Result<EmailConfirmationTokenDto>> GenerateEmailConfirmationTokenAsync(string userId, CancellationToken ct = default);
+    Task<Result<Updated>> ConfirmEmailAsync(string userId,string encodedToken,CancellationToken ct = default);
     Task<bool> IsInRoleAsync(string userId, IdentityRoles role);
     Task<Result<AppUserDto>> AuthenticateAsync(string email,string password,CancellationToken ct = default);
     Task<Result<AppUserDto>> GetUserByIdAsync(string id, CancellationToken ct = default);
