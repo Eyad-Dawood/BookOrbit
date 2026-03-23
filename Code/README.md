@@ -102,6 +102,32 @@ After startup, these services are expected to be available:
 - Grafana: `http://localhost:3000`
 - Jaeger: `http://localhost:16686`
 
+## Verified Runtime Status
+
+The project was tested with:
+
+```bash
+docker compose up --build
+```
+
+and the container stack starts successfully.
+
+Verified endpoints:
+
+- `http://localhost:7240/health`
+- `http://localhost:7240/openapi/v1.json`
+- `http://localhost:7240/metrics`
+
+## Current Database Caveat
+
+There is an important database caveat in the current local Docker setup.
+
+The existing SQL Server volume may already contain tables created from an older startup flow, while EF Core migration history is missing or incomplete. In that case, automatic migration tries to create tables that already exist, which causes SQL exceptions during startup.
+
+The app now tolerates that state and continues running, but this is still not the clean ideal state for the database.
+
+If you start with a fresh SQL Server volume, the setup should be cleaner.
+
 ## Important Note About Student Default Image
 
 There is currently an issue with the default student image.

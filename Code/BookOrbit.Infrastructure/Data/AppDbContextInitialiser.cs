@@ -10,6 +10,12 @@ public class AppDbContextInitialiser(
     {
         try
         {
+            if (await DatabaseSchemaAlreadyExistsAsync())
+            {
+                logger.LogInformation("Database schema already exists. Skipping database creation.");
+                return;
+            }
+
             await context.Database.EnsureCreatedAsync();
         }
         catch (Exception ex)
@@ -124,6 +130,21 @@ public class AppDbContextInitialiser(
     }
 
     #region Helpers
+
+    private async Task<bool> DatabaseSchemaAlreadyExistsAsync()
+    {
+        try
+        {
+            await context.Students.AnyAsync();
+            return true;
+        }
+        catch (Microsoft.Data.SqlClient.SqlException ex) when (
+            ex.Number == 208 || // Invalid object name
+            ex.Number == 4060)  // Cannot open database
+        {
+            return false;
+        }
+    }
 
     private async Task CreateStudentIfNotExistsAsync(AppUser user,int index)
     {
