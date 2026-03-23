@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "d0ecf7db-bdc7-4e0c-beac-e8beb5f38569",
+    "_postman_id": "778a0420-0534-4056-91ff-a4ccdddc81cf",
     "name": "BookOrbit API",
     "description": "Postman collection for BookOrbit API v1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "52190839",
-    "_collection_link": "https://go.postman.co/collection/52190839-d0ecf7db-bdc7-4e0c-beac-e8beb5f38569?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/52190839-778a0420-0534-4056-91ff-a4ccdddc81cf?source=collection_link"
   },
   "item": [
     {
@@ -346,12 +346,130 @@
       ]
     },
     {
-      "name": "New Request",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
+      "name": "API",
+      "item": [
+        {
+          "name": "Copy In Browser",
+          "item": [
+            {
+              "name": "Seq",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Prometheus",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Grafana",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Jaeger",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:16686",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "16686"
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "metrics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Open Api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/openapi/v1.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "openapi",
+                "v1.json"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
