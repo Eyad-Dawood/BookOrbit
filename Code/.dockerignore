@@ -497,5 +497,6 @@ README.md
 **/Dockerfile*
 **/docker-compose*
 
-Code/BookOrbit.Api/uploads/*
-!Code/BookOrbit.Api/uploads/students/DefaultStudentImage.png
+BookOrbit.Api/uploads/*
+!BookOrbit.Api/uploads/Students/
+!BookOrbit.Api/uploads/Students/DefaultStudentImage.png

@@ -24,12 +24,7 @@ At the moment, the repository should be viewed as a strong backend foundation ra
 - Rate limiting for normal and sensitive endpoints.
 - SQL Server persistence with Entity Framework Core and seeded startup data.
 - Dockerized local environment.
-- Strong observability setup with:
-  - OpenTelemetry
-  - Prometheus metrics scraping
-  - Grafana dashboards
-  - Jaeger tracing
-  - Seq structured logging
+- Strong observability setup with OpenTelemetry, Prometheus, Grafana, Jaeger, and Seq.
 
 ## Implemented Areas
 
@@ -81,6 +76,7 @@ This means the project is already prepared for:
 
 - Docker must be installed on your machine.
 - Docker Compose support must be available through Docker Desktop / Docker Engine.
+- Postman, Insomnia, or any HTTP client is optional but useful for testing the API.
 
 ### Steps
 
@@ -92,14 +88,177 @@ This means the project is already prepared for:
 docker compose up --build
 ```
 
-### Main Services
+### Local URLs
 
 After startup, these services are expected to be available:
 
-- API: `http://localhost:7240`
+- API HTTP: `http://localhost:7240`
+- API HTTPS: `https://localhost:7241`
+- API Health: `http://localhost:7240/health`
+- API Metrics: `http://localhost:7240/metrics`
+- API OpenAPI JSON: `http://localhost:7240/openapi/v1.json`
 - Seq: `http://localhost:8081`
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
+- Jaeger: `http://localhost:16686`
+
+## Services And Credentials
+
+### API
+
+- HTTP Base URL: `http://localhost:7240`
+- HTTPS Base URL: `https://localhost:7241`
+- Health: `http://localhost:7240/health`
+- Metrics: `http://localhost:7240/metrics`
+- OpenAPI JSON: `http://localhost:7240/openapi/v1.json`
+
+### Grafana
+
+- URL: `http://localhost:3000`
+- Username: `admin`
+- Password: `sa123456`
+
+### Seq
+
+- URL: `http://localhost:8081`
+- Ingestion port: `http://localhost:5341`
+- Username : `admin`
+- Password : `MyStrongPass123!`
+
+### Prometheus
+
+- URL: `http://localhost:9090`
+- Targets page: `http://localhost:9090/targets`
+- API target status endpoint: `http://localhost:9090/api/v1/targets`
+
+### Jaeger
+
+- UI URL: `http://localhost:16686`
+- OTLP gRPC receiver: `localhost:4317`
+- OTLP HTTP receiver: `localhost:4318`
+
+### SQL Server
+
+- Host: `localhost`
+- Port: `1433`
+- Username: `sa`
+- Password: `MyStrongPass123!`
+- Database: `BookOrbitDb`
+
+### Important URL Note
+
+Use the correct protocol with the correct port:
+
+- `http://localhost:7240` is HTTP only
+- `https://localhost:7241` is HTTPS only
+
+Do not send `https` requests to port `7240`.
+
+For example, this is wrong:
+
+```text
+https://localhost:7240/api/v1/identity/token
+```
+
+Use one of these instead:
+
+```text
+http://localhost:7240/api/v1/identity/token
+https://localhost:7241/api/v1/identity/token
+```
+
+If your HTTP client has trouble with the self-signed HTTPS certificate, use the HTTP endpoint on port `7240` for local testing.
+
+### API Testing Note
+
+The `.http` file inside the project does not work reliably for API testing in this setup because of the certificate issue.
+
+If you want to test the API, use Postman or another API client such as Insomnia instead.
+
+A Postman collection file is already included in the [`Tests`](Tests) folder:
+
+- [`BookOrbit API.postman_collection.json`](Tests\BookOrbit API.postman_collection.json)
+
+Import that collection into Postman to test the API endpoints more easily.
+
+## Step By Step: From Clone To First API Call
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repository-url>
+```
+
+### 2. Move into the project folder
+
+```bash
+cd BookOrbit/Code
+```
+
+### 3. Start the full Docker stack
+
+```bash
+docker compose up --build
+```
+
+Wait until the containers finish starting.
+
+### 4. Confirm the API is running
+
+Open:
+
+- `http://localhost:7240/health`
+
+Expected response:
+
+```text
+Healthy
+```
+
+### 5. Make your first API call
+
+Use the identity token endpoint with one of the seeded users.
+
+HTTP:
+
+```http
+POST http://localhost:7240/api/v1/identity/token
+Content-Type: application/json
+```
+
+HTTPS:
+
+```http
+POST https://localhost:7241/api/v1/identity/token
+Content-Type: application/json
+```
+
+Example request body:
+
+```json
+{
+  "email": "admin@bookorbit.com",
+  "password": "Admin@123456"
+}
+```
+
+If the request succeeds, the API returns an access token and a refresh token.
+
+### 6. Open the API document
+
+You can inspect the generated OpenAPI document at:
+
+- `http://localhost:7240/openapi/v1.json`
+- `https://localhost:7241/openapi/v1.json`
+
+### 7. Open the observability tools
+
+- Grafana: `http://localhost:3000`
+- Grafana username: `admin`
+- Grafana password: `sa123456`
+- Seq: `http://localhost:8081`
+- Seq login: not required in the current setup
+- Prometheus: `http://localhost:9090`
 - Jaeger: `http://localhost:16686`
 
 ## Verified Runtime Status
@@ -118,25 +277,31 @@ Verified endpoints:
 - `http://localhost:7240/openapi/v1.json`
 - `http://localhost:7240/metrics`
 
+Verified infrastructure:
+
+- Prometheus scrapes the API successfully
+- Jaeger receives traces for the `bookorbit` service
+- Seq is reachable
+- Grafana is reachable
+
 ## Current Database Caveat
 
-There is an important database caveat in the current local Docker setup.
+The project was tested both with existing volumes and with fresh volumes removed using:
 
-The existing SQL Server volume may already contain tables created from an older startup flow, while EF Core migration history is missing or incomplete. In that case, automatic migration tries to create tables that already exist, which causes SQL exceptions during startup.
+```bash
+docker compose down -v
+docker compose up --build
+```
 
-The app now tolerates that state and continues running, but this is still not the clean ideal state for the database.
+The current startup flow works correctly in a fresh environment.
 
-If you start with a fresh SQL Server volume, the setup should be cleaner.
+## Student Default Image
 
-## Important Note About Student Default Image
+The fallback student image is now included in the published Docker image through:
 
-There is currently an issue with the default student image.
+`BookOrbit.Api/uploads/Students/DefaultStudentImage.png`
 
-The API expects the fallback image file:
-
-`uploads/Students/DefaultStudentImage.png`
-
-but this file is not cloned into the Docker image automatically in the current setup. If you want the student image fallback behavior to work correctly, add that file manually inside the expected path after running the project.
+That file should remain in the repository so the default student image behavior keeps working inside Docker.
 
 ## Seeded Data
 
@@ -146,6 +311,11 @@ On development startup, the application initializes the database and seeds:
 - Admin role
 - Sample student users
 - Admin user
+
+Seeded login example:
+
+- Email: `student1@std.mans.edu.eg`
+- Password: `sa123456`
 
 This makes local testing easier while the rest of the application is still under development.
 

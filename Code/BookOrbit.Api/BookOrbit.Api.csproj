@@ -24,4 +24,11 @@
 		<ProjectReference Include="..\BookOrbit.Infrastructure\BookOrbit.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="uploads\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>

@@ -6,22 +6,40 @@ public class AppDbContextInitialiser(
     AppDbContext context,
     RoleManager<IdentityRole> roleManager)
 {
+    private const int DatabaseStartupMaxAttempts = 12;
+    private static readonly TimeSpan DatabaseStartupDelay = TimeSpan.FromSeconds(5);
+
     public async Task InitialiseAsync()
     {
-        try
+        for (var attempt = 1; attempt <= DatabaseStartupMaxAttempts; attempt++)
         {
-            if (await DatabaseSchemaAlreadyExistsAsync())
+            try
             {
-                logger.LogInformation("Database schema already exists. Skipping database creation.");
+                if (await DatabaseAlreadyExistsAsync())
+                {
+                    logger.LogInformation("Database already exists. Skipping database creation.");
+                    return;
+                }
+
+                await context.Database.EnsureCreatedAsync();
                 return;
             }
+            catch (Exception ex) when (IsTransientDatabaseStartupFailure(ex) && attempt < DatabaseStartupMaxAttempts)
+            {
+                logger.LogWarning(
+                    ex,
+                    "Database is not ready yet. Retrying database initialization attempt {Attempt} of {MaxAttempts} in {DelaySeconds} seconds.",
+                    attempt,
+                    DatabaseStartupMaxAttempts,
+                    DatabaseStartupDelay.TotalSeconds);
 
-            await context.Database.EnsureCreatedAsync();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred while initialising the database.");
-            throw;
+                await Task.Delay(DatabaseStartupDelay);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while initialising the database.");
+                throw;
+            }
         }
     }
 
@@ -131,19 +149,34 @@ public class AppDbContextInitialiser(
 
     #region Helpers
 
-    private async Task<bool> DatabaseSchemaAlreadyExistsAsync()
+    private async Task<bool> DatabaseAlreadyExistsAsync()
     {
         try
         {
-            await context.Students.AnyAsync();
-            return true;
+            return await context.Database.CanConnectAsync();
         }
-        catch (Microsoft.Data.SqlClient.SqlException ex) when (
-            ex.Number == 208 || // Invalid object name
-            ex.Number == 4060)  // Cannot open database
+        catch (Exception ex) when (GetSqlException(ex)?.Number is 4060)
         {
             return false;
         }
+    }
+
+    private static bool IsTransientDatabaseStartupFailure(Exception ex)
+    {
+        var sqlException = GetSqlException(ex);
+
+        if (sqlException is null)
+            return false;
+
+        return sqlException.Number is 4060 or 53 or -2 or 233 or 18456;
+    }
+
+    private static Microsoft.Data.SqlClient.SqlException? GetSqlException(Exception ex)
+    {
+        if (ex is Microsoft.Data.SqlClient.SqlException sqlException)
+            return sqlException;
+
+        return ex.InnerException as Microsoft.Data.SqlClient.SqlException;
     }
 
     private async Task CreateStudentIfNotExistsAsync(AppUser user,int index)

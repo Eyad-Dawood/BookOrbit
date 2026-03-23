@@ -27,7 +27,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 # Timezone
 ENV TZ=Africa/Cairo
 
-RUN apt-get update && apt-get install -y tzdata && \
+RUN apt-get update && apt-get install -y tzdata openssl && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/lib/apt/lists/*
@@ -35,7 +35,11 @@ RUN apt-get update && apt-get install -y tzdata && \
 WORKDIR /app
 
 COPY --from=build /app/publish .
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
+EXPOSE 443
 
-ENTRYPOINT ["dotnet", "BookOrbit.Api.dll"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
