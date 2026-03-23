@@ -88,20 +88,6 @@ This means the project is already prepared for:
 docker compose up --build
 ```
 
-### Local URLs
-
-After startup, these services are expected to be available:
-
-- API HTTP: `http://localhost:7240`
-- API HTTPS: `https://localhost:7241`
-- API Health: `http://localhost:7240/health`
-- API Metrics: `http://localhost:7240/metrics`
-- API OpenAPI JSON: `http://localhost:7240/openapi/v1.json`
-- Seq: `http://localhost:8081`
-- Prometheus: `http://localhost:9090`
-- Grafana: `http://localhost:3000`
-- Jaeger: `http://localhost:16686`
-
 ## Services And Credentials
 
 ### API
