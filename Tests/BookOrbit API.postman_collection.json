@@ -38,7 +38,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@bookorbit.com\",\n  \"password\": \"Admin@123456\"\n}"
+              "raw": "{\n  \"email\": \"student1@std.mans.edu.eg\",\n  \"password\": \"sa123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/identity/token",
@@ -289,7 +289,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"Name\":\"Eyad Reda\"\r\n}",
+              "raw": "{\r\n    \"Name\":\"Ahmed Mohamed\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -306,6 +306,32 @@
                 "v1",
                 "students",
                 "{{Id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gent Current Student",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/students/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "students",
+                "me"
               ]
             }
           },
@@ -328,7 +354,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/images/students/{{fileName}}",
+              "raw": "{{baseUrl}}/api/v1/images/students/{{StudentId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -337,7 +363,7 @@
                 "v1",
                 "images",
                 "students",
-                "{{fileName}}"
+                "{{StudentId}}"
               ]
             }
           },

@@ -4,13 +4,14 @@ public class ActiveUserRequirement : IAuthorizationRequirement;
 
 public class ActiveUserHandler(
     ILogger<ActiveUserHandler> logger,
-    UserManager<AppUser> userManager) : AuthorizationHandler<ActiveUserRequirement>
+    UserManager<AppUser> userManager,
+    ICurrentUser currentUser) : AuthorizationHandler<ActiveUserRequirement>
 {
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         ActiveUserRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         if (string.IsNullOrEmpty(userId))
         {

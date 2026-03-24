@@ -34,13 +34,6 @@ public class IdentityService(
             user.EmailConfirmed);
     }
 
-    public async Task<bool> IsInRoleAsync(string userId, IdentityRoles role)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-        string srole = role.ToString();
-        return user != null && await userManager.IsInRoleAsync(user, srole);
-    }
-
     public async Task<Result<string>> CreateStudent(string email, string password, CancellationToken ct = default)
     {
         var user = new AppUser

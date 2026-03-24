@@ -1,6 +1,6 @@
 ﻿
 namespace BookOrbit.Application.Common.Behaviours;
-public class LoggingBehaviour<TRequest>(IUser user,IIdentityService identityService,ILogger<TRequest> logger)
+public class LoggingBehaviour<TRequest>(ICurrentUser user,IIdentityService identityService,ILogger<TRequest> logger)
     : IRequestPreProcessor<TRequest>
     where TRequest : notnull
 {

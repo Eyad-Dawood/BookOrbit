@@ -51,7 +51,7 @@ static public class DependencyInjection
     }
     public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services)
     {
-        services.AddScoped<IUser, CurrentUser>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddHttpContextAccessor();
         return services;
     }

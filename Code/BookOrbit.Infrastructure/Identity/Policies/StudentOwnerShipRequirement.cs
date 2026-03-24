@@ -4,13 +4,14 @@ public class StudentOwnerShipRequirement : IAuthorizationRequirement;
 public class StudentOwnerShipHandler(
     ILogger<StudentOwnerShipHandler> logger,
     IAppDbContext dbContext,
-    IHttpContextAccessor contextAccessor) : AuthorizationHandler<StudentOwnerShipRequirement>
+    IHttpContextAccessor contextAccessor,
+    ICurrentUser currentUser) : AuthorizationHandler<StudentOwnerShipRequirement>
 {
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         StudentOwnerShipRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -20,13 +21,13 @@ public class StudentOwnerShipHandler(
         }
 
         //Admin Bybass
-        if (context.User.IsInRole(IdentityRoles.admin.ToString()))
+        if (currentUser.IsInRole(IdentityRoles.admin.ToString()))
         {
             context.Succeed(requirement);
             return;
         }
 
-        if (!context.User.IsInRole(IdentityRoles.student.ToString()))
+        if (!currentUser.IsInRole(IdentityRoles.student.ToString()))
         {
             logger.LogWarning("Authorization failed: user is not Student/Admin");
             context.Fail();

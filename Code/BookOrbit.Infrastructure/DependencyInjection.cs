@@ -73,7 +73,8 @@ static public class DependencyInjection
         services.AddScoped<IAuthorizationHandler,AdminOnlyHandler>();
         services.AddScoped<IAuthorizationHandler,StudentOwnerShipHandler>();
         services.AddScoped<IAuthorizationHandler,RegisteredUserHandler>();
-        services.AddScoped<IAuthorizationHandler, RegisteredUserOwnershipHandler>();
+        services.AddScoped<IAuthorizationHandler,RegisteredUserOwnershipHandler>();
+        services.AddScoped<IAuthorizationHandler,StudentOnlyHandler>();
 
         services.AddAuthorizationBuilder()
 
@@ -102,6 +103,11 @@ static public class DependencyInjection
                 policy.Requirements.Add(new RegisteredUserOwnershipRequirement());
             })
 
+            .AddPolicy(PoliciesNames.StudentOnlyPolicy,policy =>
+            {
+                policy.Requirements.Add(new RegisteredUserRequirement());
+                policy.Requirements.Add(new StudentOnlyRequierment());
+            })
             ;
 
         return services;

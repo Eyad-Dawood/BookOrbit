@@ -3,13 +3,14 @@ public class AdminOnlyRequirement : IAuthorizationRequirement;
 
 
 public class AdminOnlyHandler(
-    ILogger<AdminOnlyHandler> logger) : AuthorizationHandler<AdminOnlyRequirement>
+    ILogger<AdminOnlyHandler> logger,
+    ICurrentUser currentUser) : AuthorizationHandler<AdminOnlyRequirement>
 {
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         AdminOnlyRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -18,7 +19,7 @@ public class AdminOnlyHandler(
             return Task.CompletedTask;
         }
 
-        var isAdmin = context.User.IsInRole(IdentityRoles.admin.ToString());//Look inside token , doesnt open database
+        var isAdmin = currentUser.IsInRole(IdentityRoles.admin.ToString());//Look inside token , doesnt open database
 
         if (!isAdmin)
         {

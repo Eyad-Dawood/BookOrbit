@@ -8,7 +8,6 @@ public record StudentDto
     public string? PhoneNumber { get; set; } = null;
     public string? TelegramUserId { get; set; } = null;
     public string UniversityMailAddress { get; set; } = string.Empty;
-    public string PersonalPhotoFileName { get; set; } = string.Empty;
     public int Points { get; set; }
     public StudentState State { get; set; }
 
@@ -22,7 +21,6 @@ public record StudentDto
     string? phoneNumber,
     string? telegramUserId,
     string universityMailAddress,
-    string personalPhotoFileName,
     int points,
     StudentState state)
     {
@@ -31,7 +29,6 @@ public record StudentDto
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
         UniversityMailAddress = universityMailAddress;
-        PersonalPhotoFileName = personalPhotoFileName;
         Points = points;
         State = state;
     }
@@ -44,7 +41,6 @@ public record StudentDto
             entity.PhoneNumber?.Value,
             entity.TelegramUserId?.Value,
             entity.UniversityMail.Value,
-            entity.PersonalPhotoFileName,
             entity.Points,
             entity.State);
     }

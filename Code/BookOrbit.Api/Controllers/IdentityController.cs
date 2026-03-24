@@ -5,7 +5,7 @@ namespace BookOrbit.Api.Controllers;
 [Route("api/v{version:apiVersion}/identity")]
 [ApiVersion("1.0")]
 [ApiController]
-public class IdentityController(ISender sender, IEmailService emailService) : ApiController
+public class IdentityController(ISender sender, IEmailService emailService,ICurrentUser currentUser) : ApiController
 {
     [HttpPost("token")]
     [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
@@ -65,7 +65,7 @@ public class IdentityController(ISender sender, IEmailService emailService) : Ap
     [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
     public async Task<ActionResult<AppUserDto>> GetCurrentUser(CancellationToken ct)
     {
-        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         var result = await sender.Send(
             new GetUserByIdQuery(userId),

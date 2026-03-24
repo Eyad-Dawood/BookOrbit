@@ -18,4 +18,7 @@ static public class PoliciesNames
     // Or , Users With Role ["Student"] But Has The Same Id Of The Resource's student Id
     // Doenst Have TO be confirmed
     public const string StudentOwnershipPolicy = "StudentOwnerShipAccess";
+
+    //No role Except STudent EVENT [Admin]
+    public const string StudentOnlyPolicy = "StudentOnlyAccess";
 }

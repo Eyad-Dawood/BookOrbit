@@ -7,11 +7,11 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 {
     private readonly ILogger<TRequest> logger;
     private readonly Stopwatch stopWatch;
-    private readonly IUser user;
+    private readonly ICurrentUser user;
     private readonly IIdentityService identityService;
     public PerformanceBehaviour(
         ILogger<TRequest> logger,
-        IUser user,
+        ICurrentUser user,
         IIdentityService identityService)
     {
         this.logger = logger;

@@ -1,11 +1,14 @@
-﻿namespace BookOrbit.Api.Controllers;
+﻿using BookOrbit.Application.Features.Students.Queries.GetStudentByUserId;
+
+namespace BookOrbit.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/students")]
 [ApiVersion("1.0")]
 [Authorize]
 public sealed class StudentController(
     ISender sender,
-    ImageHelper imageHelper) : ApiController
+    ImageHelper imageHelper,
+    ICurrentUser currentUser) : ApiController
 {
     [HttpGet]
     [Authorize(Policy = PoliciesNames.AdminOnlyPolicy)]
@@ -40,7 +43,7 @@ public sealed class StudentController(
 
 
     [HttpGet("{id:guid}", Name = "GetStudentById")]
-    [Authorize(Policy = PoliciesNames.StudentOwnershipPolicy)]
+    [Authorize(Policy = PoliciesNames.AdminOnlyPolicy)]
     [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -58,6 +61,37 @@ public sealed class StudentController(
     public async Task<ActionResult<StudentDto>> GetById([FromRoute] Guid id, CancellationToken ct)
     {
         var query = new GetStudentByIdQuery(id);
+
+        var result = await sender.Send(query, ct);
+
+        return result.Match(
+           Ok,
+           e => Problem(e, HttpContext));
+    }
+
+
+    [HttpGet("me")]
+    [Authorize(Policy = PoliciesNames.StudentOnlyPolicy)]
+    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesDefaultResponseType]
+    [EndpointSummary("Retrieves the current student.")]
+    [EndpointDescription("Returns detailed information about the current logged in student if found.")]
+    [EndpointName("GetCurrentStudent")]
+    [MapToApiVersion("1.0")]
+    [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
+    public async Task<ActionResult<StudentDto>> GetCurrentStudent(CancellationToken ct)
+    {
+        var userId = currentUser.Id;
+
+        //Im Sure YOu Are A Student Because Of Student Policy
+
+        var query = new GetStudentByUserIdQuery(userId);
 
         var result = await sender.Send(query, ct);
 

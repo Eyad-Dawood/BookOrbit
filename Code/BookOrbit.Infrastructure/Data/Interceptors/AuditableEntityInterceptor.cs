@@ -4,7 +4,7 @@ namespace BookOrbit.Infrastructure.Data.Interceptors;
 
 public class AuditableEntityInterceptor
     (TimeProvider timeProvider,
-    IUser user) : SaveChangesInterceptor
+    ICurrentUser user) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {

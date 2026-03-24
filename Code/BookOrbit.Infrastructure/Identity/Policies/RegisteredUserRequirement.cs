@@ -2,13 +2,13 @@
 
 public class RegisteredUserRequirement : IAuthorizationRequirement;
 
-public class RegisteredUserHandler(ILogger<AdminOnlyHandler> logger) : AuthorizationHandler<RegisteredUserRequirement>
+public class RegisteredUserHandler(ILogger<AdminOnlyHandler> logger, ICurrentUser currentUser) : AuthorizationHandler<RegisteredUserRequirement>
 {
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         RegisteredUserRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         if (string.IsNullOrEmpty(userId))
         {

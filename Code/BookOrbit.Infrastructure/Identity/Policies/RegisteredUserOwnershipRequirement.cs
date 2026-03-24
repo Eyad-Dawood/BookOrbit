@@ -5,11 +5,12 @@ public class RegisteredUserOwnershipRequirement : IAuthorizationRequirement;
 
 public class RegisteredUserOwnershipHandler(
     ILogger<RegisteredUserOwnershipHandler>logger,
-    IHttpContextAccessor contextAccessor) : AuthorizationHandler<RegisteredUserOwnershipRequirement>
+    IHttpContextAccessor contextAccessor,
+    ICurrentUser currentUser) : AuthorizationHandler<RegisteredUserOwnershipRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RegisteredUserOwnershipRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = currentUser.Id;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -19,7 +20,7 @@ public class RegisteredUserOwnershipHandler(
         }
 
         //Admin Bybass
-        if (context.User.IsInRole(IdentityRoles.admin.ToString()))
+        if (currentUser.IsInRole(IdentityRoles.admin.ToString()))
         {
             context.Succeed(requirement);
             return Task.CompletedTask;
