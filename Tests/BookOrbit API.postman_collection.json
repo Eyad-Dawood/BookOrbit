@@ -38,7 +38,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"student1@std.mans.edu.eg\",\n  \"password\": \"sa123456\"\n}"
+              "raw": "{\n  \"email\": \"admin@bookorbit.com\",\n  \"password\": \"Admin@123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/identity/token",
@@ -145,197 +145,375 @@
       "name": "Students",
       "item": [
         {
-          "name": "Get Students",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/students?Page=1&PageSize=5&SearchTerm=&SortColumn=&SortDirection=",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "students"
-              ],
-              "query": [
-                {
-                  "key": "Page",
-                  "value": "1"
-                },
-                {
-                  "key": "PageSize",
-                  "value": "5"
-                },
-                {
-                  "key": "SearchTerm",
-                  "value": ""
-                },
-                {
-                  "key": "SortColumn",
-                  "value": ""
-                },
-                {
-                  "key": "SortDirection",
-                  "value": ""
+          "name": "Management",
+          "item": [
+            {
+              "name": "Approve Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}/approve",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}",
+                    "approve"
+                  ]
                 }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GetStudentById",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/students/{{Id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "students",
-                "{{Id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "CreateStudent",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "Name",
-                  "value": "Eyad Reda",
-                  "type": "text",
-                  "uuid": "05e7abf1-3ddd-495f-9271-ce864860521a"
-                },
-                {
-                  "key": "PhoneNumber",
-                  "value": "01025456584",
-                  "type": "text",
-                  "uuid": "1f345b00-9f93-460c-a896-3efceb4019b6"
-                },
-                {
-                  "key": "TelegramUserId",
-                  "value": "EyadDev",
-                  "type": "text",
-                  "uuid": "a64622a7-9400-495c-90ec-be9d4e93d82a"
-                },
-                {
-                  "key": "PersonalPhoto",
-                  "type": "file",
-                  "uuid": "5e879843-94bf-4515-b293-f09f8748fde9",
-                  "value": null
-                },
-                {
-                  "key": "UniversityMailAddress",
-                  "value": "Example@std.mans.edu.eg",
-                  "type": "text",
-                  "uuid": "ec81d895-527a-4326-a43d-be7e4dd91b04"
-                },
-                {
-                  "key": "Password",
-                  "value": "sa123456",
-                  "type": "text",
-                  "uuid": "eef9ff5c-61df-4e64-80c6-87f57537e6f6"
-                }
-              ]
+              },
+              "response": []
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/students",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "students"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Student",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"Name\":\"Ahmed Mohamed\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            {
+              "name": "Activate Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}/activate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}",
+                    "activate"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/students/{{Id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "students",
-                "{{Id}}"
-              ]
+            {
+              "name": "Ban Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}/ban",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}",
+                    "ban"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reject Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}/reject",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}",
+                    "reject"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Un Ban Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}/unban",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}",
+                    "unban"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         },
         {
-          "name": "Gent Current Student",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/students/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "students",
-                "me"
-              ]
+          "name": "Queries",
+          "item": [
+            {
+              "name": "Get Students",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students?Page=1&PageSize=5&EmailConfirmed=true&States=Approved&States=Banned",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students"
+                  ],
+                  "query": [
+                    {
+                      "key": "Page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "PageSize",
+                      "value": "5"
+                    },
+                    {
+                      "key": "SearchTerm",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "SortColumn",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "SortDirection",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "EmailConfirmed",
+                      "value": "true"
+                    },
+                    {
+                      "key": "States",
+                      "value": "Approved"
+                    },
+                    {
+                      "key": "States",
+                      "value": "Pending",
+                      "disabled": true
+                    },
+                    {
+                      "key": "States",
+                      "value": "Banned"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetStudentById",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Gent Current Student",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
+        },
+        {
+          "name": "Register",
+          "item": [
+            {
+              "name": "CreateStudent",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "description": "NOT REQUIRED , But For Created By Column If User Is Authorized",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "Name",
+                      "value": "Eyad Reda",
+                      "type": "text",
+                      "uuid": "05e7abf1-3ddd-495f-9271-ce864860521a"
+                    },
+                    {
+                      "key": "PhoneNumber",
+                      "value": "01025456586",
+                      "type": "text",
+                      "uuid": "1f345b00-9f93-460c-a896-3efceb4019b6"
+                    },
+                    {
+                      "key": "TelegramUserId",
+                      "value": "EyadDev12",
+                      "type": "text",
+                      "uuid": "a64622a7-9400-495c-90ec-be9d4e93d82a"
+                    },
+                    {
+                      "key": "PersonalPhoto",
+                      "type": "file",
+                      "uuid": "5e879843-94bf-4515-b293-f09f8748fde9",
+                      "src": "/C:/Users/Eyad/OneDrive/Pictures/Screenshots/Screenshot 2026-03-24 184841.png"
+                    },
+                    {
+                      "key": "UniversityMailAddress",
+                      "value": "Example2@std.mans.edu.eg",
+                      "type": "text",
+                      "uuid": "ec81d895-527a-4326-a43d-be7e4dd91b04"
+                    },
+                    {
+                      "key": "Password",
+                      "value": "sa123456",
+                      "type": "text",
+                      "uuid": "eef9ff5c-61df-4e64-80c6-87f57537e6f6"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Student",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"Name\":\"Ahmed Mohamed\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/students/{{Id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "students",
+                    "{{Id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     },

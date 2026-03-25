@@ -15,6 +15,10 @@ public class ActivateStudentCommandHandler(
             return StudentApplicationErrors.NotFoundById;
         }
 
+        //cannot activate banned user from here , use unban method
+        if (student.State is StudentState.Banned)
+            return StudentErrors.InvalidStateTransition(StudentState.Banned,StudentState.Active);
+
         var activationResult = student.Activate();
 
         if (activationResult.IsFailure)
