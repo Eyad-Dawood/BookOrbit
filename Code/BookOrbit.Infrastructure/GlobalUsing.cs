@@ -37,3 +37,4 @@ global using System.Text;
 global using Microsoft.AspNetCore.Http;
 global using System.Net;
 global using System.Net.Mail;
+global using BookOrbit.Domain.Common;

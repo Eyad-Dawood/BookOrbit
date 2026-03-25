@@ -172,4 +172,14 @@ public class IdentityService(
 
         return Result.Updated;
     }
+
+    public async Task<Result<bool>> IsEmailConfirmedAsync(string userId, CancellationToken ct = default)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            return InfrastrucureIdentityErrors.UserNotFoundById;
+
+        return user.EmailConfirmed;
+    }
 }

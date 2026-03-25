@@ -9,15 +9,15 @@ public class ImageHelper(
     public async Task<Result<string>> UploadImage(IFormFile imageFile, string FolderPath)
     {
         if (imageFile == null || imageFile.Length == 0)
-            return Error.Failure("Image.Required", "No Image Was Uploaded");
+            return Error.Validation("Image.Required", "No Image Was Uploaded");
 
         var extension = Path.GetExtension(imageFile.FileName).ToLower();
 
         if (!IsValidImageExtension(extension))
-            return Error.Failure("Image.InvalidType", "Only image files are allowed");
+            return Error.Validation("Image.InvalidType", "Only image files are allowed");
 
         if (imageFile.Length > 2 * 1024 * 1024)
-            return Error.Failure("Image.TooLarge", "Max size is 2MB");
+            return Error.Validation("Image.TooLarge", "Max size is 2MB");
 
         var fileName = $"{Guid.NewGuid()}{extension}";
 

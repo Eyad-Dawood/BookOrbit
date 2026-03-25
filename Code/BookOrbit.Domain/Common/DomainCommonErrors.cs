@@ -34,6 +34,6 @@ static public class DomainCommonErrors
         Error.Validation($"{Class}.{PropertyCode}.DateShouldBeInPast", $"{Class} {PropertyDescription} should be in the past.");
 
     static public Error InvalidStateTransition(string Class, string FromState, string ToState) =>
-        Error.Failure($"{Class}.InvalidStateTransition", $"Cannot transition from {FromState} to {ToState}");
+        Error.Conflict($"{Class}.InvalidStateTransition", $"Cannot transition from {FromState} to {ToState}");
 }
 

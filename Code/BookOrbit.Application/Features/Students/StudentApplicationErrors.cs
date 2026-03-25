@@ -10,5 +10,6 @@ static public class StudentApplicationErrors
     static public readonly Error TelegramUserIdAlreadyExists = ApplicationCommonErrors.AlreadyExists(ClassName, "TelegramUserId", "Telegram User Id");
     static public readonly Error PhoneNumberAlreadyExists = ApplicationCommonErrors.AlreadyExists(ClassName, "PhoneNumber", "Phone Number");
     static public readonly Error PersonalImageNotFound = ApplicationCommonErrors.NotFoundProp(ClassName, "PersonalImage", "Personal Image");
+    static public readonly Error StateTransitionFailedEmailNotConfirmed = ApplicationCommonErrors.CustomConflict(ClassName, "StateTransitionFailedEmailNotConfirmed", "Cannot Transit Student State , Email Is Not Confirmed");
 }
 

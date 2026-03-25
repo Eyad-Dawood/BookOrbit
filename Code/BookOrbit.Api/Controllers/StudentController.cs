@@ -1,4 +1,5 @@
-﻿using BookOrbit.Application.Features.Students.Queries.GetStudentByUserId;
+﻿using BookOrbit.Application.Features.Students.Commands.ApproveStudent;
+using BookOrbit.Application.Features.Students.Queries.GetStudentByUserId;
 
 namespace BookOrbit.Api.Controllers;
 
@@ -148,7 +149,7 @@ public sealed class StudentController(
     }
 
 
-    [HttpPut("{id:guid}")]
+    [HttpPatch("{id:guid}")]
     [Authorize(Policy = PoliciesNames.StudentOwnershipPolicy)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -174,4 +175,36 @@ public sealed class StudentController(
            response => NoContent(),
            e => Problem(e, HttpContext));
     }
+
+
+    [HttpPatch("{id:guid}/approve")]
+    [Authorize(Policy = PoliciesNames.AdminOnlyPolicy)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [EndpointSummary("Approve a student.")]
+    [EndpointDescription("Approves a student account after verifying that the email is confirmed.")]
+    [EndpointName("ApproveStudent")]
+    [MapToApiVersion("1.0")]
+    [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
+    public async Task<ActionResult> ApproveStudent([FromRoute] Guid id,CancellationToken ct)
+    {
+        var result = await sender.Send(
+            new ApproveStudentCommand(
+                id),
+            ct);
+
+        return result.Match(
+            response => NoContent(),
+            e => Problem(e, HttpContext));
+    }
+
+
+
+
 }

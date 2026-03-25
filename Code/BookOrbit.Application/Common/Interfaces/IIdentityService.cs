@@ -9,4 +9,5 @@ public interface IIdentityService
     Task<Result<Deleted>> DeleteUserByIdAsync(string userId, CancellationToken ct = default);
     Task<bool> UserEmailExists(string email,CancellationToken ct = default);
     Task<string?> GetUserNameAsync(string userId,CancellationToken ct = default);
+    Task<Result<bool>> IsEmailConfirmedAsync(string userId,CancellationToken ct = default);
 }
