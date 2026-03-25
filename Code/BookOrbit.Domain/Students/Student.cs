@@ -13,6 +13,8 @@ public class Student : AuditableEntity
 
    //Identity
    public string UserId { get; }
+   
+
 
 #pragma warning disable CS8618
     private Student()

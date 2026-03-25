@@ -65,6 +65,7 @@ static public class DependencyInjection
         services.AddTransient<IAppCache, AppCache>();
         services.AddScoped<AppDbContextInitialiser>();
         services.AddTransient<IEmailService, EmailService>();
+        services.AddScoped<IStudentQueryService, StudentQueryService>();
         return services;
     }
     static private IServiceCollection AddPolicies(this IServiceCollection services)

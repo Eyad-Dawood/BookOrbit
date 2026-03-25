@@ -9,8 +9,10 @@ static public class StudentCachingConstants
     public static string StudentListKey(GetStudentsQuery query)
         =>
         $"students:p={query.Page}:ps={query.PageSize}" +
-        $":v={query.SearchTerm ?? "-"}" +
-        $":sort={query.SortColumn}:{query.SortDirection??"-"}";
+        $":st={query.SearchTerm ?? "-"}" +
+        $":sort={query.SortColumn}:{query.SortDirection??"-"}"+
+        $":states=[{string.Join(',', query.States ?? [])}]"+
+        $":emailconfirmed={query.EmailConfirmed.ToString()??"-"}";
 
     public const int ExpirationInMinutes = 10;
 }

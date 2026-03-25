@@ -49,3 +49,5 @@ global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Threading.RateLimiting;
+global using BookOrbit.Domain.Students.Enums;
+global using Microsoft.EntityFrameworkCore;

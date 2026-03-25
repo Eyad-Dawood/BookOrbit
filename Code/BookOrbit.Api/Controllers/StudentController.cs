@@ -24,14 +24,16 @@ public sealed class StudentController(
     [EndpointName("GetStudents")]
     [OutputCache(PolicyName = ApiConstants.DefaultOutputCachePolicyName)]
     [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
-    public async Task<ActionResult<PaginatedList<StudentListItemDto>>> Get([FromQuery] PagedFilterRequest request, CancellationToken ct)
+    public async Task<ActionResult<PaginatedList<StudentListItemDto>>> Get([FromQuery] StudentPagedFilterRequest request, CancellationToken ct)
     {
         var query = new GetStudentsQuery(
             request.Page,
             request.PageSize,
             request.SearchTerm,
             request.SortColumn,
-            request.SortDirection);
+            request.SortDirection,
+            request.States,
+            request.EmailConfirmed);
 
         var result = await sender.Send(query, ct);
 

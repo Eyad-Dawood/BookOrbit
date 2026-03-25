@@ -248,6 +248,8 @@ static public class DependencyInjection
     {
         var appSettings = configuration.GetSection(AppSettingsSectionName).Get<AppSettings>()!;
 
+        app.UseMiddleware<RequestLogContextMiddleware>();
+
         app.UseHealthChecks("/health");
 
         app.UseOpenTelemetryPrometheusScrapingEndpoint();

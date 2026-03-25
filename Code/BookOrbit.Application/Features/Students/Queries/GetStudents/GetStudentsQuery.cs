@@ -6,7 +6,9 @@ public record GetStudentsQuery(
     int PageSize,
     string? SearchTerm,
     string? SortColumn = "createdAt",
-    string? SortDirection = "desc") : ICachedQuery<Result<PaginatedList<StudentListItemDto>>>
+    string? SortDirection = "desc",
+    List<StudentState>? States = null,
+    bool? EmailConfirmed = null) : ICachedQuery<Result<PaginatedList<StudentListItemDto>>>
 {
     public string CacheKey => StudentCachingConstants.StudentListKey(this);
 

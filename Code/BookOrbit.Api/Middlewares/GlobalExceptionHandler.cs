@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-
-namespace BookOrbit.Api.Middlewares;
+﻿namespace BookOrbit.Api.Middlewares;
 
 public class GlobalExceptionHandler(IProblemDetailsService problemDetailsService)
     : IExceptionHandler

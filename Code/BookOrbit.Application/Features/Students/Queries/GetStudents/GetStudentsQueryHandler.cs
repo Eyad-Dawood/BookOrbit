@@ -1,17 +1,20 @@
 ﻿
 namespace BookOrbit.Application.Features.Students.Queries.GetStudents;
 
-public class GetStudentsQueryHandler(IAppDbContext context)
+public class GetStudentsQueryHandler(IAppDbContext context,IStudentQueryService studentQueryService)
     : IRequestHandler<GetStudentsQuery, Result<PaginatedList<StudentListItemDto>>>
 {
     public async Task<Result<PaginatedList<StudentListItemDto>>> Handle(GetStudentsQuery query, CancellationToken ct)
     {
         var studentQuery = context.Students.AsNoTracking();
+        
+        studentQuery = ApplyFilters(studentQuery, query);
 
         studentQuery = ApplySearchTerm(studentQuery, query);
 
         studentQuery = ApplySorting(studentQuery, query.SortColumn, query.SortDirection);
-       
+
+
         int count = await studentQuery.CountAsync(ct);
 
         int page = Math.Max(1, query.Page);
@@ -49,6 +52,18 @@ public class GetStudentsQueryHandler(IAppDbContext context)
             s.UniversityMail.Value.StartsWith(normalizedMail) ||
             (s.TelegramUserId != null && s.TelegramUserId.Value.StartsWith(normalizedTelegramUserId)));
 
+
+        return query;
+    }
+
+    private IQueryable<Student> ApplyFilters(IQueryable<Student> query, GetStudentsQuery searchQuery)
+    {
+        if(searchQuery.States is not null &&
+            searchQuery.States.Count != 0)
+                query = query.Where(s => searchQuery.States.Contains(s.State));
+
+        if (searchQuery.EmailConfirmed.HasValue)
+            query = studentQueryService.GetStudentsWithEmailStatus(query, searchQuery.EmailConfirmed.Value);
 
         return query;
     }
