@@ -95,8 +95,8 @@ public class Student : AuditableEntity
             StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected,
             StudentState.Approved => newState is StudentState.Active or StudentState.Banned,
             StudentState.Active => newState is StudentState.Banned,
+            StudentState.Banned => newState is StudentState.Active, //can unban
             StudentState.Rejected => false,
-            StudentState.Banned => false,
             _ => false
         };
     }
@@ -134,6 +134,9 @@ public class Student : AuditableEntity
 
     public Result<Updated> Ban() =>
         UpdateState(StudentState.Banned);
+
+    public Result<Updated> UnBan() =>
+    UpdateState(StudentState.Active);
 
     public Result<Updated> Verify() =>
         UpdateState(StudentState.Pending);
