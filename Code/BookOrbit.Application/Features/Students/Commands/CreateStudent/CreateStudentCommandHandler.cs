@@ -111,7 +111,7 @@ public class CreateStudentCommandHandler(
 
         if (
             await identityService.UserEmailExists(emailResult.Value.Value, ct)
-        || await context.Students.AnyAsync(s => s.UniversityMail == emailResult.Value, ct)
+        || await context.Students.AnyAsync(s => s.UniversityMail.Value == emailResult.Value.Value, ct)
         )
         {
             logger.LogWarning(
@@ -132,7 +132,7 @@ public class CreateStudentCommandHandler(
 
         var telegramUserIdExists = await context.Students.AnyAsync(
             s => s.TelegramUserId != null
-            && s.TelegramUserId == telegramUserIdResult.Value, ct);
+            && s.TelegramUserId.Value == telegramUserIdResult.Value.Value, ct);
 
         if (telegramUserIdExists)
         {
@@ -155,7 +155,7 @@ public class CreateStudentCommandHandler(
 
         var phoneNumberExists = await context.Students.AnyAsync(
             s => s.PhoneNumber != null
-            && s.PhoneNumber == phoneNumberResult.Value, ct);
+            && s.PhoneNumber.Value == phoneNumberResult.Value.Value, ct);
 
         if (phoneNumberExists)
         {

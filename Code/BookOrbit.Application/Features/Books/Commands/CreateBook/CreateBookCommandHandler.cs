@@ -1,9 +1,4 @@
-﻿
-using BookOrbit.Application.Common.Interfaces;
-using BookOrbit.Application.Features.Students;
-using BookOrbit.Domain.Books.ValueObjects;
-
-namespace BookOrbit.Application.Features.Books.Commands.CreateBook;
+﻿namespace BookOrbit.Application.Features.Books.Commands.CreateBook;
 public class CreateBookCommandHandler(
     ILogger<CreateBookCommandHandler> logger,
     IAppDbContext context,
@@ -34,7 +29,7 @@ public class CreateBookCommandHandler(
             return authorCreationResult.Errors;
 
 
-        var isIsbnExists = await context.Books.AnyAsync(b => b.ISBN == isbnCreationResult.Value,ct);
+        var isIsbnExists = await context.Books.AnyAsync(b => b.ISBN.Value == isbnCreationResult.Value.Value,ct);
 
         if(isIsbnExists)
         {

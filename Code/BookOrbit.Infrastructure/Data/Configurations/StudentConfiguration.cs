@@ -13,37 +13,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.Id)
             .ValueGeneratedNever();
 
-        builder.Property(s => s.Name)
-            .HasConversion(
-                name => name.Value,
-                value => StudentName.Create(value).Value)
-            .HasMaxLength(StudentValidationConstants.NameMaxLength)
-            .IsRequired();
-
-        builder.Property(s => s.PhoneNumber)
-            .HasConversion(
-                phoneNumber => phoneNumber == null ? null : phoneNumber.Value,
-                value => string.IsNullOrWhiteSpace(value) ? null : PhoneNumber.Create(value).Value)
-            .HasMaxLength(PhoneNumberValidationConstants.MaxLength)
-            .IsUnicode(false)
-            .IsRequired(false);
-
-        builder.Property(s => s.TelegramUserId)
-            .HasConversion(
-                telegramUserId => telegramUserId == null ? null : telegramUserId.Value,
-                value => string.IsNullOrWhiteSpace(value) ? null : TelegramUserId.Create(value).Value)
-            .HasMaxLength(TelegramUserIdValidationConstants.MaxLength)
-            .IsUnicode(false)
-            .IsRequired(false);
-
-        builder.Property(s => s.UniversityMail)
-            .HasConversion(
-                universityMail => universityMail.Value,
-                value => UniversityMail.Create(value).Value)
-            .HasMaxLength(UniversityMailValidationConstants.MaxLength)
-            .IsUnicode(false)
-            .IsRequired();
-
         builder.Property(s => s.PersonalPhotoFileName)
             .HasMaxLength(255)
             .IsUnicode(false)
@@ -62,9 +31,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
            .HasMaxLength(20)
            .IsRequired();
 
-        builder.HasIndex(s=>s.UniversityMail)
-            .IsUnique();
-
         builder.HasIndex(s => s.UserId)
             .IsUnique();
 
@@ -73,5 +39,47 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasForeignKey<Student>(x => x.UserId)
             .HasPrincipalKey<AppUser>(x => x.Id)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.OwnsOne(s => s.Name, n =>
+        {
+            n.Property(p => p.Value)
+             .HasColumnName("Name")
+             .HasMaxLength(StudentValidationConstants.NameMaxLength)
+             .IsRequired();
+        });
+
+        builder.OwnsOne(s => s.PhoneNumber, p =>
+        {
+            p.Property(x => x.Value)
+             .HasColumnName("PhoneNumber")
+             .HasMaxLength(PhoneNumberValidationConstants.MaxLength)
+             .IsUnicode(false)
+             .IsRequired(false);
+
+            p.HasIndex(x => x.Value);
+        });
+
+        builder.OwnsOne(s => s.TelegramUserId, t =>
+        {
+            t.Property(x => x.Value)
+             .HasColumnName("TelegramUserId")
+             .HasMaxLength(TelegramUserIdValidationConstants.MaxLength)
+             .IsUnicode(false)
+             .IsRequired(false);
+        });
+
+        builder.OwnsOne(s => s.UniversityMail, m =>
+        {
+            m.Property(x => x.Value)
+             .HasColumnName("UniversityMail")
+             .HasMaxLength(UniversityMailValidationConstants.MaxLength)
+             .IsUnicode(false)
+             .IsRequired();
+
+            m.HasIndex(x => x.Value).IsUnique();
+        });
+
+        builder.Navigation(s => s.PhoneNumber).IsRequired(false);
+        builder.Navigation(s => s.TelegramUserId).IsRequired(false);
     }
 }

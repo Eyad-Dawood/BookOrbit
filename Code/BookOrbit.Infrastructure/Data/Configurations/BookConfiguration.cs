@@ -13,37 +13,8 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(b => b.Id)
             .ValueGeneratedNever();
 
-        builder.Property(b => b.Title)
-            .HasConversion(
-                title => title.Value,
-                value => BookTitle.Create(value).Value)
-            .HasMaxLength(BookValidationConstants.TitleMaxLength)
-            .IsRequired();
-
-        builder.Property(b => b.ISBN)
-            .HasConversion(
-                isbn => isbn.Value,
-                value => ISBN.Create(value).Value)
-            .HasMaxLength(BookValidationConstants.ISBNMaxLength)
-            .IsUnicode(false)
-            .IsRequired();
-
-        builder.Property(b => b.Publisher)
-            .HasConversion(
-                publisher => publisher.Value,
-                value => BookPublisher.Create(value).Value)
-            .HasMaxLength(BookValidationConstants.PublisherMaxLength)
-            .IsRequired();
-
         builder.Property(b => b.Category)
             .HasConversion<int>()
-            .IsRequired();
-
-        builder.Property(b => b.Author)
-            .HasConversion(
-                author => author.Value,
-                value => BookAuthor.Create(value).Value)
-            .HasMaxLength(BookValidationConstants.AuthorMaxLength)
             .IsRequired();
 
         builder.Property(b => b.CoverImageFileName)
@@ -51,9 +22,47 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             .IsUnicode(false)
             .IsRequired();
 
-        builder.HasIndex(b => b.ISBN)
-            .IsUnique();
 
-        builder.HasIndex(b => b.Title);
+        builder.OwnsOne(b => b.Title, t =>
+        {
+            t.Property(x => x.Value)
+             .HasColumnName("Title")
+             .HasMaxLength(BookValidationConstants.TitleMaxLength)
+             .IsRequired();
+
+            t.HasIndex(x => x.Value);
+        });
+
+
+        builder.OwnsOne(b => b.ISBN, i =>
+        {
+            i.WithOwner();
+
+            i.Property(x => x.Value)
+             .HasColumnName("ISBN")
+             .HasMaxLength(BookValidationConstants.ISBNMaxLength)
+             .IsUnicode(false)
+             .IsRequired();
+
+            i.HasIndex(x => x.Value).IsUnique();
+        });
+
+
+        builder.OwnsOne(b => b.Publisher, p =>
+        {
+            p.Property(x => x.Value)
+             .HasColumnName("Publisher")
+             .HasMaxLength(BookValidationConstants.PublisherMaxLength)
+             .IsRequired();
+        });
+
+
+        builder.OwnsOne(b => b.Author, a =>
+        {
+            a.Property(x => x.Value)
+             .HasColumnName("Author")
+             .HasMaxLength(BookValidationConstants.AuthorMaxLength)
+             .IsRequired();
+        });
     }
 }
