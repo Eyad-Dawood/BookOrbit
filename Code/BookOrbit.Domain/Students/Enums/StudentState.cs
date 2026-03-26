@@ -6,4 +6,5 @@ public enum StudentState
     Active,
     Rejected,
     Banned,
+    UnBanned,
 }

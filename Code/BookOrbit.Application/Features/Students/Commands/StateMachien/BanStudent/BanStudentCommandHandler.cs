@@ -1,4 +1,4 @@
-﻿namespace BookOrbit.Application.Features.Students.Commands.BanStudent;
+﻿namespace BookOrbit.Application.Features.Students.Commands.StateMachien.BanStudent;
 public class BanStudentCommandHandler(
     IAppDbContext context,
     ILogger<BanStudentCommandHandler> logger,

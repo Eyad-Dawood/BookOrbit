@@ -1,6 +1,4 @@
-﻿using BookOrbit.Application.Features.Students.Queries.GetStudentPersonalPhotoFileNameById;
-
-namespace BookOrbit.Api.Controllers;
+﻿namespace BookOrbit.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/images")]
 [ApiController]

@@ -92,11 +92,12 @@ public class Student : AuditableEntity
     {
         return State switch
         {
-            StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected,
+            StudentState.Pending => newState is StudentState.Approved or StudentState.Rejected or StudentState.Banned,
             StudentState.Approved => newState is StudentState.Active or StudentState.Banned,
             StudentState.Active => newState is StudentState.Banned,
-            StudentState.Banned => newState is StudentState.Active, //can unban
-            StudentState.Rejected => false,
+            StudentState.Banned => newState is StudentState.UnBanned,
+            StudentState.Rejected => newState is StudentState.Pending or StudentState.Banned,
+            StudentState.UnBanned => newState is StudentState.Active or StudentState.Banned,
             _ => false
         };
     }
@@ -135,9 +136,10 @@ public class Student : AuditableEntity
     public Result<Updated> Ban() =>
         UpdateState(StudentState.Banned);
 
-    public Result<Updated> UnBan() =>
-    UpdateState(StudentState.Active);
-
-    public Result<Updated> Verify() =>
+    public Result<Updated> Pend() =>
         UpdateState(StudentState.Pending);
+
+
+    public Result<Updated> UnBan() =>
+    UpdateState(StudentState.UnBanned);
 }

@@ -1,4 +1,4 @@
-﻿namespace BookOrbit.Application.Features.Students.Commands.ApproveStudent;
+﻿namespace BookOrbit.Application.Features.Students.Commands.StateMachien.ApproveStudent;
 public class ApproveStudentCommandHandler (
     IAppDbContext context,
     TimeProvider timeProvider,

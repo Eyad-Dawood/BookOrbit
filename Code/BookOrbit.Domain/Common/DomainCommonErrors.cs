@@ -35,5 +35,8 @@ static public class DomainCommonErrors
 
     static public Error InvalidStateTransition(string Class, string FromState, string ToState) =>
         Error.Conflict($"{Class}.InvalidStateTransition", $"Cannot transition from {FromState} to {ToState}");
+
+    static public Error InvalidStateTransitionSameState(string Class, string State) =>
+       Error.Conflict($"{Class}.InvalidStateTransition", $"State is already {State}");
 }
 

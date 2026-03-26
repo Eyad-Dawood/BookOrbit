@@ -1,4 +1,4 @@
-﻿namespace BookOrbit.Application.Features.Students.Commands.RejectStudent;
+﻿namespace BookOrbit.Application.Features.Students.Commands.StateMachien.RejectStudent;
 public class RejectStudentCommandHandler
     (IAppDbContext context,
     ILogger<RejectStudentCommandHandler> logger,

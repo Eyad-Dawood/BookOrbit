@@ -22,9 +22,14 @@ static public class StudentErrors
 
     #region Logic
 
-    public static Error InvalidStateTransition(StudentState currentState, StudentState newState)=>
-        DomainCommonErrors.InvalidStateTransition(ClassName,currentState.ToString(),newState.ToString());
-    
+    public static Error InvalidStateTransition(StudentState currentState, StudentState newState)
+    {
+        if(currentState == newState)
+            return DomainCommonErrors.InvalidStateTransitionSameState(ClassName, currentState.ToString());
+        else
+            return DomainCommonErrors.InvalidStateTransition(ClassName, currentState.ToString(), newState.ToString());
+    }
+
     #endregion
 }
 
