@@ -2,4 +2,5 @@
 
 public record UpdateStudentCommand(
     Guid Id,
-    string Name) : IRequest<Result<Updated>>;
+    string Name,
+    string personalPhotoFileName) : IRequest<Result<Updated>>;

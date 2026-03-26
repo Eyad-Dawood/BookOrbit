@@ -6,7 +6,7 @@ public class Student : AuditableEntity
     public PhoneNumber? PhoneNumber { get; }
     public TelegramUserId? TelegramUserId { get; }
     public UniversityMail UniversityMail { get; }
-    public string PersonalPhotoFileName { get; }
+    public string PersonalPhotoFileName { get; private set; }
     public int Points { get; private set; }
     public DateTimeOffset? JoinDateUtc { get; private set; } = null;
     public StudentState State { get; private set; }
@@ -79,11 +79,15 @@ public class Student : AuditableEntity
     }
 
 
-    public Result<Updated> Update(StudentName name)
+    public Result<Updated> Update(
+        StudentName name,
+        string personalPhotoFileName)
     {
-        //No need to return a result because Value object already validated
-        //BUTTTTTTT it will return a result to keep the pattern consistant
+        if (State is StudentState.Banned)
+            return StudentErrors.CannotUpdateABannedStudent;
+
         Name = name;
+        PersonalPhotoFileName = personalPhotoFileName;
 
         return Result.Updated;
     }
@@ -138,7 +142,6 @@ public class Student : AuditableEntity
 
     public Result<Updated> Pend() =>
         UpdateState(StudentState.Pending);
-
 
     public Result<Updated> UnBan() =>
     UpdateState(StudentState.UnBanned);

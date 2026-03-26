@@ -9,7 +9,6 @@ public record StudentListItemDto
     public string? PhoneNumber { get; set; } = null;
     public string? TelegramUserId { get; set; } = null;
     public string UniversityMailAddress { get; set; } = string.Empty;
-    public string PersonalPhotoFileName { get; set; } = string.Empty;
     public int Points { get; set; }
     public StudentState State { get; set; }
 
@@ -22,7 +21,6 @@ public record StudentListItemDto
   string? phoneNumber,
   string? telegramUserId,
   string universityMailAddress,
-  string personalPhotoFileName,
   int points,
   StudentState state)
     {
@@ -31,7 +29,6 @@ public record StudentListItemDto
         PhoneNumber = phoneNumber;
         TelegramUserId = telegramUserId;
         UniversityMailAddress = universityMailAddress;
-        PersonalPhotoFileName = personalPhotoFileName;
         Points = points;
         State = state;
     }
@@ -43,7 +40,6 @@ public record StudentListItemDto
         s.PhoneNumber != null ? s.PhoneNumber.Value : null,
         s.TelegramUserId != null ? s.TelegramUserId.Value : null,
         s.UniversityMail.Value,
-        s.PersonalPhotoFileName,
         s.Points,
         s.State
     );

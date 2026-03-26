@@ -23,7 +23,9 @@ public class UpdateStudentCommandHandler
         if (nameCreationResult.IsFailure)
             return nameCreationResult.Errors;
 
-        var updateResult = student.Update(nameCreationResult.Value);
+        var updateResult = student.Update(
+            nameCreationResult.Value,
+            command.personalPhotoFileName);
 
         if (updateResult.IsFailure)
             return updateResult.Errors;

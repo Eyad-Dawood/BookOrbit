@@ -13,6 +13,7 @@ static public class StudentErrors
     static public readonly Error InvalidState = DomainCommonErrors.InvalidProp(ClassName, "StudentState", "Student State", $"Invalid state value");
     static public readonly Error AtLeastOneCommunicationMethod = DomainCommonErrors.CustomValidation(ClassName, "AtLeastOneCommunicationMethod", "At least one communication method (Phone Number or Telegram Username) must be provided.");
     static public readonly Error PersonalImageRequired = DomainCommonErrors.RequiredProp(ClassName,"PersonalImageId","Personal Image");
+    static public readonly Error CannotUpdateABannedStudent = DomainCommonErrors.CustomConflict(ClassName, "CannotUpdateABannedStudent", "Cannot update student while state is banned");
     #endregion
 
     #region Mail

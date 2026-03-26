@@ -92,17 +92,34 @@ public class StudentAccountController(
     [EndpointName("UpdateStudent")]
     [MapToApiVersion("1.0")]
     [EnableRateLimiting(ApiConstants.SensitiveRateLimmitingPolicyName)]
-    public async Task<ActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] UpdateStudentRequest request, CancellationToken ct)
+    public async Task<ActionResult> UpdateStudent([FromRoute] Guid id, [FromForm] UpdateStudentRequest request, CancellationToken ct)
     {
+        var imageFileNameResult = await sender.Send(new GetStudentPersonalPhotoFileNameByIdQuery(id),ct);
+
+        if(imageFileNameResult.IsFailure)
+            return Problem(imageFileNameResult.Errors, HttpContext);
+
+
+        //Upload Image, Get Image Name
+        var ImageUploadResult = await imageHelper.UploadImage(request.PersonalPhoto, ApiConstants.StudentImagesUploadFolderPath);
+
+        if (ImageUploadResult.IsFailure)
+            return Problem(ImageUploadResult.Errors, HttpContext);
+
+
+        //Delete Old Image
+        await imageHelper.DeleteImage(imageFileNameResult.Value, ApiConstants.StudentImagesUploadFolderPath);
+
+
         var result = await sender.Send(
             new UpdateStudentCommand(
                 id,
-            request.Name),
+            request.Name,
+            ImageUploadResult.Value),
             ct);
 
         return result.Match(
            response => NoContent(),
            e => Problem(e, HttpContext));
     }
-
 }

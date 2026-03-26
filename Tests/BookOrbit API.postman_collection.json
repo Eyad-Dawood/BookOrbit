@@ -298,7 +298,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/students?Page=1&PageSize=5&EmailConfirmed=true&States=Approved&States=Banned",
+                  "raw": "{{baseUrl}}/api/v1/students?Page=1&PageSize=5&EmailConfirmed=true&States=Active&States=UnBanned",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -337,7 +337,8 @@
                     },
                     {
                       "key": "States",
-                      "value": "Approved"
+                      "value": "Approved",
+                      "disabled": true
                     },
                     {
                       "key": "States",
@@ -346,7 +347,18 @@
                     },
                     {
                       "key": "States",
-                      "value": "Banned"
+                      "value": "Banned",
+                      "disabled": true
+                    },
+                    {
+                      "key": "States",
+                      "value": "Active",
+                      "type": "text"
+                    },
+                    {
+                      "key": "States",
+                      "value": "UnBanned",
+                      "type": "text"
                     }
                   ]
                 }
@@ -490,13 +502,21 @@
                   }
                 ],
                 "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"Name\":\"Ahmed Mohamed\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "Name",
+                      "value": "Ahmed Mohamed",
+                      "type": "text",
+                      "uuid": "9af90fa2-cb07-43df-80f8-328e84f81cba"
+                    },
+                    {
+                      "key": "PersonalPhoto",
+                      "type": "file",
+                      "uuid": "908d813f-963d-40b0-8aba-99528f297221",
+                      "value": null
                     }
-                  }
+                  ]
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/students/{{Id}}",
@@ -532,7 +552,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/images/students/{{StudentId}}",
+              "raw": "{{baseUrl}}/api/v1/images/students/{{Id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -541,7 +561,7 @@
                 "v1",
                 "images",
                 "students",
-                "{{StudentId}}"
+                "{{Id}}"
               ]
             }
           },
