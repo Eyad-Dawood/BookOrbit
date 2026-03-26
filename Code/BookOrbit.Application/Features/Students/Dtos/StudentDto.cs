@@ -34,8 +34,8 @@ public record StudentDto
     }
 
     static public StudentDto FromEntity(Student entity)
-    {
-        return new StudentDto(
+    =>
+        new(
             entity.Id,
             entity.Name.Value,
             entity.PhoneNumber?.Value,
@@ -43,5 +43,5 @@ public record StudentDto
             entity.UniversityMail.Value,
             entity.Points,
             entity.State);
-    }
+
 }

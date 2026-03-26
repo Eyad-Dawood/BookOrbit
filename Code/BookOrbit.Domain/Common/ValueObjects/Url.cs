@@ -1,8 +1,7 @@
 ﻿namespace BookOrbit.Domain.Common.ValueObjects;
 
-public record Url : ValueObject<string>
+public record Url(string Value) : ValueObject<string>(Value)
 {
-    private Url(string value) : base(value) { }
     private static string Normalize(string value)
     {
         return
@@ -30,12 +29,6 @@ public record Url : ValueObject<string>
         return validationResult.Errors;
     }
 
-    public static implicit operator string(Url? user)
-    {
-        if (user is null) return string.Empty;
-
-        return user.Value;
-    }
 }
 
 

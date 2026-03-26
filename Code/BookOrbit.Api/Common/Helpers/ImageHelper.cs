@@ -1,5 +1,11 @@
 ﻿namespace BookOrbit.Api.Common.Helpers;
 
+public enum ImageType
+{
+    StudentPersonalPhoto,
+    BookCoverPhoto
+}
+
 public class ImageHelper(
     IWebHostEnvironment environment,
     ILogger<ImageHelper> logger)
@@ -93,40 +99,73 @@ public class ImageHelper(
     }
 
 
-    public async Task<byte[]?> GetStudentImage(string fileName)
+    public async Task<byte[]?> GetImage(string fileName, ImageType imageType)
     {
-        string folderPath = ApiConstants.StudentImagesUploadFolderPath;
+        string folderPath = imageType switch
+        {
+            ImageType.StudentPersonalPhoto => ApiConstants.StudentImagesUploadFolderPath,
+            ImageType.BookCoverPhoto => ApiConstants.BookCoverImagesUploadFolderPath,
+            _ => "uploads"
+        };
+
+
         fileName = Path.GetFileName(fileName);
 
         //Load Image
-        var personalPhotoResult = await GetImage(
+        var result = await GetImage(
             fileName,
             folderPath);
 
-        if (personalPhotoResult.IsSuccess)
-            return personalPhotoResult.Value;
+        if (result.IsSuccess)
+            return result.Value;
 
         //Load Defualt
-        var defaultImageResult = await GetDefaultStudentImage();
+        var defaultImageResult = await GetDefaultImage(imageType);
 
         if (defaultImageResult.IsSuccess)
             return defaultImageResult.Value;
 
         return null;
     }
-    public async Task<Result<byte[]>> GetDefaultStudentImage()
+    public async Task<Result<byte[]>> GetDefaultImage(ImageType imageType)
     {
-        string fileName = ApiConstants.DefaultStudentImageFileName;
-        string folderPath = ApiConstants.StudentImagesUploadFolderPath;
+        string fileName;
+        string folderPath;
+
+        switch (imageType)
+        {
+            case ImageType.StudentPersonalPhoto:
+                fileName = ApiConstants.DefaultStudentImageFileName;
+                folderPath = ApiConstants.StudentImagesUploadFolderPath;
+                break;
+
+            case ImageType.BookCoverPhoto:
+                fileName = ApiConstants.DefaultBookCoverImageFileName;
+                folderPath = ApiConstants.BookCoverImagesUploadFolderPath;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(imageType), "Invalid image type");
+        }
 
         var result = await GetImage(fileName, folderPath);
 
         if (result.IsFailure)
         {
-            logger.LogCritical("Couldnt Load The Default Student Image FolderPath : {folderPath} , FileName : {fileName}", folderPath, fileName);
+            logger.LogCritical("Couldnt Load The Default Image FolderPath : {folderPath} , FileName : {fileName}", folderPath, fileName);
             return Error.Failure("Image.Failure", "Unexcpected Error While Loading Image");
         }
 
         return result.Value;
     }
+
+    public static string GetContentType(string extension)
+        => extension switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            _ => "image/jpeg"
+        };
+
+
 }

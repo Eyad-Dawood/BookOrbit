@@ -1,12 +1,10 @@
 ﻿namespace BookOrbit.Domain.Students.ValueObjects;
 
-public record StudentName : ValueObject<string>
+public record StudentName(string Value) : ValueObject<string>(Value)
 {
     //Arabic , english , spaces
     private static readonly Regex NameRegex =
    new(@"^[A-Za-z ]+$", RegexOptions.Compiled);
-
-    private StudentName(string Value) : base(Value) { }
 
     public static string Normalize(string value)
     {
@@ -39,11 +37,5 @@ public record StudentName : ValueObject<string>
 
     }
 
-    public static implicit operator string(StudentName? user)
-    {
-        if (user is null) return string.Empty;
-
-        return user.Value;
-    }
 }
 

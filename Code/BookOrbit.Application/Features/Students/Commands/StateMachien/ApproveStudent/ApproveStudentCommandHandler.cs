@@ -27,7 +27,7 @@ public class ApproveStudentCommandHandler (
 
         if (!emailConfirmedResult.Value)
         {
-            logger.LogWarning("Student {StudentId} cannot be approved because email {MaskedEmail} is not confirmed.", command.StudentId, maskingService.MaskEmail(student.UniversityMail));
+            logger.LogWarning("Student {StudentId} cannot be approved because email {MaskedEmail} is not confirmed.", command.StudentId, maskingService.MaskEmail(student.UniversityMail.Value));
 
             return StudentApplicationErrors.StateTransitionFailedEmailNotConfirmed;
         }

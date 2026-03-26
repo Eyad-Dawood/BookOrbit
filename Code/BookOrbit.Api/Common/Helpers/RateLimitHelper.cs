@@ -1,4 +1,5 @@
-﻿public static class RateLimitHelper
+﻿namespace BookOrbit.Api.Common.Helpers;
+public static class RateLimitHelper
 {
     public static void AddSlidingPolicy(
         RateLimiterOptions options,

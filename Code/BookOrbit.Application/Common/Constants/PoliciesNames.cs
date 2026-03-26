@@ -21,4 +21,7 @@ static public class PoliciesNames
 
     //No role Except STudent EVENT [Admin]
     public const string StudentOnlyPolicy = "StudentOnlyAccess";
+
+    //Student Wit Active State
+    public const string ActiveStudentPolicy = "ActiveStudentAccess";
 }

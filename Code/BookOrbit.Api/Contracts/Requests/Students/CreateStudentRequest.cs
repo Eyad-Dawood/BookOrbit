@@ -1,6 +1,6 @@
 ﻿namespace BookOrbit.Api.Contracts.Requests.Students;
 
-public class CreateStudentRequest
+public record CreateStudentRequest
 {
     public string Name { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; } = null;

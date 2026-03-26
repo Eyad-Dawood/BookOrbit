@@ -4,11 +4,11 @@ public class GetStudentPersonalPhotoFileNameByIdQueryHandler (
     IAppDbContext context)
     : IRequestHandler<GetStudentPersonalPhotoFileNameByIdQuery, Result<string>>
 {
-    public async Task<Result<string>> Handle(GetStudentPersonalPhotoFileNameByIdQuery request, CancellationToken ct)
+    public async Task<Result<string>> Handle(GetStudentPersonalPhotoFileNameByIdQuery query, CancellationToken ct)
     {
         var student = await context.Students
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == request.StudentId,ct);
+            .FirstOrDefaultAsync(s => s.Id == query.StudentId,ct);
 
         if (student is null)
         {

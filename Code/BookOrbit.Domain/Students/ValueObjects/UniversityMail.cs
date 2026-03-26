@@ -1,11 +1,9 @@
 ﻿namespace BookOrbit.Domain.Students.ValueObjects;
 
-public record UniversityMail : ValueObject<string>
+public record UniversityMail(string Value) : ValueObject<string>(Value)
 {
     private static readonly Regex UniversityMailRegex =
    new(@"^[A-Za-z0-9._%+-]+@std\.mans\.edu\.eg$", RegexOptions.Compiled);
-
-    private UniversityMail(string value) : base(value) { }
     public static string Normalize(string value)
     {
         return value
@@ -33,11 +31,5 @@ public record UniversityMail : ValueObject<string>
         return validationResult.Errors;
     }
 
-    public static implicit operator string(UniversityMail? user)
-    {
-        if (user is null) return string.Empty;
-
-        return user.Value;
-    }
 }
 

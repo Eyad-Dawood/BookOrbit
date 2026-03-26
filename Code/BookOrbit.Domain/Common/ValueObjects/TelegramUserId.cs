@@ -1,11 +1,9 @@
 ﻿namespace BookOrbit.Domain.Common.ValueObjects;
 
-public record TelegramUserId : ValueObject<string>
+public record TelegramUserId(string Value) : ValueObject<string>(Value)
 {
     private static readonly Regex TelegramUserIdRegex =
        new(@"^(?=(?:[0-9_]*[a-z]){3})[a-z0-9_]{5,32}$", RegexOptions.Compiled);
-
-    private TelegramUserId(string value) : base(value){}
     public static string Normalize(string value)
     {
         return 
@@ -34,11 +32,6 @@ public record TelegramUserId : ValueObject<string>
         return validationResult.Errors;
     }
 
-    public static implicit operator string(TelegramUserId? user)
-    {
-        if (user is null) return string.Empty;
-        return user.Value;
-    }
 }
 
 public static class TelegramUserIdErrors

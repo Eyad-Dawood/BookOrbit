@@ -29,8 +29,10 @@ static public class ApiConstants
     public const string DefaultOutputCachePolicyName = "DefaultCache";
 
     public const string StudentImagesUploadFolderPath = "uploads/Students";
+    public const string BookCoverImagesUploadFolderPath = "uploads/Books";
 
 
     public const string DefaultStudentImageFileName = "DefaultStudentImage.png";
+    public const string DefaultBookCoverImageFileName = "DefaultBookCoverImage.png";
 }
 

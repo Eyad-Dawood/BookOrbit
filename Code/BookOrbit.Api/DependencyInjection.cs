@@ -1,5 +1,4 @@
-﻿
-namespace BookOrbit.Api;
+﻿namespace BookOrbit.Api;
 static public class DependencyInjection
 {
     private const string AppSettingsSectionName = "AppSettings";

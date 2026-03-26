@@ -45,7 +45,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .IsRequired();
 
         builder.Property(s => s.PersonalPhotoFileName)
-            .HasMaxLength(2048)
+            .HasMaxLength(255)
             .IsUnicode(false)
             .IsRequired();
 

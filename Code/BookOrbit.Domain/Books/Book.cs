@@ -1,11 +1,11 @@
 ﻿namespace BookOrbit.Domain.Books;
 public class Book : AuditableEntity
 {
-    public string Title { get; }
+    public BookTitle Title { get; private set; }
     public ISBN ISBN { get; }
-    public string Publisher { get; }
+    public BookPublisher Publisher { get; }
     public BookCategory Category { get; }
-    public string Author { get; }
+    public BookAuthor Author { get; }
     public string CoverImageFileName { get; }
 
 #pragma warning disable CS8618
@@ -13,11 +13,11 @@ public class Book : AuditableEntity
 
     private Book(
         Guid id,
-        string title,
+        BookTitle title,
         ISBN isbn,
-        string publisher,
+        BookPublisher publisher,
         BookCategory category,
-        string author,
+        BookAuthor author,
         string coverImageFileName) : base(id)
     {
         Title = title;
@@ -30,40 +30,32 @@ public class Book : AuditableEntity
 
     public static Result<Book> Create(
         Guid id,
-        string title,
+        BookTitle title,
         ISBN isbn,
-        string publisher,
+        BookPublisher publisher,
         BookCategory category,
-        string author,
+        BookAuthor author,
         string coverImageFileName)
     {
         if (id == Guid.Empty)
             return BookErrors.IdRequired;
 
-        if (string.IsNullOrWhiteSpace(title))
+        if (title is null)
             return BookErrors.TitleRequired;
 
+        if (isbn is null)
+            return BookErrors.ISBNRequired;
 
-        title = title.Trim();
-        if (title.Length > BookValidationConstants.TitleMaxLength || title.Length < BookValidationConstants.TitleMinLength)
-            return BookErrors.InvalidTitle;
-
-        if (string.IsNullOrWhiteSpace(publisher))
+        if(publisher is null)
             return BookErrors.PublisherRequired;
 
-        publisher = publisher.Trim();
-        if (publisher.Length > BookValidationConstants.PublisherMaxLength || publisher.Length < BookValidationConstants.PublisherMinLength)
-            return BookErrors.InvalidPublisher;
-
-        if (string.IsNullOrWhiteSpace(author))
+        if(author is null)
             return BookErrors.AuthorRequired;
 
-        author = author.Trim();
-        if (author.Length > BookValidationConstants.AuthorMaxLength || author.Length < BookValidationConstants.AuthorMinLength)
-            return BookErrors.InvalidAuthor;
 
-        if (!Enum.IsDefined(category))
-            return BookErrors.InvalidCategory;
+
+        if (string.IsNullOrWhiteSpace(coverImageFileName))
+            return BookErrors.CoverImagePhotoRequired;
 
 
         return new Book(
@@ -74,6 +66,15 @@ public class Book : AuditableEntity
             category,
             author,
             coverImageFileName);
+    }
+
+
+    public  Result<Updated> Update(
+        BookTitle title)
+    {
+        Title = title;
+
+        return Result.Updated;
     }
 }
 

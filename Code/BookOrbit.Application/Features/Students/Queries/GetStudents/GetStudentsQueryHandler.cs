@@ -19,7 +19,7 @@ public class GetStudentsQueryHandler(IAppDbContext context,IStudentQueryService 
 
         int page = Math.Max(1, query.Page);
         int pageSize = Math.Max(1, query.PageSize);
-        studentQuery = ApplyPagination(studentQuery, page, pageSize);
+        studentQuery = studentQuery.ApplyPagination(page, pageSize);
 
 
         var items = await studentQuery.
@@ -87,11 +87,5 @@ public class GetStudentsQueryHandler(IAppDbContext context,IStudentQueryService 
             "joindate" => isDescending ? query.OrderByDescending(s => s.JoinDateUtc) : query.OrderBy(s => s.JoinDateUtc),
             _ => query.OrderByDescending(wo => wo.CreatedAtUtc) // Default sorting
         };
-    }
-
-    private static IQueryable<Student> ApplyPagination(IQueryable<Student> query,int page,int pageSize)
-    {
-        return query.Skip((page - 1) * pageSize)
-              .Take(pageSize);
     }
 }

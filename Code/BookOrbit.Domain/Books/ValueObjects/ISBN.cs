@@ -1,14 +1,11 @@
 ﻿namespace BookOrbit.Domain.Books.ValueObjects;
 
-public record ISBN : ValueObject<string>
+public record ISBN(string Value) : ValueObject<string>(Value)
 {
     private static readonly Regex IsbnRegex =
         new(@"^(?:\d{9}[\dXx]|\d{13})$", RegexOptions.Compiled);
 
-    private ISBN(string value):base(value){}
-
-
-    private static string Normalize(string value)
+    public static string Normalize(string value)
     {
         return value
             .Trim()
@@ -35,12 +32,5 @@ public record ISBN : ValueObject<string>
             return new ISBN(validationResult.Value);
 
         return validationResult.Errors;
-    }
-
-    public static implicit operator string(ISBN? user)
-    {
-        if (user is null) return string.Empty;
-
-        return user.Value;
     }
 }

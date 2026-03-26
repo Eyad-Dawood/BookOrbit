@@ -48,7 +48,7 @@ public class CreateStudentCommandHandler(
 
         //Create User
 
-        var userCreationResult = await identityService.CreateStudent(emailResult.Value,command.Password,ct);
+        var userCreationResult = await identityService.CreateStudent(emailResult.Value.Value,command.Password,ct);
 
         if(userCreationResult.IsFailure)
             return userCreationResult.Errors;
@@ -67,6 +67,7 @@ public class CreateStudentCommandHandler(
 
         if (createdStudentResult.IsFailure)
         {
+            logger.LogWarning("Student creation failed. Errors : {Errors}", string.Join(',', createdStudentResult.Errors));
             await RollbackCreatedUserAsync(userCreationResult.Value, ct);
             return createdStudentResult.Errors;
         }
@@ -109,7 +110,7 @@ public class CreateStudentCommandHandler(
 
 
         if (
-            await identityService.UserEmailExists(emailResult.Value, ct)
+            await identityService.UserEmailExists(emailResult.Value.Value, ct)
         || await context.Students.AnyAsync(s => s.UniversityMail == emailResult.Value, ct)
         )
         {
@@ -138,7 +139,7 @@ public class CreateStudentCommandHandler(
             logger.LogWarning(
                "Student creation failed. Reason: {Reason}, Value: {Value}",
                "Telegramuser ID Exists",
-              maskingService.MaskTelegramUserId(telegramUserIdResult.Value));
+              maskingService.MaskTelegramUserId(telegramUserIdResult.Value.Value));
 
             return StudentApplicationErrors.TelegramUserIdAlreadyExists;
         }
@@ -161,7 +162,7 @@ public class CreateStudentCommandHandler(
             logger.LogWarning(
                "Student creation failed. Reason: {Reason}, Value: {Value}",
                "Phone Number Exists",
-              maskingService.MaskPhoneNumber(phoneNumberResult.Value));
+              maskingService.MaskPhoneNumber(phoneNumberResult.Value.Value));
 
             return StudentApplicationErrors.PhoneNumberAlreadyExists;
         }
