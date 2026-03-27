@@ -1,6 +1,4 @@
-﻿using BookOrbit.Application.Features.Books.Queries.GetBooks;
-
-namespace BookOrbit.Api.Controllers.Books;
+﻿namespace BookOrbit.Api.Controllers.Books;
 
 [Route("api/v{version:apiVersion}/books")]
 [ApiVersion("1.0")]
@@ -70,7 +68,7 @@ public class BookController(
     [EndpointName("UpdateBook")]
     [MapToApiVersion("1.0")]
     [EnableRateLimiting(ApiConstants.NormalRateLimitingPolicyName)]
-    public async Task<ActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] UpdateBookRequest request, CancellationToken ct)
+    public async Task<ActionResult> UpdateBook([FromRoute] Guid id, [FromBody] UpdateBookRequest request, CancellationToken ct)
     {
         var result = await sender.Send(
             new UpdateBookCommand(
@@ -87,7 +85,7 @@ public class BookController(
 
     [HttpGet("{id:guid}", Name = "GetBookById")]
     [Authorize(Policy = PoliciesNames.ActiveStudentPolicy)]
-    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BookDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -114,11 +112,9 @@ public class BookController(
 
     [HttpGet]
     [Authorize(Policy = PoliciesNames.ActiveStudentPolicy)]
-    [ProducesResponseType(typeof(PaginatedList<StudentListItemDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(PaginatedList<BookListItemDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesDefaultResponseType]
     [EndpointSummary("Retrieves a paginated list of books.")]
     [EndpointDescription("Supports filtering by searching by term and category. Pagination and sorting are supported.")]
@@ -142,6 +138,4 @@ public class BookController(
            Ok,
            e => Problem(e, HttpContext));
     }
-
-
 }

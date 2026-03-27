@@ -5,6 +5,6 @@ public class UnBanStudentCommandValidator : AbstractValidator<UnBanStudentComman
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }

@@ -2,8 +2,8 @@
 global using BookOrbit.Application.Common.Errors;
 global using BookOrbit.Application.Common.Interfaces;
 global using BookOrbit.Application.Features.Identity.Dtos;
+global using BookOrbit.Domain.BookCopies;
 global using BookOrbit.Domain.Books;
-global using BookOrbit.Domain.Books.ValueObjects;
 global using BookOrbit.Domain.Common;
 global using BookOrbit.Domain.Common.Constants;
 global using BookOrbit.Domain.Common.Entities;

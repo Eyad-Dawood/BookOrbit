@@ -1,7 +1,7 @@
 ﻿namespace BookOrbit.Application.Features.Students;
 static public class StudentGeneralValidation
 {
-    static public IRuleBuilder<T,Guid> IdRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>
+    static public IRuleBuilder<T,Guid> StudentIdRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>
         ruleBuilder
             .NotEmpty().WithMessage(StudentErrors.IdRequired.Description)
             .Must(id => id != Guid.Empty).WithMessage(StudentErrors.IdRequired.Description);

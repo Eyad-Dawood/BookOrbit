@@ -6,7 +6,7 @@ public class GetStudentByIdQueryValidator : AbstractValidator<GetStudentByIdQuer
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }
 

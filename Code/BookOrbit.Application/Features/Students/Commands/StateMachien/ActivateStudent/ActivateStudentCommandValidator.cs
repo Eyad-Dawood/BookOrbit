@@ -5,6 +5,6 @@ public class ActivateStudentCommandValidator : AbstractValidator<ActivateStudent
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }

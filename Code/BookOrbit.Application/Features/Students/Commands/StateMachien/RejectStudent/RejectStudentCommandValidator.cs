@@ -5,6 +5,6 @@ public class RejectStudentCommandValidator : AbstractValidator<RejectStudentComm
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }

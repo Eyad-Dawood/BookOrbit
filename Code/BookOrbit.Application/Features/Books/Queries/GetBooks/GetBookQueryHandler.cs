@@ -75,7 +75,7 @@ public class GetBookQueryHandler(
     {
         if (string.IsNullOrWhiteSpace(sortColumn))
             sortColumn = "createdat";
-
+        
         if (string.IsNullOrWhiteSpace(sortDirection))
             sortDirection = "desc";
 

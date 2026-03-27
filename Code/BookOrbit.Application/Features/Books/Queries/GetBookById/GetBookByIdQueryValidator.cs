@@ -5,6 +5,6 @@ public class GetBookByIdQueryValidator : AbstractValidator<GetBookByIdQuery>
     {
         RuleFor(x => x.BookId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .BookIdRules();
     }
 }

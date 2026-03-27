@@ -2,10 +2,10 @@
 namespace BookOrbit.Application.Features.Books;
 static public class BookGeneralValidation
 {
-    static public IRuleBuilder<T, Guid> IdRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>
+    static public IRuleBuilder<T, Guid> BookIdRules<T>(this IRuleBuilder<T, Guid> ruleBuilder) =>
     ruleBuilder
-        .NotEmpty().WithMessage(StudentErrors.IdRequired.Description)
-        .Must(id => id != Guid.Empty).WithMessage(StudentErrors.IdRequired.Description);
+        .NotEmpty().WithMessage(BookErrors.IdRequired.Description)
+        .Must(id => id != Guid.Empty).WithMessage(BookErrors.IdRequired.Description);
 
     static public IRuleBuilder<T, string> BookTitleRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
         ruleBuilder.
@@ -27,7 +27,7 @@ static public class BookGeneralValidation
 
     static public IRuleBuilder<T, BookCategory> BookCategoryRules<T>(this IRuleBuilder<T, BookCategory> ruleBuilder) =>
       ruleBuilder.
-      NotEmpty().WithMessage(BookErrors.InvalidCategory.Description);
+      IsInEnum().WithMessage(BookErrors.InvalidCategory.Description);
 
     static public IRuleBuilder<T, string> BookAuthorRules<T>(this IRuleBuilder<T, string> ruleBuilder) =>
       ruleBuilder.

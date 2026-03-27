@@ -11,7 +11,7 @@ public class GetBookByIdQueryHandler(
 
         if (book is null)
         {
-            logger.LogInformation("Book {BookId} not found .", query.BookId);
+            logger.LogWarning("Book {BookId} not found .", query.BookId);
 
             return BookApplicationErrors.NotFoundById;
         }

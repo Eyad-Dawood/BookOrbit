@@ -5,7 +5,7 @@ public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
     {
         RuleFor(x => x.Id)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .BookIdRules();
 
         RuleFor(x=>x.Title)
             .Cascade(CascadeMode.Stop)

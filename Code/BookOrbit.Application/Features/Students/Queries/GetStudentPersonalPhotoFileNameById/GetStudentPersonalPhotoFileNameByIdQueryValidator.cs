@@ -6,6 +6,6 @@ public class GetStudentPersonalPhotoFileNameByIdQueryValidator : AbstractValidat
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }

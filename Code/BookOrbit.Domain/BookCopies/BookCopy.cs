@@ -1,11 +1,10 @@
-﻿
-namespace BookOrbit.Domain.BookCopies;
+﻿namespace BookOrbit.Domain.BookCopies;
 public class BookCopy : AuditableEntity
 {
     public Guid OwnerId { get; }
     public Guid BookId { get; }
-    public BookCopyCondition Condition { get; }
-
+    public BookCopyCondition Condition { get; private set;}
+    public BookCopyState State { get; }
 
     public Student? Owner { get; private set; }
     public Book? Book { get; private set; }
@@ -21,6 +20,7 @@ public class BookCopy : AuditableEntity
         OwnerId = ownerId;
         BookId = bookId;
         Condition = condition;
+        State = BookCopyState.Available;
     }
 
     public static Result<BookCopy> Create(
@@ -42,5 +42,13 @@ public class BookCopy : AuditableEntity
             return BookCopyErrors.InvalidCondition;
 
         return new BookCopy(id, ownerId, bookId, condition);
+    }
+
+    public Result<Updated> Update(
+        BookCopyCondition condition)
+    {
+        Condition = condition;
+
+        return Result.Updated;
     }
 }

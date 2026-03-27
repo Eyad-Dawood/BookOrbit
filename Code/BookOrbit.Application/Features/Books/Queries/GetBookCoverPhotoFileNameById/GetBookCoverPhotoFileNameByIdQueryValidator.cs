@@ -5,6 +5,6 @@ public class GetBookCoverPhotoFileNameByIdQueryValidator : AbstractValidator<Get
     {
         RuleFor(x => x.BookId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .BookIdRules();
     }
 }

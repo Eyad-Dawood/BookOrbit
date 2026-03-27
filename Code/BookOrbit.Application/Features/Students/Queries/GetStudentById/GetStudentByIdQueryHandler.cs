@@ -13,7 +13,7 @@ public class GetStudentByIdQueryHandler
 
         if (student is null)
         {
-            logger.LogInformation("Student {StudentId} not found .", query.StudentId);
+            logger.LogWarning("Student {StudentId} not found .", query.StudentId);
 
             return StudentApplicationErrors.NotFoundById;
         }

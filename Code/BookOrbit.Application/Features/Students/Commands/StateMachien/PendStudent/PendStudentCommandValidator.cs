@@ -5,6 +5,6 @@ public class PendStudentCommandValidator : AbstractValidator<PendStudentCommand>
     {
         RuleFor(x => x.StudentId)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
     }
 }

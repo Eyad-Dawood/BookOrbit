@@ -1,6 +1,4 @@
-﻿using BookOrbit.Domain.Books;
-
-namespace BookOrbit.Application.Features.Books.Dtos;
+﻿namespace BookOrbit.Application.Features.Books.Dtos;
 public record BookDto
 {
     public Guid Id { get; set; } = Guid.Empty;

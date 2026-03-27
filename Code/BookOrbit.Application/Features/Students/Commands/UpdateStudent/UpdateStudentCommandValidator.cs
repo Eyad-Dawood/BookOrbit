@@ -6,7 +6,7 @@ public class UpdateStudentCommandValidator : AbstractValidator<UpdateStudentComm
     {
         RuleFor(x => x.Id)
             .Cascade(CascadeMode.Stop)
-            .IdRules();
+            .StudentIdRules();
 
 
         RuleFor(x => x.Name)
